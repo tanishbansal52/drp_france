@@ -8,6 +8,9 @@ import {
 } from "react-router-dom";
 import App from './App.jsx'
 import Landing from './Landing.jsx'
+import Debrief from './Debrief.jsx';
+import Correct from './Correct.jsx';
+import Incorrect from './Incorrect.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -22,6 +25,18 @@ createRoot(document.getElementById('root')).render(
               <Route
                   path="/question"
                   element={<App />}
+              />
+              <Route
+                  path="/debrief"
+                  element={<Debrief />}
+              />
+              <Route
+                  path="/correct"
+                  element={<Correct />}
+              />
+              <Route
+                  path="/incorrect"
+                  element={<Incorrect />}
               />
           </Routes>
       </Router>

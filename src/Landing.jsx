@@ -1,44 +1,74 @@
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
 
 import './Landing.css'
+import NavBar from './NavBar';
 
 function Landing() {
-  const [roomCode, setRoomCode] = useState('')
-  const [groupName, setgroupName] = useState('')
-  const navigate = useNavigate()
+  const [roomCode, setRoomCode] = useState('');
+  const [groupName, setGroupName] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/question')
+    if (!roomCode || !groupName) {
+      return;
+    }
+    navigate('/question');
   };
 
   return (
     <>
-      <h1>Pentagon(?)</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="landingPageForm">
-          <Form.Label>Enter the mission code shown on your teacher's screen to continue!</Form.Label>
-          <Form.Control 
-            placeholder="Enter mission code"
-            value={roomCode}
-            onChange={(e) => setRoomCode(e.target.value)}
-          />
-          <Form.Label>Pick a name for your group!</Form.Label>
-          <Form.Control 
-            placeholder="Enter group name"
-            value={groupName}
-            onChange={(e) => setgroupName(e.target.value)}
-          />
-        </Form.Group>
-        <Button type="submit" variant="primary" className='button-space'>
-          Submit
-        </Button>
-      </Form>
+    <NavBar />
+    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+      <Row className="w-200">
+        <Col md={{ span: 6, offset: 3 }}>
+          <Card className="shadow-lg p-4">
+            <Card.Body>
+              <div className="text-center mb-4">
+                <h1 className="fw-bold">Welcome Agents!</h1>
+              </div>
+
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="roomCode">
+                  <Form.Label>
+                    Enter the mission code shown on your teacher's screen to continue!
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter mission code"
+                    value={roomCode}
+                    onChange={(e) => setRoomCode(e.target.value)}
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-4" controlId="groupName">
+                  <Form.Label>Pick a name for your group!</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter group name"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
+                  />
+                </Form.Group>
+                <p>
+                  All done? Press here if you're ready for your mission!
+                </p>
+                <div className="d-grid">
+                  <Button type="submit" variant='dark' size="lg">
+                    Click Here!
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
     </>
-  )
+  );
 }
 
 export default Landing
