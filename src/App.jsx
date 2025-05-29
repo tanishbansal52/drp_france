@@ -17,7 +17,7 @@ function App() {
 
   return (
     <>
-      <h1>Pentagon(?)</h1>
+      <h1>Are you mathsy?</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>If 5x = 0. What is x = ?</Form.Label>
