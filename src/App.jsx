@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button } from 'react-bootstrap';
 
@@ -8,6 +8,19 @@ function App() {
   const [answer, setAnswer] = useState('')
   const [isCorrect, setIsCorrect] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    fetch('https://drp-belgium.onrender.com/api/data/')
+      .then(response => response.json())
+      .then(data => {
+        // Assuming the API returns an object with an 'email' field
+        if (data && data.email) {
+          setEmail(data.email);
+        }
+      })
+      .catch(error => console.error('Error IOSADJIOASJDIOSAJDOIASJDIOASJ:', error));
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,7 +30,7 @@ function App() {
 
   return (
     <>
-      <h1>Are you mathsy?</h1>
+      <h1>{email ? email : "Loading question..."}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>If 5x = 0. What is x = ?</Form.Label>
