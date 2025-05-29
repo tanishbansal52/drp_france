@@ -7,6 +7,7 @@ import './Landing.css'
 
 function Landing() {
   const [roomCode, setRoomCode] = useState('')
+  const [groupName, setgroupName] = useState('')
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
@@ -19,14 +20,20 @@ function Landing() {
       <h1>Pentagon(?)</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="landingPageForm">
-          <Form.Label>Enter room code</Form.Label>
+          <Form.Label>Enter the mission code shown on your teacher's screen to continue!</Form.Label>
           <Form.Control 
-            placeholder="(Enter anything hehe)"
+            placeholder="Enter mission code"
             value={roomCode}
             onChange={(e) => setRoomCode(e.target.value)}
           />
+          <Form.Label>Pick a name for your group!</Form.Label>
+          <Form.Control 
+            placeholder="Enter group name"
+            value={groupName}
+            onChange={(e) => setgroupName(e.target.value)}
+          />
         </Form.Group>
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" className='button-space'>
           Submit
         </Button>
       </Form>

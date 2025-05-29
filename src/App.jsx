@@ -27,7 +27,7 @@ function App() {
             onChange={(e) => setAnswer(e.target.value)}
           />
         </Form.Group>
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" className="button-space">
           Submit
         </Button>
       </Form>
