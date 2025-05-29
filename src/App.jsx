@@ -8,18 +8,19 @@ function App() {
   const [answer, setAnswer] = useState('')
   const [isCorrect, setIsCorrect] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [email, setEmail] = useState('');
+  const [question, setQuestion] = useState('');
 
   useEffect(() => {
     fetch('https://drp-belgium.onrender.com/api/data/')
       .then(response => response.json())
       .then(data => {
-        // Assuming the API returns an object with an 'email' field
-        if (data && data.email) {
-          setEmail(data.email);
+        // Assuming the API returns an object with an 'question' field
+        if (data && data.question) {
+          setQuestion(data.question);
         }
+        console.log('Question fetched:', data.question);
       })
-      .catch(error => console.error('Error IOSADJIOASJDIOSAJDOIASJDIOASJ:', error));
+      .catch(error => console.error('Error:', error));
   }, []);
 
   const handleSubmit = (e) => {
@@ -30,7 +31,7 @@ function App() {
 
   return (
     <>
-      <h1>{email ? email : "Loading question..."}</h1>
+      <h1>{question ? question : "Loading question..."}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>If 5x = 0. What is x = ?</Form.Label>
