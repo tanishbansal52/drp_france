@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     console.log('Fetching question from API...');
-    fetch('https:drp-belgium.onrender.com/api/data/')
+    fetch('https://drp-belgium.onrender.com/api/data/')
       .then(response => response.json())
       .then(data => {
         // Assuming the API returns an object with an 'question' field
