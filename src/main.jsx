@@ -11,6 +11,7 @@ import Landing from './Landing.jsx'
 import Debrief from './Debrief.jsx';
 import Correct from './Correct.jsx';
 import Incorrect from './Incorrect.jsx';
+import End from './End.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -37,6 +38,10 @@ createRoot(document.getElementById('root')).render(
               <Route
                   path="/incorrect"
                   element={<Incorrect />}
+              />
+              <Route
+                  path="/end"
+                  element={<End />}
               />
           </Routes>
       </Router>

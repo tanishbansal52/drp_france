@@ -1,8 +1,12 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './NavBar';
+import { useNavigate } from 'react-router-dom';
 
 function Correct() {
+
+  const navigate = useNavigate();
+
   return (
     <>
     <NavBar />
@@ -16,6 +20,10 @@ function Correct() {
           <p className="text-center text-gray-600 mt-4">
             Waiting for your teacher to move on to the next question...
           </p>
+
+          <button type="button" class="btn btn-info" onClick={() => navigate('/end')}>
+            Move to end of quiz - Teachers will be doing this navigation from their side.
+            </button>
           
           <div className="d-flex justify-content-center mt-12">
             <svg 
