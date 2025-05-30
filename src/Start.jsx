@@ -1,10 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 import './App.css'
 import NavBar from './NavBar';
 
 function Start() {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,7 +21,12 @@ function Start() {
       <p className="text-center mb-5"> Nominate a group leader to enter the answers.</p>
       <p className="text-center"> Good luck agents!</p>
       <div className="flex flex-col items-center justify-center"> 
-      <a href="/question" className="btn btn-warning btn-lg">
+      <a 
+        className="btn btn-warning btn-lg" 
+        onClick={() => navigate('/question')}
+        role="button" 
+        tabIndex={0}
+      >
         Continue
       </a>
     </div>

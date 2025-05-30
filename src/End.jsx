@@ -2,8 +2,10 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './NavBar';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function End() {
+  const navigate = useNavigate();
 
   const [selectedRating, setSelectedRating] = useState(null);
 
@@ -58,7 +60,12 @@ function End() {
       </div>
     
     <div className="flex flex-col items-center justify-center"> 
-      <a href="/debrief" className="btn btn-warning btn-lg">
+      <a 
+        className="btn btn-warning btn-lg" 
+        onClick={() => navigate('/debrief')}
+        role="button" 
+        tabIndex={0}
+      >
         Continue
       </a>
     </div>
