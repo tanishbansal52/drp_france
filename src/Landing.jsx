@@ -16,7 +16,7 @@ function Landing() {
     if (!roomCode || !groupName) {
       return;
     }
-    navigate('/question');
+    navigate('/start');
   };
 
   return (

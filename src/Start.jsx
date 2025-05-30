@@ -1,0 +1,30 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Form, Button, Alert } from 'react-bootstrap';
+
+import './App.css'
+import NavBar from './NavBar';
+
+function Start() {
+
+  return (
+    <>
+    <NavBar />
+      <div className="text-center mb-10">
+        <h1>Mission Topic - Algebra</h1>
+        <h2 className="text-muted mb-5">Rules of the mission:</h2>
+      </div>
+      <p className="text-center"> No cheating! </p>
+      <p className="text-center"> Answer questions faster for more points.</p>
+      <p className="text-center"> You can try again If you get an answer wrong but you wont get as many points. </p>
+      <p className="text-center mb-5"> Nominate a group leader to enter the answers.</p>
+      <p className="text-center"> Good luck agents!</p>
+      <div className="flex flex-col items-center justify-center"> 
+      <a href="/question" className="btn btn-warning btn-lg">
+        Continue
+      </a>
+    </div>
+    </>
+  )
+}
+
+export default Start

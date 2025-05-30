@@ -12,6 +12,7 @@ import Debrief from './Debrief.jsx';
 import Correct from './Correct.jsx';
 import Incorrect from './Incorrect.jsx';
 import End from './End.jsx';
+import Start from './Start.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +27,10 @@ createRoot(document.getElementById('root')).render(
               <Route
                   path="/question"
                   element={<App />}
+              />
+              <Route
+                  path="/start"
+                  element={<Start />}
               />
               <Route
                   path="/debrief"
