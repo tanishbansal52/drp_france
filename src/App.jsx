@@ -100,7 +100,7 @@ function App() {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
-            <p>{question} </p>
+            <p>{question ? question : "Loading question"} </p>
           </Form.Label>
           <Form.Control 
             placeholder="Enter your answer here"
