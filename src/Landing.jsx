@@ -28,7 +28,7 @@ function Landing() {
           <Card className="shadow-lg p-4">
             <Card.Body>
               <div className="text-center mb-4">
-                <h1 className="fw-bold">Welcome Agents!</h1>
+                <h1 className="fw-bold">Welcome Jamie and Tom!</h1>
               </div>
 
               <Form onSubmit={handleSubmit}>
