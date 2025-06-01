@@ -16,7 +16,9 @@ function Landing() {
     if (!roomCode || !groupName) {
       return;
     }
-    navigate('/start');
+    navigate('/waiting', {
+      state: { groupName }
+    });
   };
 
   return (

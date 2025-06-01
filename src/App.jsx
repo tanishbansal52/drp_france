@@ -72,7 +72,6 @@ function App() {
             </div>
           </div>
 
-      {/* Fancy Bootstrap Alert */}
       {showAlert && (
         <Alert 
           variant="danger" 

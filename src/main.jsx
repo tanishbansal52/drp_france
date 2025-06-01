@@ -13,6 +13,7 @@ import Correct from './Correct.jsx';
 import Incorrect from './Incorrect.jsx';
 import End from './End.jsx';
 import Start from './Start.jsx';
+import WaitingArea from './Waiting';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -47,6 +48,10 @@ createRoot(document.getElementById('root')).render(
               <Route
                   path="/end"
                   element={<End />}
+              />
+              <Route
+                  path="/waiting"
+                  element={<WaitingArea />}
               />
           </Routes>
       </Router>
