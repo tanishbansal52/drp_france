@@ -9,7 +9,7 @@ import NavBar from './NavBar';
 function App() {
   const [answer, setAnswer] = useState('')
   const navigate = useNavigate();
-  const rightAnswer = '7237'; // Correct answer to q
+  const rightAnswer = '0'; // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
