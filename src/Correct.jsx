@@ -21,7 +21,8 @@ function Correct() {
   return (
     <>
     <NavBar />
-    <div className="space-y-6 font-handwriting text-2xl text-gray-800">
+    <div style={{ paddingTop: '70px' }} className="text-center">
+      <div className="space-y-6 font-handwriting text-2xl text-gray-800">
             <h1 className="text-3xl">Well Done!</h1>
             <p>Your Answer was correct!</p>
             <p>You have gained 10 points on this stage!</p>
@@ -36,7 +37,7 @@ function Correct() {
             Move to {question === 1 ? 'Group Question' : 'End of Quiz'} - Teachers will be doing this navigation from their side.
             </button>
           
-          <div className="d-flex justify-content-center mt-12">
+          <div className="d-flex justify-content-center mt-3">
             <svg 
               width="120" 
               height="120" 
@@ -53,6 +54,12 @@ function Correct() {
               />
             </svg>
           </div>
+
+          <div className="d-flex justify-content-center">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25pZXBzNWtxcTZibGEzcjNjcGdsazhmZW51b3hrOTZibG85eXk0aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ely3apij36BJhoZ234/giphy.gif" alt="Funny gif" />
+          </div>
+    </div>
+    
         </>
   );
 }

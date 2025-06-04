@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Waiting.css"; // You can keep or remove this if you want custom fonts, etc.
+import NavBar from "./NavBar";
 
 function WaitingArea() {
   const location = useLocation();
@@ -18,6 +19,8 @@ function WaitingArea() {
   ];
 
   return (
+    <>
+    <NavBar />
     <div className="min-vh-100 bg-white p-5">
       <div className="rounded px-4 py-3">
         <h1 className="h4 fw-bold mb-2">
@@ -52,6 +55,7 @@ function WaitingArea() {
         </Button>
       </div>
     </div>
+    </>
   );
 }
 
