@@ -9,7 +9,7 @@ import NavBar from './NavBar';
 function App() {
   const [answer, setAnswer] = useState('')
   const navigate = useNavigate();
-  const rightAnswer = '7237'; // Correct answer to q
+  const rightAnswer = '0'; // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -52,7 +52,9 @@ function App() {
     <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-muted mb-5">Q1. Individual Round</h2>
+        <h2 className="text-muted text-xl leading-tight">Q1. Individual Round</h2>
+        <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4>
+
       </div>
       <div className="col-auto">
             <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
