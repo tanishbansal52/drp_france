@@ -17,7 +17,8 @@ function Question() {
 
   useEffect(() => {
     console.log('Fetching question from API...');
-    fetch('https://drp-belgium.onrender.com/api/data/')
+    fetch('https://drp-belgium.onrender.com/api/questions/1/')
+    // fetch('http://localhost:8000/api/questions/1/')
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field

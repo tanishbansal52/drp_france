@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Form, Button, Alert } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom' 
 
 import './css/App.css'
 import NavBar from './NavBar';
@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     console.log('Fetching question from API...');
-    fetch('https://drp-belgium.onrender.com/api/data/')
+    fetch('https://drp-belgium.onrender.com/api/questions/1/')
       // fetch('http://127.0.0.1:8000/api/questions/1/')
       .then(response => response.json())
       .then(data => {

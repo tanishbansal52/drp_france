@@ -17,8 +17,8 @@ function GroupQuestion() {
 
   useEffect(() => {
     console.log('Fetching question from API...');
-    fetch('https://drp-belgium.onrender.com/api/data/')
-    // fetch('http://127.0.0.1:8000/api/questions/2/')
+    fetch('https://drp-belgium.onrender.com/api/questions/2/')
+    // fetch('http://localhost:8000/api/questions/2/')
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
@@ -31,7 +31,8 @@ function GroupQuestion() {
       .catch(error => console.error('Error:', error));
 
     console.log('Fetching answer to question 1...');
-    fetch('https://drp-belgium.onrender.com/api/questions/1/')
+    fetch('https://drp-belgium.onrender.com/questions/1/')
+    // fetch('http://localhost:8000/api/questions/1/')
     .then(response => response.json())
     .then(data => {
       if (data && data.answer) {

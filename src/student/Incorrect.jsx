@@ -21,7 +21,8 @@ function Incorrect() {
   return (
     <>
       <NavBar />
-    <div className="space-y-6 font-handwriting text-2xl text-gray-800">
+      <div style={{ paddingTop: '70px' }} className="text-center">
+        <div className="space-y-6 font-handwriting text-2xl text-gray-800">
             <h1 className="text-3xl">Oh Dear!</h1>
             <p>That was not the correct answer. Your teacher has</p>
             <p>ended this question. You do not have any points.</p>
@@ -35,7 +36,7 @@ function Incorrect() {
           <button type="button" class="btn btn-info" onClick={handleSubmit}>
             Move to {question === 1 ? 'Group Question' : 'End of Quiz'} - Teachers will be doing this navigation from their side.</button>
           
-          <div className="d-flex justify-content-center mt-12">
+          <div className="d-flex justify-content-center mt-3">
             <svg 
               width="120" 
               height="120" 
@@ -52,6 +53,11 @@ function Incorrect() {
               />
             </svg>
           </div>
+          <div className="d-flex justify-content-center">
+            <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDV3a2lkanQxajhkbTFoaG11dWZ5Z3o5ZHY3MGdpeDNqYW01ZmRyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y3AuOkzCGoPJ6VGyX2/giphy.gif" alt="Funny gif" />
+          </div>
+      </div>
+    
         </>
   );
 }

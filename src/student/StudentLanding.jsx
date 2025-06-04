@@ -2,6 +2,7 @@ import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
+import axios from 'axios';
 
 import '../css/Landing.css'
 import NavBar from '../NavBar';
@@ -10,15 +11,41 @@ function StudentLanding() {
   const [roomCode, setRoomCode] = useState('');
   const [groupName, setGroupName] = useState('');
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!roomCode || !groupName) {
       return;
     }
-    navigate('/waiting', {
+
+    try {
+      const res = await axios.post("https://drp-belgium.onrender.com/api/join-room/", {
+        room_code: roomCode,
+        group_name: groupName,
+      });
+
+      console.log("Joined:", res.data);
+      // Navigate to waiting room or store info
+      navigate('/waiting', {
       state: { groupName }
     });
+    } catch (err) {
+      alert(err.data.error);
+      if (err.response) {
+        setError(err.response.data.error);
+      } else {
+        setError("Something went wrong.");
+      }
+    }
+
+    if (error) {
+      alert(error);
+      setError('');
+      setRoomCode('');
+      setGroupName('');
+      return;
+    }
   };
 
   return (
