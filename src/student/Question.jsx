@@ -3,13 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
 
-import './css/App.css'
-import NavBar from './NavBar';
+import './App.css'
+import NavBar from '../NavBar';
 
-function App() {
+function Question() {
   const [answer, setAnswer] = useState('')
   const navigate = useNavigate();
-  const [rightAnswer, setRightAnswer] = useState('0') // Correct answer to q
+  const rightAnswer = '7237'; // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -18,13 +18,11 @@ function App() {
   useEffect(() => {
     console.log('Fetching question from API...');
     fetch('https://drp-belgium.onrender.com/api/data/')
-    // fetch('http://127.0.0.1:8000/api/questions/1/')
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
-        if (data && data.question_text) {
-          setQuestion(data.question_text);
-          setRightAnswer(data.answer || "0"); // Right answer from API
+        if (data && data.question) {
+          setQuestion(data.question);
         }
         console.log('Question fetched:', data.question);
       })
@@ -54,9 +52,7 @@ function App() {
     <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-muted text-xl leading-tight">Q1. Individual Round</h2>
-        <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4>
-
+        <h2 className="text-muted mb-5">Q1. Individual Round</h2>
       </div>
       <div className="col-auto">
             <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
@@ -76,6 +72,7 @@ function App() {
             </div>
           </div>
 
+      {/* Fancy Bootstrap Alert */}
       {showAlert && (
         <Alert 
           variant="danger" 
@@ -103,7 +100,7 @@ function App() {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
-            <p>{question ? question : "Loading question"} </p>
+            <p>{question ? question : "Fetching question from API..."} </p>
           </Form.Label>
           <Form.Control 
             placeholder="Enter your answer here"
@@ -132,4 +129,4 @@ function App() {
   )
 }
 
-export default App
+export default Question

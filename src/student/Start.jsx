@@ -2,8 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import './App.css'
-import NavBar from './NavBar';
+import '../css/App.css'
+import NavBar from '../NavBar';
 
 function Start() {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
 
-import NavBar from './NavBar';
+import NavBar from '../NavBar';
 
 function GroupQuestion() {
   const [answer, setAnswer] = useState('')

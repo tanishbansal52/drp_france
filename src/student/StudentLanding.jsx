@@ -3,10 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
 
-import './Landing.css'
-import NavBar from './NavBar';
+import '../css/Landing.css'
+import NavBar from '../NavBar';
 
-function Landing() {
+function StudentLanding() {
   const [roomCode, setRoomCode] = useState('');
   const [groupName, setGroupName] = useState('');
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function Landing() {
     <NavBar />
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
       <Row className="w-200">
-        <Col md={{ span: 6, offset: 3 }}>
+        <Col md={{ span: 9, offset: 3 }}>
           <Card className="shadow-lg p-4">
             <Card.Body>
               <div className="text-center mb-4">
@@ -73,4 +73,4 @@ function Landing() {
   );
 }
 
-export default Landing
+export default StudentLanding

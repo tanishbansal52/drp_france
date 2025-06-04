@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./Waiting.css"; // You can keep or remove this if you want custom fonts, etc.
+import "../css/Waiting.css"; // You can keep or remove this if you want custom fonts, etc.
 
 function WaitingArea() {
   const location = useLocation();

@@ -1,63 +1,39 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './css/index.css'
 import {
     BrowserRouter as Router,
     Routes,
     Route
 } from "react-router-dom";
 import App from './App.jsx'
-import Landing from './Landing.jsx'
-import Debrief from './Debrief.jsx';
-import Correct from './Correct.jsx';
-import Incorrect from './Incorrect.jsx';
-import End from './End.jsx';
-import Start from './Start.jsx';
-import WaitingArea from './Waiting';
-import GroupQuestion from './GroupQuestion.jsx';
+import Debrief from './student/Debrief.jsx';
+import Correct from './student/Correct.jsx';
+import Incorrect from './student/Incorrect.jsx';
+import End from './student/End.jsx';
+import Start from './student/Start.jsx';
+import WaitingArea from './student/Waiting.jsx';
+import GroupQuestion from './student/GroupQuestion.jsx';
+import DisplayRoomCode from './teacher/RoomCodeDisplay.jsx';
+import HomePage from './HomePage.jsx';
+import DisplayQuestion from './teacher/DisplayQuestion.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <>
       <Router>
           <Routes>
-              <Route
-                  exact
-                  path="/"
-                  element={<Landing />}
-              />
-              <Route
-                  path="/question1"
-                  element={<App />}
-              />
-              <Route
-                  path="/groupquestion"
-                  element={<GroupQuestion />}
-              />
-              <Route
-                  path="/start"
-                  element={<Start />}
-              />
-              <Route
-                  path="/debrief"
-                  element={<Debrief />}
-              />
-              <Route
-                  path="/correct"
-                  element={<Correct />}
-              />
-              <Route
-                  path="/incorrect"
-                  element={<Incorrect />}
-              />
-              <Route
-                  path="/end"
-                  element={<End />}
-              />
-              <Route
-                  path="/waiting"
-                  element={<WaitingArea />}
-              />
+              <Route exact path="/" element={<HomePage />} />
+              <Route path="/question1" element={<App />} />
+              <Route path="/groupquestion" element={<GroupQuestion />} />
+              <Route path="/start" element={<Start />} />
+              <Route path="/debrief" element={<Debrief />} />
+              <Route path="/correct" element={<Correct />} />
+              <Route path="/incorrect" element={<Incorrect />} />
+              <Route path="/end" element={<End />} />
+              <Route path="/waiting" element={<WaitingArea />} />
+              <Route path="teacher/dashboard" element={<DisplayRoomCode/>} />
+              <Route path="teacher/displayquestion" element={<DisplayQuestion />} />
           </Routes>
       </Router>
     </>
