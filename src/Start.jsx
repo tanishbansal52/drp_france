@@ -23,7 +23,7 @@ function Start() {
       <div className="flex flex-col items-center justify-center"> 
       <a 
         className="btn btn-warning btn-lg" 
-        onClick={() => navigate('/question')}
+        onClick={() => navigate('/question1')}
         role="button" 
         tabIndex={0}
       >

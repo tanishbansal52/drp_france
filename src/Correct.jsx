@@ -1,11 +1,22 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from './NavBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function Correct() {
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const question = location.state?.questionNo || 1; // Default to question 1 if not provided
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (question === 1) {
+      navigate('/groupquestion'); // Navigate to the next question for group
+    }
+    else {
+      navigate('/end'); // Navigate to the end of the quiz
+    }
+  };
 
   return (
     <>
@@ -21,8 +32,8 @@ function Correct() {
             Waiting for your teacher to move on to the next question...
           </p>
 
-          <button type="button" class="btn btn-info" onClick={() => navigate('/end')}>
-            Move to end of quiz - Teachers will be doing this navigation from their side.
+          <button type="button" class="btn btn-info" onClick={handleSubmit}>
+            Move to {question === 1 ? 'Group Question' : 'End of Quiz'} - Teachers will be doing this navigation from their side.
             </button>
           
           <div className="d-flex justify-content-center mt-12">

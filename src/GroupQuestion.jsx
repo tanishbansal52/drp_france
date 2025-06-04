@@ -3,13 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
 
-import './App.css'
 import NavBar from './NavBar';
 
-function App() {
+function GroupQuestion() {
   const [answer, setAnswer] = useState('')
+  const [q1Answer, setQ1Answer] = useState('7237') // Answer from Question 1
   const navigate = useNavigate();
-  const [rightAnswer, setRightAnswer] = useState('7237') // Correct answer to q
+  const [rightAnswer, setRightAnswer] = useState('YRBY') // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     console.log('Fetching question from API...');
     fetch('https://drp-belgium.onrender.com/api/data/')
-    // fetch('http://127.0.0.1:8000/api/questions/1/')
+    // fetch('http://127.0.0.1:8000/api/questions/2/')
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
@@ -33,20 +33,32 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(`Submitting answer: ${answer}`);
+    console.log(`Right answer: ${rightAnswer}`);
     if (answer === '') {
       return;
     }
     if (answer == rightAnswer) {
-      navigate('/correct');
+      navigate('/correct', {
+      state: { questionNo: 2 } // Pass question number to Correct component
+    })
     } else {
       if (incorrect < 2) {
         setIncorrect(incorrect + 1);
         setAlertMessage('That was not correct, try again!');
         setShowAlert(true);
+        setAnswer(''); // Clear the answer input
         return;
       }
-      navigate('/incorrect');
+      navigate('/incorrect', {
+      state: { questionNo: 2 } // Pass question number to Correct component
+    });
     }
+  };
+
+  const handleColorClick = (letter) => {
+    setAnswer(prev => prev + letter);
+    console.log(`Color ${letter} clicked, current answer: ${answer}`);
   };
 
   return (
@@ -54,17 +66,17 @@ function App() {
     <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-muted mb-5">Q1. Individual Round</h2>
+        <h2 className="text-muted mb-5">Q2. Group Round</h2>
       </div>
       <div className="col-auto">
             <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
               <div className="bg-light border rounded p-2 d-flex align-items-center">
-                <span className="me-2">Stage 1 of 2</span>
+                <span className="me-2">Stage 2 of 2</span>
                 <div className="progress" style={{ width: '100px', height: '8px' }}>
                   <div 
                     className="progress-bar bg-primary" 
                     role="progressbar" 
-                    style={{ width: '50%' }}
+                    style={{ width: '100%' }}
                     aria-valuenow="50" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
@@ -93,7 +105,7 @@ function App() {
       
           <hr />
           <p className="mb-0" style={{ fontSize: '0.9em', color: '#721c24' }}>
-            💡 Hint: Make sure you're entering the numbers in the correct order.
+            💡 Hint: Use the answer to Question 1 here.
           </p>
         </Alert>
       )}
@@ -103,12 +115,17 @@ function App() {
           <Form.Label>
             <p>{question ? question : "Loading question"} </p>
           </Form.Label>
-          <Form.Control 
-            placeholder="Enter your answer here"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-          />
+          <Alert variant="info" className="my-2">
+        💡 Hint: Answer to question1 = {q1Answer}
+      </Alert>
         </Form.Group>
+
+        <div className="d-flex justify-content-between my-3">
+    <Button variant="danger" onClick={() => handleColorClick('R')}>RED</Button>
+    <Button variant="primary" onClick={() => handleColorClick('B')}>BLUE</Button>
+    <Button variant="success" onClick={() => handleColorClick('G')}>GREEN</Button>
+    <Button variant="warning" onClick={() => handleColorClick('Y')}>YELLOW</Button>
+  </div>
         <Button variant='dark' type="submit" className="mt-3">
           Submit Answer
         </Button>
@@ -130,4 +147,4 @@ function App() {
   )
 }
 
-export default App
+export default GroupQuestion;
