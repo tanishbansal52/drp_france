@@ -29,12 +29,21 @@ function GroupQuestion() {
         console.log('Question fetched:', data.question);
       })
       .catch(error => console.error('Error:', error));
+
+    console.log('Fetching answer to question 1...');
+    fetch('https://drp-belgium.onrender.com/api/questions/1/')
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.answer) {
+        setQ1Answer(data.answer);
+      }
+    })
+    .catch(error => console.error('Error fetching Q1:', error));
+
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(`Submitting answer: ${answer}`);
-    console.log(`Right answer: ${rightAnswer}`);
     if (answer === '') {
       return;
     }
@@ -58,7 +67,6 @@ function GroupQuestion() {
 
   const handleColorClick = (letter) => {
     setAnswer(prev => prev + letter);
-    console.log(`Color ${letter} clicked, current answer: ${answer}`);
   };
 
   return (
