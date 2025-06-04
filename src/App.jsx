@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import './App.css'
 import NavBar from './NavBar';
+import axios from 'axios';
 
 function App() {
   const [answer, setAnswer] = useState('')
@@ -31,8 +32,10 @@ function App() {
       .catch(error => console.error('Error:', error));
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = async(e) => {
+  //   console.log("SOME PATH")
+    // e.preventDefault();
+    // console.log("SOME PATH")
     // if (answer === '') {
     //   return;
     // }
@@ -47,35 +50,69 @@ function App() {
     //   }
     //   navigate('/incorrect');
     // }
-    fetch('https://drp-belgium.onrender.com/api/submit/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        group_id: 1, // Replace with real group ID if needed
-        question_id: question.question_id,
-        answer: answer
-      }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.correct == true) {
-          navigate('/correct');
-        } else {
-          if (incorrect < 2) {
-            setIncorrect(incorrect + 1);
-            setAlertMessage('That was not correct, try again!');
-            setShowAlert(true);
-            return;
-          }
-          navigate('/incorrect');
-        }
-      })
-      .catch(err => {
-        console.error('Submission error:', err);
-      });
-  };
+
+
+  //   const res = await
+  //   axios.post("https://drp-belgium.onrender.com/api/submit/", {
+  //       group_id: 1, // Replace with real group ID if needed
+  //       question_id: question.question_id,
+  //       answer: answer
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       if (data.correct == true) {
+  //         console.log("CORRECT PATH")
+  //         navigate('/correct');
+  //       } else {
+  //         console.log("INCORRECT PATH")
+  //         if (incorrect < 2) {
+  //           setIncorrect(incorrect + 1);
+  //           setAlertMessage('That was not correct, try again!');
+  //           setShowAlert(true);
+  //           return;
+  //         }
+  //         navigate('/incorrect');
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error('Submission error:', err);
+  //     });
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+    // Make POST request with Axios
+    const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
+      group_id: 1, // Replace with real group ID if needed
+      question_id: question.question_id,
+      answer: answer
+    });
+
+    // Handle the response data
+    const data = response.data; // Axios automatically parses the response
+
+    if (data.correct === true) {
+      console.log("CORRECT PATH");
+      navigate('/correct');
+    } else {
+      console.log("INCORRECT PATH");
+      if (incorrect < 2) {
+        setIncorrect(incorrect + 1);
+        setAlertMessage('That was not correct, try again!');
+        setShowAlert(true);
+        return;
+      }
+      navigate('/incorrect');
+    }
+  } catch (err) {
+    // Catch any error that occurs during the request
+    console.error('Submission error:', err);
+    setAlertMessage('Something went wrong. Please try again later.');
+    setShowAlert(true);
+  }
+};
+
 
   return (
     <>
@@ -86,7 +123,7 @@ function App() {
         {/* <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4> 
         */}
         <h4 className="text-muted text-base font-medium leading-none">
-          This Question is worth {question ? question.points : 10} points.
+          This Question is worth {question ? question.points : '...'} points.
         </h4>
 
       </div>
