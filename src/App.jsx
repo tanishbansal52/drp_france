@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, Button, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Form, Button, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom' 
 
 import './App.css'
