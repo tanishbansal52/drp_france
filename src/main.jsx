@@ -17,6 +17,7 @@ import GroupQuestion from './student/GroupQuestion.jsx';
 import DisplayRoomCode from './teacher/RoomCodeDisplay.jsx';
 import HomePage from './HomePage.jsx';
 import DisplayQuestion from './teacher/DisplayQuestion.jsx';
+import Finish from './Finish.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/waiting" element={<WaitingArea />} />
               <Route path="teacher/dashboard" element={<DisplayRoomCode/>} />
               <Route path="teacher/displayquestion" element={<DisplayQuestion />} />
+              <Route path="finish" element={<Finish/>} />
           </Routes>
       </Router>
     </>

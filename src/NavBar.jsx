@@ -19,7 +19,16 @@ function NavBar() {
         zIndex: 1030
       }}
     >
-      <Navbar.Brand href="/">Pentagon(?)</Navbar.Brand>
+      <Navbar.Brand 
+        href="/"
+        style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
+      >
+        Pentagon
+      </Navbar.Brand>
       <Button variant="outline-dark" onClick={handleLogout}>
         Exit Quiz
       </Button>
