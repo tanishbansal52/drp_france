@@ -13,6 +13,8 @@ import Correct from './Correct.jsx';
 import Incorrect from './Incorrect.jsx';
 import End from './End.jsx';
 import Start from './Start.jsx';
+import WaitingArea from './Waiting';
+import GroupQuestion from './GroupQuestion.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -25,8 +27,12 @@ createRoot(document.getElementById('root')).render(
                   element={<Landing />}
               />
               <Route
-                  path="/question"
+                  path="/question1"
                   element={<App />}
+              />
+              <Route
+                  path="/groupquestion"
+                  element={<GroupQuestion />}
               />
               <Route
                   path="/start"
@@ -47,6 +53,10 @@ createRoot(document.getElementById('root')).render(
               <Route
                   path="/end"
                   element={<End />}
+              />
+              <Route
+                  path="/waiting"
+                  element={<WaitingArea />}
               />
           </Routes>
       </Router>
