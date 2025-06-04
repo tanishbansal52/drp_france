@@ -58,7 +58,7 @@ function DisplayQuestion() {
   }
 
   const handleFinish = () => {
-    navigate('finish/')
+    navigate('/finish')
   }
 
   return (
