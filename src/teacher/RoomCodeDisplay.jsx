@@ -50,7 +50,7 @@ function RoomCodeDisplay() {
   return (
     <>
       {/* Division X Logo */}
-      <div className="division-x-logo">
+      <div className="division-x-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         DIVISION X
       </div>
       

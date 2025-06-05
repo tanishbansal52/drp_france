@@ -13,7 +13,7 @@ function Start() {
     <NavBar />
       <div className="text-center mb-10">
         <h1>Mission Topic - Algebra</h1>
-        <h2 className="text-muted mb-5">Rules of the mission:</h2>
+        <h2 className="text-info mb-5">Rules of the mission:</h2>
       </div>
       <p className="text-center"> No cheating! </p>
       <p className="text-center"> Answer questions faster for more points.</p>

@@ -75,12 +75,12 @@ function GroupQuestion() {
     <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-muted mb-5">Q2. Group Round</h2>
+        <h2 className="mb-5">Q2. Group Round</h2>
       </div>
       <div className="col-auto">
             <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
-              <div className="bg-light border rounded p-2 d-flex align-items-center">
-                <span className="me-2">Stage 2 of 2</span>
+              <div className="bg-dark border rounded p-2 d-flex align-items-center">
+                <span className="me-2"> <strong> Stage 2 of 2 </strong> </span>
                 <div className="progress" style={{ width: '100px', height: '8px' }}>
                   <div 
                     className="progress-bar bg-primary" 

@@ -46,14 +46,14 @@ function StudentLanding() {
   return (
     <>
       {/* Division X Logo */}
-      <div className="division-x-logo">
+      <div  className="division-x-logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
         DIVISION X
       </div>
       
       <Container className="d-flex justify-content-center align-items-center min-vh-100">
         <Card className="shadow-lg p-4 text-center" style={{ maxWidth: "450px", width: "100%" }}>
           <Card.Body>
-            <Card.Title className="mb-4 display-5">MISSION LOGIN</Card.Title>
+            <Card.Title className="mb-4 display-5 text-light">MISSION LOGIN</Card.Title>
             
             {showError && (
               <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
