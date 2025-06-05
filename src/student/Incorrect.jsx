@@ -1,22 +1,42 @@
-// import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../NavBar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { canMoveToNextQuestion } from './TeacherLinking'
 
 function Incorrect() {
   const navigate = useNavigate();
   const location = useLocation();
-  const question = location.state?.questionNo || 1; // Default to question 1 if not provided
+  const roomCode = location.state?.roomCode;
+  const questionNo = location.state?.questionNo;
+  const [canMove, setCanMove] = useState(false);
+
+  useEffect(() => {
+    if (!roomCode || questionNo == null) return
+    let cancelled = false
+
+    const poll = async () => {
+      const ok = await canMoveToNextQuestion(roomCode, questionNo)
+      if (!cancelled) setCanMove(ok)
+    }
+
+    poll()
+    const interval = setInterval(poll, 3000)
+    return () => {
+      cancelled = true
+      clearInterval(interval)
+    }
+  }, [roomCode, questionNo])
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (question === 1) {
-      navigate('/groupquestion'); // Navigate to the next question for group
-    }
-    else {
-      navigate('/end'); // Navigate to the end of the quiz
-    }
-  };
+    e.preventDefault()
+    const nextPath = questionNo === 1
+      ? `/groupquestion/${roomCode}`
+      : `/end`
+    navigate(nextPath, {
+      state: { roomCode, questionNo: questionNo + 1 }
+    })
+  }
 
   return (
     <>
@@ -29,13 +49,20 @@ function Incorrect() {
             <p>The total points you have collected so far: 0</p>
           </div>
 
-          <p className="text-center text-gray-600 mt-4">
-            Waiting for your teacher to move on to the next question...
-          </p>
+          <button
+            className="btn btn-info mt-4"
+            onClick={handleSubmit}
+            disabled={!canMove}
+          >
+            Move to {questionNo === 1 ? 'Group Question' : 'End of Quiz'}
+          </button>
 
-          <button type="button" class="btn btn-info" onClick={handleSubmit}>
-            Move to {question === 1 ? 'Group Question' : 'End of Quiz'} - Teachers will be doing this navigation from their side.</button>
-          
+          {!canMove && (
+            <p className="text-center text-gray-600 mt-2">
+              Waiting for your teacher to move to next question...
+            </p>
+          )}
+
           <div className="d-flex justify-content-center mt-3">
             <svg 
               width="120" 

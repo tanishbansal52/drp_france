@@ -6,13 +6,13 @@ import {
     Routes,
     Route
 } from "react-router-dom";
-import IndividualQuestion from './student/IndividualQuestion.jsx'
 import Debrief from './student/Debrief.jsx';
 import Correct from './student/Correct.jsx';
 import Incorrect from './student/Incorrect.jsx';
 import End from './student/End.jsx';
 import Start from './student/Start.jsx';
 import WaitingArea from './student/Waiting.jsx';
+import IndividualQuestion from './student/IndividualQuestion.jsx'
 import GroupQuestion from './student/GroupQuestion.jsx';
 import DisplayRoomCode from './teacher/RoomCodeDisplay.jsx';
 import HomePage from './HomePage.jsx';

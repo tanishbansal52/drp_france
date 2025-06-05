@@ -2,15 +2,16 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom' 
+import { useNavigate, useParams } from 'react-router-dom' 
 import { canMoveToNextQuestion } from './TeacherLinking'
 
 import NavBar from '../NavBar';
 
 function GroupQuestion() {
+  const navigate = useNavigate();
+  const { roomCode } = useParams();
   const [answer, setAnswer] = useState('')
   const [q1Answer, setQ1Answer] = useState('7237') // Answer from Question 1
-  const navigate = useNavigate();
   const [rightAnswer, setRightAnswer] = useState('YRBY') // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
@@ -45,13 +46,13 @@ function GroupQuestion() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (answer === '') {
-      return;
-    }
+    if (answer === '') return
+
     if (answer == rightAnswer) {
+      // → navigate into Correct.jsx, passing roomCode & questionNo
       navigate('/correct', {
-      state: { questionNo: 2 } // Pass question number to Correct component
-    })
+        state: { roomCode, questionNo: 2 }
+      })
     } else {
       if (incorrect < 2) {
         setIncorrect(incorrect + 1);
@@ -61,8 +62,8 @@ function GroupQuestion() {
         return;
       }
       navigate('/incorrect', {
-      state: { questionNo: 2 } // Pass question number to Correct component
-    });
+        state: { roomCode, questionNo: 2 }
+      })
     }
   };
 

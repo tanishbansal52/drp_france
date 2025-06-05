@@ -1,13 +1,45 @@
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../NavBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {canMoveToNextQuestion} from './TeacherLinking';
 
-function Correct({nextUrl}) {
+function Correct() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const roomCode = location.state?.roomCode;
+  const questionNo = location.state?.questionNo;
+  const [canMove, setCanMove] = useState(false);
+  
+  useEffect(() => {
+    if (!roomCode || questionNo == null) return;
+    let cancelled = false;
+
+    const poll = async () => {
+      console.log(`Polling for roomCode: ${roomCode}, questionNo: ${questionNo}`);
+      const ok = await canMoveToNextQuestion(roomCode, questionNo);
+      console.log(`Can move to next question: ${ok}`);
+      if (!cancelled) setCanMove(ok);
+    };
+
+    poll(); 
+    const handle = setInterval(poll, 3000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(handle);
+    };
+  }, [roomCode, questionNo]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/${nextUrl}`);
+    // decide next path
+    const nextPath = questionNo === 1
+      ? `/groupquestion/${roomCode}`
+      : `/end`;
+    navigate(nextPath, {
+      state: { roomCode, questionNo: questionNo + 1 }
+    });
   };
 
   return (
@@ -21,13 +53,21 @@ function Correct({nextUrl}) {
             <p>The total points you have collected so far: 10</p>
           </div>
 
-          <p className="text-center text-gray-600 mt-4">
-            Waiting for your teacher to move on to the next question...
-          </p>
+          {/* always show Next, just toggle disabled */}
+        <button
+          className="btn btn-info mt-4"
+          onClick={handleSubmit}
+          disabled={!canMove}
+        >
+          Next
+        </button>
 
-          <button type="button" class="btn btn-info" onClick={handleSubmit}>
-            Next
-            </button>
+        {/* optionally still show waiting message */}
+        {!canMove && (
+          <p className="text-center text-gray-600 mt-2">
+            Waiting for your teacher to move to next question...
+          </p>
+        )}
           
           <div className="d-flex justify-content-center mt-3">
             <svg 
@@ -47,12 +87,11 @@ function Correct({nextUrl}) {
             </svg>
           </div>
 
-          <div className="d-flex justify-content-center">
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25pZXBzNWtxcTZibGEzcjNjcGdsazhmZW51b3hrOTZibG85eXk0aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ely3apij36BJhoZ234/giphy.gif" alt="Funny gif" />
-          </div>
-    </div>
-    
-        </>
+        <div className="d-flex justify-content-center">
+          <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25pZXBzNWtxcTZibGEzcjNjcGdsazhmZW51b3hrOTZibG85eXk0aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ely3apij36BJhoZ234/giphy.gif" alt="Funny gif" />
+        </div>
+      </div>
+    </>
   );
 }
 export default Correct;

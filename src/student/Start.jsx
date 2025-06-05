@@ -16,7 +16,7 @@ function Start() {
     setMessage('')
     const ok = await canMoveToNextQuestion(roomCode, 0) 
     console.log("In start can move to next question:", ok)
-    if (!ok) {
+    if (ok) {
       navigate(`/question1/${roomCode}`)
     } else {
       setMessage('Wait for teacher to move to the first question')

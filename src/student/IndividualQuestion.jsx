@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'  
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Form, Button, Alert } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom' 
-
 import '../css/IndividualQuestion.css'
 import NavBar from '../NavBar';
 import axios from 'axios';
 
 function IndividualQuestion() {
+  const navigate = useNavigate()
+  const { roomCode } = useParams()
   const [answer, setAnswer] = useState('')
-  const navigate = useNavigate();
-  // const [rightAnswer, setRightAnswer] = useState('0') // Correct answer to q
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
@@ -92,9 +91,11 @@ function IndividualQuestion() {
     // Handle the response data
     const data = response.data; // Axios automatically parses the response
 
-    if (data.correct === true) {
+    if (data.correct) {
       console.log("CORRECT PATH");
-      navigate('/correct');
+      navigate('/correct', {
+        state: { roomCode, questionNo: 1 }
+      })
     } else {
       console.log("INCORRECT PATH");
       if (incorrect < 2) {
@@ -103,7 +104,9 @@ function IndividualQuestion() {
         setShowAlert(true);
         return;
       }
-      navigate('/incorrect');
+      navigate('/incorrect', {
+        state: { roomCode, questionNo: 1 }
+      })
     }
   } catch (err) {
     // Catch any error that occurs during the request

@@ -81,7 +81,7 @@ function RoomCodeDisplay() {
                   size="lg"
                   className="mt-4"
                   onClick={async () => {
-                    await incrementRoomsCurrentStatus(roomCode, 0)
+                    await incrementRoomsCurrentStatus(roomCode, 1)
                     navigate(`/teacher/displayquestion/${roomCode}`)
                   }
                 }

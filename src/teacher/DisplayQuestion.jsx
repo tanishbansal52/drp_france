@@ -8,7 +8,7 @@ import { incrementRoomsCurrentStatus } from './utils/api'
 
 function DisplayQuestion() {
   const navigate = useNavigate()          
-  const {roomCode} = useParams()
+  const { roomCode } = useParams()
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(1)
