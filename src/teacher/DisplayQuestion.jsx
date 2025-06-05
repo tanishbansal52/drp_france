@@ -8,7 +8,7 @@ function DisplayQuestion() {
   const navigate = useNavigate()          
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -28,7 +28,7 @@ function DisplayQuestion() {
       }
 
       setQuestions(data)
-      setCurrentIndex(0)
+      setCurrentIndex(1)
     } catch (err) {
       console.error('Error fetching questions:', err)
       setError(err.message)
