@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-import '../css/App.css'
+import '../css/IndividualQuestion.css'
 import NavBar from '../NavBar';
 
 function Start() {

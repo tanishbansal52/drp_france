@@ -7,7 +7,7 @@ function TeacherLanding() {
   const navigate = useNavigate();
   
   const handleCreateMission = () => {
-    navigate('/teacher/dashboard');
+    navigate('/teacher/choosequiz');
   };
 
   return (

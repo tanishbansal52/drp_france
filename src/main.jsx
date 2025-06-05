@@ -6,7 +6,7 @@ import {
     Routes,
     Route
 } from "react-router-dom";
-import App from './App.jsx'
+import IndividualQuestion from './student/IndividualQuestion.jsx'
 import Debrief from './student/Debrief.jsx';
 import Correct from './student/Correct.jsx';
 import Incorrect from './student/Incorrect.jsx';
@@ -20,6 +20,7 @@ import TeacherLanding from './teacher/TeacherLanding.jsx';
 import StudentLanding from './student/StudentLanding.jsx';
 import DisplayQuestion from './teacher/DisplayQuestion.jsx';
 import Finish from './Finish.jsx';
+import ChooseQuiz from './teacher/ChooseQuiz.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -27,7 +28,7 @@ createRoot(document.getElementById('root')).render(
       <Router>
           <Routes>
               <Route exact path="/" element={<HomePage />} />
-              <Route path="/question1" element={<App />} />
+              <Route path="/question1" element={<IndividualQuestion />} />
               <Route path="/groupquestion" element={<GroupQuestion />} />
               <Route path="/start" element={<Start />} />
               <Route path="/debrief" element={<Debrief />} />
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/student" element={<StudentLanding />} />
               <Route path="/teacher/dashboard" element={<DisplayRoomCode/>} />
               <Route path="/teacher/displayquestion" element={<DisplayQuestion />} />
+              <Route path="/teacher/choosequiz" element={<ChooseQuiz />} />
               <Route path="/finish" element={<Finish/>} />
           </Routes>
       </Router>

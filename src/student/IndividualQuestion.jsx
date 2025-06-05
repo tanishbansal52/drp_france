@@ -3,11 +3,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { Form, Button, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom' 
 
-import './css/App.css'
-import NavBar from './NavBar';
+import '../css/IndividualQuestion.css'
+import NavBar from '../NavBar';
 import axios from 'axios';
 
-function App() {
+function IndividualQuestion() {
   const [answer, setAnswer] = useState('')
   const navigate = useNavigate();
   // const [rightAnswer, setRightAnswer] = useState('0') // Correct answer to q
@@ -201,4 +201,4 @@ function App() {
   )
 }
 
-export default App
+export default IndividualQuestion
