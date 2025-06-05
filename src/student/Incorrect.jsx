@@ -44,8 +44,8 @@ function Incorrect() {
       <div style={{ paddingTop: '70px' }} className="text-center">
         <div className="space-y-6 font-handwriting text-2xl text-gray-800">
             <h1 className="text-3xl">Oh Dear!</h1>
-            <p>That was not the correct answer. Your teacher has</p>
-            <p>ended this question. You do not have any points.</p>
+            <p>That was not the correct answer. You have exhausted</p>
+            <p>all your attempts. You do not gain any points.</p>
             <p>The total points you have collected so far: 0</p>
           </div>
 
