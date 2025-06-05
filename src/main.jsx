@@ -16,6 +16,8 @@ import WaitingArea from './student/Waiting.jsx';
 import GroupQuestion from './student/GroupQuestion.jsx';
 import DisplayRoomCode from './teacher/RoomCodeDisplay.jsx';
 import HomePage from './HomePage.jsx';
+import TeacherLanding from './teacher/TeacherLanding.jsx';
+import StudentLanding from './student/StudentLanding.jsx';
 import DisplayQuestion from './teacher/DisplayQuestion.jsx';
 import Finish from './Finish.jsx';
 
@@ -33,9 +35,11 @@ createRoot(document.getElementById('root')).render(
               <Route path="/incorrect" element={<Incorrect />} />
               <Route path="/end" element={<End />} />
               <Route path="/waiting" element={<WaitingArea />} />
-              <Route path="teacher/dashboard" element={<DisplayRoomCode/>} />
-              <Route path="teacher/displayquestion" element={<DisplayQuestion />} />
-              <Route path="finish" element={<Finish/>} />
+              <Route path="/teacher" element={<TeacherLanding />} />
+              <Route path="/student" element={<StudentLanding />} />
+              <Route path="/teacher/dashboard" element={<DisplayRoomCode/>} />
+              <Route path="/teacher/displayquestion" element={<DisplayQuestion />} />
+              <Route path="/finish" element={<Finish/>} />
           </Routes>
       </Router>
     </>

@@ -1,68 +1,197 @@
+@import "tailwindcss";
+
+/* Global Spy Theme Variables */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --spy-primary: #00ffff;
+  --spy-secondary: #00ff41;
+  --spy-danger: #ff6b6b;
+  --spy-dark: #0a0a0a;
+  --spy-navy: #1a1a2e;
+  --spy-blue: #16213e;
+  --spy-text: #e0e0e0;
+  --spy-glow: rgba(0, 255, 255, 0.3);
+  --spy-font: 'Courier New', 'Monaco', monospace;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Global Background */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  background: linear-gradient(135deg, var(--spy-dark) 0%, var(--spy-navy) 50%, var(--spy-blue) 100%);
   min-height: 100vh;
+  font-family: var(--spy-font);
+  color: var(--spy-text);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Subtle matrix background pattern */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.03) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -1;
+  animation: matrix-drift 30s linear infinite;
 }
 
-button {
+@keyframes matrix-drift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50px); }
+}
+
+/* Global Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--spy-font) !important;
+  color: var(--spy-primary) !important;
+  text-shadow: 0 0 10px var(--spy-glow) !important;
+  letter-spacing: 2px !important;
+  font-weight: bold !important;
+}
+
+p, span, label {
+  font-family: var(--spy-font) !important;
+  color: var(--spy-text) !important;
+  letter-spacing: 1px !important;
+}
+
+/* Global Button Styles */
+.btn, button {
+  font-family: var(--spy-font) !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  font-weight: bold !important;
+  border: 2px solid var(--spy-primary) !important;
+  background: linear-gradient(45deg, rgba(0, 20, 40, 0.9), rgba(0, 51, 102, 0.9)) !important;
+  color: var(--spy-primary) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.btn::before, button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover, button:hover {
+  background: linear-gradient(45deg, rgba(0, 51, 102, 0.9), rgba(0, 68, 136, 0.9)) !important;
+  box-shadow: 0 0 20px var(--spy-glow) !important;
+  transform: translateY(-2px) !important;
+  color: var(--spy-primary) !important;
+  border-color: var(--spy-primary) !important;
+}
+
+.btn:hover::before, button:hover::before {
+  left: 100%;
+}
+
+.btn:active, button:active {
+  transform: translateY(0) !important;
+}
+
+/* Global Card/Container Styles */
+.card, .container {
+  background: rgba(0, 20, 40, 0.85) !important;
+  border: 2px solid var(--spy-primary) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 
+    0 0 20px var(--spy-glow),
+    inset 0 0 20px rgba(0, 255, 255, 0.1) !important;
+  position: relative !important;
+}
+
+/* Scanning line animation for cards */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--spy-primary), transparent);
+  animation: scan-line 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes scan-line {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* Global Input Styles */
+.form-control, input {
+  font-family: var(--spy-font) !important;
+  background: rgba(0, 20, 40, 0.8) !important;
+  border: 1px solid var(--spy-primary) !important;
+  color: var(--spy-primary) !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+.form-control:focus, input:focus {
+  box-shadow: 0 0 15px var(--spy-glow) !important;
+  border-color: var(--spy-secondary) !important;
+  background: rgba(0, 20, 40, 0.9) !important;
+  color: var(--spy-primary) !important;
+}
+
+.form-control::placeholder, input::placeholder {
+  color: rgba(0, 255, 255, 0.5) !important;
+}
+
+/* Form Labels */
+.form-label, label {
+  color: var(--spy-text) !important;
+  font-family: var(--spy-font) !important;
+  letter-spacing: 1px !important;
+}
+
+/* Logo Styles */
+.division-x-logo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: var(--spy-font);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--spy-primary);
+  text-shadow: 0 0 10px var(--spy-glow);
+  letter-spacing: 3px;
+  padding: 10px 20px;
+  border: 2px solid var(--spy-primary);
+  background: rgba(0, 20, 40, 0.9);
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  backdrop-filter: blur(10px);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.division-x-logo::before {
+  content: "●";
+  color: var(--spy-secondary);
+  margin-right: 10px;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Navigation overrides */
+.navbar {
+  display: none !important; /* Hide the old navbar */
 }
