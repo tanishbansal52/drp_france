@@ -68,6 +68,9 @@ function ShowAllQuestions() {
             ))}
 
             <div className="text-center mt-4">
+              <Button variant="primary" className="me-3" onClick={() => navigate('/teacher/choosequiz')}>
+                Go Back
+              </Button>
               <Button
                 variant={showAnswers ? 'secondary' : 'success'}
                 className="me-3"

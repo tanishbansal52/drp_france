@@ -91,16 +91,27 @@ function ChooseQuiz() {
 
 
       <button
+        onClick={() => navigate('/teacher')}
+        style={{
+          marginTop: '20px',
+          padding: '12px 25px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          borderRadius: '5px',
+          transition: 'all 0.3s',
+        }}
+      >
+        GO BACK
+      </button>
+      <button
         onClick={handleSubmit}
         disabled={!selected}
         style={{
           marginTop: '20px',
+          marginLeft: '10px',
           padding: '12px 25px',
-          fontSize: '16px',
+          fontSize: '18px',
           fontWeight: 'bold',
-          backgroundColor: 'transparent',
-          color: selected ? '#00f0ff' : '#888',
-          border: selected ? '2px solid #00f0ff' : '2px solid #555',
           borderRadius: '5px',
           cursor: selected ? 'pointer' : 'not-allowed',
           transition: 'all 0.3s',

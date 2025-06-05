@@ -57,7 +57,7 @@ function RoomCodeDisplay() {
       <Container className="d-flex justify-content-center align-items-center min-vh-100">
         <Card className="shadow-lg p-5 text-center">
           <Card.Body>
-            <Card.Title className="mb-4 display-5">YOUR MISSION CODE</Card.Title>
+            <Card.Title className="text-light mb-4 display-5">YOUR MISSION CODE</Card.Title>
             <div
               style={{ ...codeStyle, cursor: 'pointer' }}
               title="Click to copy code"
