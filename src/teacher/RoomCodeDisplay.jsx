@@ -11,6 +11,28 @@ function RoomCodeDisplay() {
     // generate a random 4-digit room code
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setRoomCode(code);
+
+    // Send POST request to create the room
+    fetch('https://drp-belgium.onrender.com/api/add-room/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ room_code: code }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then(err => { throw err });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Room created:', data);
+      })
+      .catch((err) => {
+        console.error('Error creating room:', err);
+        alert(err.error || 'Failed to create room.');
+      });
   }, []);
 
   const handleCopy = () => {

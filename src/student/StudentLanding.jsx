@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function StudentLanding() {
   const [missionCode, setMissionCode] = useState('');
   const [groupName, setGroupName] = useState('');
   const [showError, setShowError] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Basic validation
@@ -17,9 +19,28 @@ function StudentLanding() {
       setShowError(true);
       return;
     }
-    
-    // Navigate to waiting room with group name as state
-    navigate('/waiting', { state: { groupName: groupName } });
+
+    try {
+      const res = await axios.post("https://drp-belgium.onrender.com/api/join-room/", {
+        room_code: missionCode,
+        group_name: groupName,
+      });
+
+      console.log("Joined:", res.data);
+      // Navigate to waiting room or store info
+      navigate('/waiting', {
+      state: { groupName }
+    });
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.error);
+      } else {
+        setError("Something went wrong.");
+      }
+      setShowError(true);
+      console.error("Error joining room:", error);
+      return;
+    }
   };
 
   return (
@@ -36,7 +57,7 @@ function StudentLanding() {
             
             {showError && (
               <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
-                Please enter both mission code and group name.
+                {error || 'Please enter both mission code and group name.'}
               </Alert>
             )}
             
