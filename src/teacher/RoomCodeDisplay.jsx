@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../NavBar';
 
 function RoomCodeDisplay() {
   const [roomCode, setRoomCode] = useState('');
@@ -22,17 +21,21 @@ function RoomCodeDisplay() {
     fontSize: '6rem',
     fontWeight: 700,
     letterSpacing: '0.3em',
-    color: '#0d6efd',
-    textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
+    color: '#00ffff',
+    textShadow: '0 0 15px rgba(0, 255, 255, 0.5)'
   };
 
   return (
     <>
-      <NavBar />
+      {/* Division X Logo */}
+      <div className="division-x-logo">
+        DIVISION X
+      </div>
+      
       <Container className="d-flex justify-content-center align-items-center min-vh-100">
         <Card className="shadow-lg p-5 text-center">
           <Card.Body>
-            <Card.Title className="mb-4 display-5">🎯 Your Mission Code</Card.Title>
+            <Card.Title className="mb-4 display-5">YOUR MISSION CODE</Card.Title>
             <div
               style={{ ...codeStyle, cursor: 'pointer' }}
               title="Click to copy code"
@@ -42,11 +45,11 @@ function RoomCodeDisplay() {
             </div>
             <div className="mt-4 d-flex justify-content-center">
               <Button
-                variant="primary"
+                variant="primary" 
                 size="lg"
                 onClick={() => navigate('/teacher/displayquestion')}
               >
-                Start
+                START MISSION
               </Button>
             </div>
           </Card.Body>

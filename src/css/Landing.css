@@ -1,61 +1,112 @@
-@import "tailwindcss";
+/* Landing Page Specific Styles */
 
-
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-.button-space {
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-.heading-container {
+/* HomePage layout */
+.homepage-container {
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4rem;
+  padding: 2rem;
 }
-.heading-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+
+.homepage-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Clean card styling for homepage */
+.homepage-card {
+  width: 100%;
+  max-width: 320px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  position: relative;
+  background: rgba(0, 20, 40, 0.85);
+  border: 2px solid #00ffff;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+/* Override Bootstrap card styles for homepage cards */
+.homepage-card.card {
+  background: rgba(0, 20, 40, 0.85) !important;
+  border: 2px solid #00ffff !important;
+}
+
+/* Scanning line for homepage cards */
+.homepage-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ffff, transparent);
+  animation: scan-line 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Offset animation for second card */
+.homepage-section:nth-child(2) .homepage-card::before {
+  animation-delay: 2s;
+}
+
+.homepage-card h1 {
+  font-size: 2.2rem !important;
+  margin-bottom: 1.5rem;
+  animation: title-glow 3s ease-in-out infinite alternate;
+  color: #00ffff !important;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
+  letter-spacing: 2px !important;
+  font-weight: bold !important;
+}
+
+/* Offset glow animation for second card */
+.homepage-section:nth-child(2) .homepage-card h1 {
+  animation-delay: 1s;
+}
+
+@keyframes title-glow {
+  0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+  100% { text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.3); }
+}
+
+.homepage-card p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #e0e0e0 !important;
+  letter-spacing: 1px !important;
+}
+
+/* Make buttons larger and more prominent */
+.homepage-card .btn {
+  padding: 1rem 2rem !important;
+  font-size: 1.2rem !important;
+  width: 100% !important;
+  border-radius: 6px !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .homepage-container {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .homepage-card {
+    max-width: 100%;
+    padding: 2rem 1.5rem;
+  }
+  
+  .homepage-card h1 {
+    font-size: 1.8rem !important;
+  }
 }

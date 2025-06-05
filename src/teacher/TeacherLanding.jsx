@@ -5,33 +5,44 @@ import { useNavigate } from 'react-router-dom';
 
 function TeacherLanding() {
   const navigate = useNavigate();
+  
   const handleCreateMission = () => {
-    // TODO: implement actual mission creation
     navigate('/teacher/dashboard');
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
-      <Row className="w-200">
-        <Col md={{ span: 8, offset: 1 }}>
-          <Card className="shadow-lg p-4">
-            <Card.Body>
-              <div className="text-center mb-4">
-                <h1 className="fw-bold">For Teachers</h1>
-                <p>
-                  Start having fun with your students by creating a mission code that they can use to join your room.
-                </p>
-              </div>
-              <div className="d-grid">
-                <Button variant="primary" size="lg" onClick={handleCreateMission}>
-                  Create Room Code
-                </Button>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      {/* Division X Logo */}
+      <div className="division-x-logo">
+        DIVISION X
+      </div>
+
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Row className="w-100 justify-content-center">
+          <Col md={8} lg={6}>
+            <Card className="shadow-lg">
+              <Card.Body className="p-4">
+                <div className="text-center mb-4">
+                  <h1 className="fw-bold">MISSION CONTROL</h1>
+                  <p className="mt-3">
+                    Initiate a classified operation by creating a secure room code for your field agents.
+                  </p>
+                </div>
+                <div className="d-grid">
+                  <Button 
+                    variant="primary" 
+                    size="lg" 
+                    onClick={handleCreateMission}
+                  >
+                    CLICK HERE
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 }
 
