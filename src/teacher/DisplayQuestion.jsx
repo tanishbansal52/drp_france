@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
-import { useNavigate } from 'react-router-dom'  
+import { useNavigate, useParams} from 'react-router-dom'  
+import { incrementRoomsCurrentStatus } from './utils/api'
+
 
 function DisplayQuestion() {
   const navigate = useNavigate()          
+  const {roomCode} = useParams()
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(1)
@@ -50,14 +53,16 @@ function DisplayQuestion() {
 
   const isLast = currentIndex === questions.length - 1
   
-  const handleNext = () => {
+  const handleNext = async () => {
     setShowAnswer(false)
     setCurrentIndex(prev =>
       questions.length ? (prev + 1) % questions.length : 0
     )
+    await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
   }
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
     navigate('/finish')
   }
 

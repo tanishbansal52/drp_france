@@ -28,22 +28,28 @@ createRoot(document.getElementById('root')).render(
     <>
       <Router>
           <Routes>
+              {/* Home page route */}
               <Route exact path="/" element={<HomePage />} />
-              <Route path="/question1" element={<IndividualQuestion />} />
-              <Route path="/groupquestion" element={<GroupQuestion />} />
-              <Route path="/start" element={<Start />} />
-              <Route path="/debrief" element={<Debrief />} />
+
+              {/* Student route (in order) */}
+              <Route path="/student" element={<StudentLanding />} />
+              <Route path="/waiting/:roomCode" element={<WaitingArea />} />
+              <Route path="/start/:roomCode" element={<Start />} />
+              <Route path="/question1/:roomCode" element={<IndividualQuestion />} />
+              <Route path="/groupquestion/:roomCode" element={<GroupQuestion />} />
               <Route path="/correct" element={<Correct />} />
               <Route path="/incorrect" element={<Incorrect />} />
               <Route path="/end" element={<End />} />
-              <Route path="/waiting" element={<WaitingArea />} />
+              <Route path="/debrief" element={<Debrief />} />
+              <Route path="/finish" element={<Finish/>} />
+
+              {/* Teacher route (in order) */}
               <Route path="/teacher" element={<TeacherLanding />} />
               <Route path="/student" element={<StudentLanding />} />
               <Route path="/teacher/choosequiz" element={<ChooseQuiz />} />
               <Route path="/teacher/allquestions" element={<ShowAllQuestions />} />
               <Route path="/teacher/dashboard" element={<DisplayRoomCode/>} />
-              <Route path="/teacher/displayquestion" element={<DisplayQuestion />} />
-              <Route path="/finish" element={<Finish/>} />
+              <Route path="/teacher/displayquestion/:roomCode" element={<DisplayQuestion />} />
           </Routes>
       </Router>
     </>

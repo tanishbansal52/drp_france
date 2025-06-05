@@ -1,7 +1,9 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom' 
+import { canMoveToNextQuestion } from './TeacherLinking'
 
 import NavBar from '../NavBar';
 
@@ -18,7 +20,6 @@ function GroupQuestion() {
   useEffect(() => {
     console.log('Fetching question from API...');
     fetch('https://drp-belgium.onrender.com/api/questions/2/')
-    // fetch('http://localhost:8000/api/questions/2/')
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
@@ -32,7 +33,6 @@ function GroupQuestion() {
 
     console.log('Fetching answer to question 1...');
     fetch('https://drp-belgium.onrender.com/questions/1/')
-    // fetch('http://localhost:8000/api/questions/1/')
     .then(response => response.json())
     .then(data => {
       if (data && data.answer) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "../css/Waiting.css";
 
 function WaitingArea() {
@@ -8,6 +8,7 @@ function WaitingArea() {
   const groupName = location.state?.groupName || "Default Group";
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+  const {roomCode} = useParams()
 
   const feelings = [
     { id: 1, emoji: "😡", label: "Angry" },
@@ -53,7 +54,7 @@ function WaitingArea() {
               </button>
             ))}
           </div>
-          <Button variant="primary" onClick={() => navigate("/start")}>
+          <Button variant="primary" onClick={() => navigate(`/start/${roomCode}`)}>
             View Rules
           </Button>
         </div>

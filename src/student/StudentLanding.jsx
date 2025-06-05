@@ -28,7 +28,7 @@ function StudentLanding() {
 
       console.log("Joined:", res.data);
       // Navigate to waiting room or store info
-      navigate('/waiting', {
+      navigate(`/waiting/${missionCode}`, {
       state: { groupName }
     });
     } catch (err) {

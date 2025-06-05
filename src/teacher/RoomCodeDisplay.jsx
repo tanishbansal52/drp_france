@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { incrementRoomsCurrentStatus } from './utils/api'
 
 function RoomCodeDisplay() {
   const [roomCode, setRoomCode] = useState('');
@@ -79,7 +80,11 @@ function RoomCodeDisplay() {
                   variant="primary"
                   size="lg"
                   className="mt-4"
-                  onClick={() => navigate('/teacher/displayquestion')}
+                  onClick={async () => {
+                    await incrementRoomsCurrentStatus(roomCode, 0)
+                    navigate(`/teacher/displayquestion/${roomCode}`)
+                  }
+                }
                 >
                   START MISSION
                 </Button>
