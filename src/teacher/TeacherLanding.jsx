@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import TeacherButton from './TeacherButton';
 
 function TeacherLanding() {
   const navigate = useNavigate();
@@ -29,13 +30,13 @@ function TeacherLanding() {
                   </p>
                 </div>
                 <div className="d-grid">
-                  <Button 
+                  <TeacherButton 
                     variant="primary" 
                     size="lg" 
                     onClick={handleCreateMission}
                   >
                     CLICK HERE
-                  </Button>
+                  </TeacherButton>
                 </div>
               </Card.Body>
             </Card>

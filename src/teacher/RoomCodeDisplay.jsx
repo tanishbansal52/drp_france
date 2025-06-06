@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { incrementRoomsCurrentStatus } from './utils/api'
+import TeacherButton from './TeacherButton';
 
 function RoomCodeDisplay() {
   const [roomCode, setRoomCode] = useState('');
@@ -76,18 +77,17 @@ function RoomCodeDisplay() {
                 <div style={codeStyle} title="Click to copy code" onClick={handleCopy}>
                   {roomCode}
                 </div>
-                <Button
+                <TeacherButton
                   variant="primary"
                   size="lg"
                   className="mt-4"
                   onClick={async () => {
                     await incrementRoomsCurrentStatus(roomCode, 1)
                     navigate(`/teacher/displayquestion/${roomCode}`)
-                  }
-                }
+                  }}
                 >
                   START MISSION
-                </Button>
+                </TeacherButton>
               </Card.Body>
             </Card>
           </Col>

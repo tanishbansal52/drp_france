@@ -22,6 +22,7 @@ import DisplayQuestion from './teacher/DisplayQuestion.jsx';
 import Finish from './Finish.jsx';
 import ChooseQuiz from './teacher/ChooseQuiz.jsx';
 import ShowAllQuestions from './teacher/ShowAllQuestions.jsx';
+import TeacherLayout from './teacher/TeacherLayout.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -43,13 +44,12 @@ createRoot(document.getElementById('root')).render(
               <Route path="/debrief" element={<Debrief />} />
               <Route path="/finish" element={<Finish/>} />
 
-              {/* Teacher route (in order) */}
-              <Route path="/teacher" element={<TeacherLanding />} />
-              <Route path="/student" element={<StudentLanding />} />
-              <Route path="/teacher/choosequiz" element={<ChooseQuiz />} />
-              <Route path="/teacher/allquestions" element={<ShowAllQuestions />} />
-              <Route path="/teacher/dashboard" element={<DisplayRoomCode/>} />
-              <Route path="/teacher/displayquestion/:roomCode" element={<DisplayQuestion />} />
+              {/* Teacher routes wrapped in TeacherLayout */}
+              <Route path="/teacher" element={<TeacherLayout><TeacherLanding /></TeacherLayout>} />
+              <Route path="/teacher/choosequiz" element={<TeacherLayout><ChooseQuiz /></TeacherLayout>} />
+              <Route path="/teacher/allquestions" element={<TeacherLayout><ShowAllQuestions /></TeacherLayout>} />
+              <Route path="/teacher/dashboard" element={<TeacherLayout><DisplayRoomCode/></TeacherLayout>} />
+              <Route path="/teacher/displayquestion/:roomCode" element={<TeacherLayout><DisplayQuestion /></TeacherLayout>} />
           </Routes>
       </Router>
     </>

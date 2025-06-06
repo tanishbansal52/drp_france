@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
 import { useNavigate } from 'react-router-dom'
+import TeacherButton from './TeacherButton';
 
 function ShowAllQuestions() {
   const navigate = useNavigate()
@@ -68,19 +69,19 @@ function ShowAllQuestions() {
             ))}
 
             <div className="text-center mt-4">
-              <Button variant="primary" className="me-3" onClick={() => navigate('/teacher/choosequiz')}>
+              <TeacherButton variant="primary" className="me-3" onClick={() => navigate('/teacher/choosequiz')}>
                 Go Back
-              </Button>
-              <Button
+              </TeacherButton>
+              <TeacherButton
                 variant={showAnswers ? 'secondary' : 'success'}
                 className="me-3"
                 onClick={() => setShowAnswers(!showAnswers)}
               >
                 {showAnswers ? 'Hide Answers' : 'Show Answers'}
-              </Button>
-              <Button variant="primary" onClick={() => navigate('/teacher/dashboard')}>
+              </TeacherButton>
+              <TeacherButton variant="primary" onClick={() => navigate('/teacher/dashboard')}>
                 Continue to Mission Code
-              </Button>
+              </TeacherButton>
             </div>
           </>
         )}
