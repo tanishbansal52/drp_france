@@ -70,7 +70,7 @@ function ShowAllQuestions() {
 
             <div className="text-center mt-4">
               <TeacherButton variant="primary" className="me-3" onClick={() => navigate('/teacher/choosequiz')}>
-                Go Back
+                Back
               </TeacherButton>
               <TeacherButton
                 variant={showAnswers ? 'secondary' : 'success'}

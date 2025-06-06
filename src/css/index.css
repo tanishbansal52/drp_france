@@ -113,25 +113,6 @@ p, span, label {
   position: relative !important;
 }
 
-/* Scanning line animation for cards */
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--spy-primary), transparent);
-  animation: scan-line 4s ease-in-out infinite;
-  z-index: 1;
-}
-
-@keyframes scan-line {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
-}
-
 /* Global Input Styles */
 .form-control, input {
   font-family: var(--spy-font) !important;
