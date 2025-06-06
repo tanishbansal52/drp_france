@@ -18,6 +18,32 @@ function GroupQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+
+  // New: read question aloud
+  const readQuestion = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+      // question is stored as a string (data.question_text)
+      const text = question || ''
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = 'en-US'
+      window.speechSynthesis.speak(utterance)
+    } else {
+      alert('Speech Synthesis not supported in this browser.')
+    }
+  }
+
+  useEffect(() => {
+    const onKeyDown = e => {
+      if (e.key.toLowerCase() === 'r') {
+        e.preventDefault()
+        readQuestion()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [readQuestion])
+
   useEffect(() => {
     console.log('Fetching question from API...');
     fetch('https://drp-belgium.onrender.com/api/questions/2/')
@@ -136,9 +162,14 @@ function GroupQuestion() {
     <Button variant="success" onClick={() => handleColorClick('G')}>GREEN</Button>
     <Button variant="warning" onClick={() => handleColorClick('Y')}>YELLOW</Button>
   </div>
-        <Button variant='dark' type="submit" className="mt-3">
-          Submit Answer
-        </Button>
+        <div className="d-flex justify-content-center gap-3 mt-3">
+          <Button variant="secondary" size="lg" onClick={readQuestion}>
+            Read Q Aloud
+          </Button>
+          <Button variant="dark" size="lg" type="submit">
+            Submit
+          </Button>
+        </div>
       </Form>
 
       <style jsx>{`

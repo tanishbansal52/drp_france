@@ -58,7 +58,9 @@ function ShowAllQuestions() {
             {questions.slice(1).map((q, index) => (
               <Card key={index} className="mb-3 shadow-sm">
                 <Card.Body>
-                  <h5>{q.question_text}</h5>
+                  <div style = {{ whiteSpace: 'pre-wrap' }}> 
+                    <h5>{q.question_text}</h5>
+                  </div>
                   {showAnswers && (
                     <h5 className=" text-success">
                       <strong>Answer:  {q.answer || 'No answer available.'}</strong>
