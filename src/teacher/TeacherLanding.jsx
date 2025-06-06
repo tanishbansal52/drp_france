@@ -38,7 +38,7 @@ function TeacherLanding() {
                     <div className="text-center mb-4 flex-grow-1">
                       <h2 className="fw-bold mb-4">START NEW MISSION</h2>
                       <p className="mb-5">
-                        Start a mission by choosing a topic, difficutly and opening a room for your students.                      </p>
+                        Start a mission by choosing a topic & difficulty level, and opening a room for your students.                      </p>
                     </div>
                     <div className="d-grid">
                       <TeacherButton 
