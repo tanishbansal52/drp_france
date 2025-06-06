@@ -4,6 +4,7 @@ import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
 import { useNavigate, useParams} from 'react-router-dom'  
 import { incrementRoomsCurrentStatus } from './utils/api'
+import TeacherButton from './TeacherButton';
 
 
 function DisplayQuestion() {
@@ -91,19 +92,19 @@ function DisplayQuestion() {
                   </p>
                 )}
                 <div className="mt-4 d-flex justify-content-center gap-3">
-                  <Button
+                  <TeacherButton
                     variant="light"
                     onClick={() => setShowAnswer(v => !v)}
                   >
                     {showAnswer ? 'Hide Answer' : 'Show Answer'}
-                  </Button>
+                  </TeacherButton>
                   {isLast
-                    ? <Button variant="light" onClick={handleFinish}>
+                    ? <TeacherButton variant="light" onClick={handleFinish}>
                         Finish Quiz
-                      </Button>
-                    : <Button variant="light" onClick={handleNext}>
+                      </TeacherButton>
+                    : <TeacherButton variant="light" onClick={handleNext}>
                         Next Question
-                      </Button>
+                      </TeacherButton>
                   }
                 </div>
               </>

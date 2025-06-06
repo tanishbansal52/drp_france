@@ -39,7 +39,7 @@
   border: 2px solid #00ffff !important;
 }
 
-/* Scanning line for homepage cards */
+Scanning line for homepage cards
 .homepage-card::before {
   content: "";
   position: absolute;

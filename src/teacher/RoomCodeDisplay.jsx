@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Card, Button, Row, Col } from 'react-bootstrap';
+import { Container, Button, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { incrementRoomsCurrentStatus } from './utils/api'
+import TeacherButton from './TeacherButton';
 
 function RoomCodeDisplay() {
   const [roomCode, setRoomCode] = useState('');
@@ -51,13 +52,117 @@ function RoomCodeDisplay() {
     navigator.clipboard.writeText(roomCode);
   };
 
-  const codeStyle = {
-    fontSize: '5rem',
-    fontWeight: 700,
-    letterSpacing: '0.3em',
-    color: '#00ffff',
-    textShadow: '0 0 15px rgba(0, 255, 255, 0.5)',
-    cursor: 'pointer',
+  const styles = {
+    missionCodeBox: {
+      background: 'rgba(0, 255, 255, 0.05)',
+      border: '2px solid rgba(0, 255, 255, 0.3)',
+      borderRadius: '15px',
+      padding: '3rem 2rem',
+      textAlign: 'center',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 8px 32px rgba(0, 255, 255, 0.1)',
+      position: 'relative',
+      overflow: 'hidden',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
+    },
+    missionTitle: {
+      fontSize: '2rem',
+      fontWeight: '300',
+      color: '#ffffff',
+      marginBottom: '1.5rem',
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase'
+    },
+    codeDisplay: {
+      fontSize: '4.5rem',
+      fontWeight: '700',
+      letterSpacing: '0.4em',
+      color: '#00ffff',
+      textShadow: '0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.3)',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      marginBottom: '2rem',
+      fontFamily: 'monospace'
+    },
+    startButton: {
+      background: 'linear-gradient(45deg, #00ffff, #0080ff)',
+      border: 'none',
+      padding: '15px 40px',
+      fontSize: '1.1rem',
+      fontWeight: '600',
+      letterSpacing: '0.05em',
+      textTransform: 'uppercase',
+      borderRadius: '6px',
+      boxShadow: '0 4px 15px rgba(0, 255, 255, 0.3)',
+      transition: 'all 0.3s ease'
+    },
+    groupsBox: {
+      background: 'rgba(0, 255, 255, 0.05)',
+      border: '2px solid rgba(0, 255, 255, 0.3)',
+      borderRadius: '15px',
+      padding: '3rem 2rem',
+      textAlign: 'center',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 8px 32px rgba(0, 255, 255, 0.1)',
+      position: 'relative',
+      overflow: 'hidden',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    groupsSection: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    groupsTitle: {
+      fontSize: '1.8rem',
+      fontWeight: '300',
+      color: '#ffffff',
+      marginBottom: '1.5rem',
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase'
+    },
+    groupsContainer: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    groupBadge: {
+      background: 'linear-gradient(45deg, rgba(0, 255, 255, 0.15), rgba(0, 128, 255, 0.2))',
+      border: '1px solid rgba(0, 255, 255, 0.4)',
+      color: '#00ffff',
+      padding: '10px 18px',
+      margin: '6px',
+      borderRadius: '20px',
+      fontSize: '0.95rem',
+      fontWeight: '500',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 4px 15px rgba(0, 255, 255, 0.15)',
+      transition: 'all 0.3s ease'
+    },
+    waitingText: {
+      color: 'rgba(255, 255, 255, 0.6)',
+      fontSize: '1rem',
+      fontStyle: 'italic'
+    },
+    boxGlow: {
+      position: 'absolute',
+      top: '-2px',
+      left: '-2px',
+      right: '-2px',
+      bottom: '-2px',
+      background: 'linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent)',
+      borderRadius: '15px',
+      zIndex: -1,
+      opacity: 0,
+      transition: 'opacity 0.3s ease'
+    }
   };
 
   return (
@@ -66,48 +171,101 @@ function RoomCodeDisplay() {
         DIVISION X
       </div>
 
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Row className="w-100">
-          {/* Left side: Room code */}
-          <Col md={6} className="d-flex align-items-center justify-content-center">
-            <Card className="shadow-lg p-5 text-center w-100">
-              <Card.Body>
-                <Card.Title className="text-light mb-4 display-5">YOUR MISSION CODE</Card.Title>
-                <div style={codeStyle} title="Click to copy code" onClick={handleCopy}>
-                  {roomCode}
-                </div>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="mt-4"
-                  onClick={async () => {
-                    await incrementRoomsCurrentStatus(roomCode, 1)
-                    navigate(`/teacher/displayquestion/${roomCode}`)
-                  }
-                }
-                >
-                  START MISSION
-                </Button>
-              </Card.Body>
-            </Card>
+      <Container fluid className="vh-100 d-flex align-items-center">
+        <Row className="w-100 h-75">
+          {/* Left side: Mission Code */}
+          <Col lg={6} className="px-4">
+            <div 
+              style={styles.missionCodeBox}
+              onMouseEnter={(e) => {
+                const glow = e.currentTarget.querySelector('.box-glow');
+                if (glow) glow.style.opacity = '1';
+              }}
+              onMouseLeave={(e) => {
+                const glow = e.currentTarget.querySelector('.box-glow');
+                if (glow) glow.style.opacity = '0';
+              }}
+            >
+              <div className="box-glow" style={styles.boxGlow}></div>
+              <h1 style={styles.missionTitle}>Mission Code</h1>
+              <div 
+                style={styles.codeDisplay}
+                title="Click to copy code"
+                onClick={handleCopy}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.05)';
+                  e.target.style.textShadow = '0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.textShadow = '0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.3)';
+                }}
+              >
+                {roomCode}
+              </div>
+              <TeacherButton
+                style={styles.startButton}
+                size="lg"
+                onClick={async () => {
+                  await incrementRoomsCurrentStatus(roomCode, 1)
+                  navigate(`/teacher/displayquestion/${roomCode}`)
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 20px rgba(0, 255, 255, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 15px rgba(0, 255, 255, 0.3)';
+                }}
+              >
+                Start
+              </TeacherButton>
+            </div>
           </Col>
 
-          {/* Right side: Groups */}
-          <Col md={6}>
-            <Card className="shadow-lg p-4 text-center w-100">
-              <Card.Title className="mb-3 text-light display-6">JOINED GROUPS</Card.Title>
-              <div className="d-flex flex-wrap justify-content-center gap-3">
-                {groups.length > 0 ? (
-                  groups.map((group, idx) => (
-                    <div key={idx} className="bg-info text-white px-4 py-2 rounded shadow-sm">
-                      {group.name}
+          {/* Right side: Joined Groups */}
+          <Col lg={6} className="px-4">
+            <div 
+              style={styles.groupsBox}
+              onMouseEnter={(e) => {
+                const glow = e.currentTarget.querySelector('.box-glow');
+                if (glow) glow.style.opacity = '1';
+              }}
+              onMouseLeave={(e) => {
+                const glow = e.currentTarget.querySelector('.box-glow');
+                if (glow) glow.style.opacity = '0';
+              }}
+            >
+              <div className="box-glow" style={styles.boxGlow}></div>
+              <div style={styles.groupsSection}>
+                <h2 style={styles.groupsTitle}>Joined Groups</h2>
+                <div style={styles.groupsContainer}>
+                  {groups.length > 0 ? (
+                    <div className="d-flex flex-wrap justify-content-center">
+                      {groups.map((group, idx) => (
+                        <div 
+                          key={idx} 
+                          style={styles.groupBadge}
+                          onMouseEnter={(e) => {
+                            e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                            e.target.style.boxShadow = '0 6px 20px rgba(0, 255, 255, 0.25)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.transform = 'translateY(0) scale(1)';
+                            e.target.style.boxShadow = '0 4px 15px rgba(0, 255, 255, 0.15)';
+                          }}
+                        >
+                          {group.name}
+                        </div>
+                      ))}
                     </div>
-                  ))
-                ) : (
-                  <p className="text-light">Waiting for groups to join...</p>
-                )}
+                  ) : (
+                    <p style={styles.waitingText}>Waiting for groups to join...</p>
+                  )}
+                </div>
               </div>
-            </Card>
+            </div>
           </Col>
         </Row>
       </Container>
