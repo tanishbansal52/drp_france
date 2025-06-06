@@ -1,31 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-function HighContrastToggle() {
-  const [isHighContrast, setIsHighContrast] = useState(false);
-
-  useEffect(() => {
-    // Check if high contrast mode was previously enabled
-    const savedMode = localStorage.getItem('highContrastMode');
-    if (savedMode === 'true') {
-      setIsHighContrast(true);
-      document.documentElement.classList.add('high-contrast');
-    }
-  }, []);
-
-  const toggleHighContrast = () => {
-    const newState = !isHighContrast;
-    setIsHighContrast(newState);
-    
-    if (newState) {
-      document.documentElement.classList.add('high-contrast');
-    } else {
-      document.documentElement.classList.remove('high-contrast');
-    }
-    
-    // Save preference to localStorage
-    localStorage.setItem('highContrastMode', newState);
-  };
-
+function HighContrastToggle({ isHighContrast, toggleHighContrast }) {
   const toggleButtonStyle = {
     position: 'fixed',
     top: '20px',
