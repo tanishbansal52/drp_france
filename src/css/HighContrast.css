@@ -1,0 +1,58 @@
+/* High Contrast Mode Styles */
+:root.high-contrast {
+  --spy-primary: #ffffff;
+  --spy-secondary: #ffffff;
+  --spy-danger: #000000;
+  --spy-dark: #000000;
+  --spy-navy: #000000;
+  --spy-blue: #000000;
+  --spy-text: #ffffff;
+  --spy-glow: rgba(255, 255, 255, 0.7);
+  --accent-color: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #dddddd;
+}
+
+/* High contrast overrides */
+.high-contrast .card,
+.high-contrast .container,
+.high-contrast .homepage-card {
+  background: #000000 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: none !important;
+}
+
+.high-contrast button,
+.high-contrast .btn {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.high-contrast button:hover,
+.high-contrast .btn:hover {
+  background: #333333 !important;
+}
+
+.high-contrast input,
+.high-contrast .form-control {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .rating-button {
+  background: #000000;
+  border: 2px solid #ffffff;
+}
+
+.high-contrast .rating-button.selected {
+  background: #ffffff;
+  color: #000000;
+}
+
+.high-contrast .high-contrast-icon {
+  background: #ffffff !important;
+  color: #000000 !important;
+}

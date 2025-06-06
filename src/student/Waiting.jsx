@@ -10,12 +10,12 @@ function WaitingArea() {
   const [selected, setSelected] = useState(null);
   const {roomCode} = useParams()
 
-  const feelings = [
-    { id: 1, emoji: "😡", label: "Angry" },
-    { id: 2, emoji: "😟", label: "Sad" },
-    { id: 3, emoji: "😐", label: "Neutral" },
-    { id: 4, emoji: "🙂", label: "Happy" },
-    { id: 5, emoji: "😁", label: "Excited" },
+  const feelingLabels = [
+    "Very Negative",
+    "Negative", 
+    "Neutral",
+    "Positive",
+    "Very Positive"
   ];
 
   return (
@@ -25,38 +25,53 @@ function WaitingArea() {
         DIVISION X
       </div>
     
-      <div className="min-vh-100 p-5">
-        <div className="rounded px-4 py-3">
-          <h1 className="h4 fw-bold mb-2">
-            You are now in the <span className="text-uppercase"><strong>waiting area</strong>!</span>
-          </h1>
-          <p className="mb-4">Wait for your teacher to start.</p>
-          <p className="mb-4 fst-italic">Group: {groupName}</p>
-          <div className="mb-4">
-            <p className="fs-5">The mission your teacher has assigned you is <strong>Algebra</strong>!</p>
-            <p className="fs-5">How do you feel about Algebra before beginning your mission?</p>
+      <div className="waiting-container">
+        <div className="waiting-content">
+          <div className="status-header">
+            <h1 className="waiting-title">
+              You are in the <span className="highlight">WAITING ROOM</span>
+            </h1>
+            <p className="waiting-subtitle">Wait for your teacher to start.</p>
           </div>
-          <div className="d-flex justify-content-center gap-3 mb-5">
-            {feelings.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => setSelected(f.id)}
-                className={`d-flex flex-column align-items-center px-4 py-3 bg-white border rounded shadow-sm
-                  ${selected === f.id ? "border-primary" : "border-2"}
-                  `}
-                style={{
-                  outline: selected === f.id ? "2px solid #0d6efd" : "none"
-                }}
-              >
-                <span style={{ fontSize: "2rem" }}>{f.emoji}</span>
-                <span className="mt-1">{f.label}</span>
-              </button>
-            ))}
+
+          <div className="group-info">
+            <p className="group-label">Group: <span className="group-name">{groupName}</span></p>
           </div>
-          <Button variant="primary" onClick={() => navigate(`/start/${roomCode}`)}>
-            View Rules
-          </Button>
+
+          <div className="mission-section">
+            <p className="mission-text">
+              The mission your teacher has assigned you is <strong>Algebra</strong>!
+            </p>
+            <p className="question-text">
+              How do you feel about Algebra before the mission?
+            </p>
+          </div>
+
+          <div className="feeling-selector">
+            <div className="rating-scale">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  type="button"
+                  onClick={() => setSelected(rating)}
+                  className={`rating-button ${selected === rating ? 'selected' : ''}`}
+                >
+                  <span className="rating-number">{rating}</span>
+                  <span className="rating-label">{feelingLabels[rating - 1]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="action-section">
+            <Button 
+              variant="primary" 
+              onClick={() => navigate(`/start/${roomCode}`)}
+              className="view-rules-btn"
+            >
+              VIEW RULES
+            </Button>
+          </div>
         </div>
       </div>
     </>
