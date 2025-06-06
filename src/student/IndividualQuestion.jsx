@@ -15,6 +15,30 @@ function IndividualQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+
+  // New: read question aloud
+  const readQuestion = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(question.question_text)
+      utterance.lang = 'en-US'
+      window.speechSynthesis.speak(utterance)
+    } else {
+      alert('Speech Synthesis not supported in this browser.')
+    }
+  }
+
+  useEffect(() => {
+    const onKeyDown = e => {
+      if (e.key.toLowerCase() === 'r') {
+        e.preventDefault()
+        readQuestion()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [question])
+
   useEffect(() => {
     console.log('Fetching question from API...');
     fetch('https://drp-belgium.onrender.com/api/questions/1/')
@@ -122,13 +146,30 @@ function IndividualQuestion() {
       <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-muted text-xl leading-tight">Q1. Individual Round</h2>
+        <h2 className="text-info text-xl leading-tight">Q1. Individual Round</h2>
         {/* <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4> 
         */}
-        <h4 className="text-muted text-base font-medium leading-none">
+        <h4 className="text-info text-base font-medium leading-none">
           This Question is worth {question ? question.points : '...'} points.
         </h4>
 
+      </div>
+      <div className="col-auto">
+        <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
+          <div className="bg-dark border rounded p-2 d-flex align-items-center">
+            <span className="me-2">Stage 1 of 2</span>
+            <div className="progress" style={{ width: '100px', height: '8px' }}>
+              <div
+                className="progress-bar bg-primary"
+                role="progressbar"
+                style={{ width: '50%' }}
+                aria-valuenow="50"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {showAlert && (
@@ -158,7 +199,9 @@ function IndividualQuestion() {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
-            <p>{question ? question.question_text : "Loading question"} </p>
+            <div style = {{ whiteSpace: 'pre-wrap' }}> 
+              <p className="h5">{question ? question.question_text : "Loading question"} </p>
+            </div>
           </Form.Label>
           <Form.Control
             placeholder="Enter your answer here"
@@ -166,9 +209,14 @@ function IndividualQuestion() {
             onChange={(e) => setAnswer(e.target.value)}
           />
         </Form.Group>
-        <Button variant='dark' type="submit" className="mt-3">
-          Submit Answer
-        </Button>
+        <div className="d-flex justify-content-center gap-3 mt-3">
+          <Button variant="secondary" size="lg" onClick={readQuestion}>
+            Read Q Aloud
+          </Button>
+          <Button variant="dark" size="lg" type="submit">
+            Submit
+          </Button>
+        </div>
       </Form>
 
       <style jsx>{`

@@ -1,8 +1,18 @@
 import { Navbar, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react'
+import audioService from './AudioService'  
 
 function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation() 
+
+  // Stop background music on student-side routes
+  useEffect(() => {
+    if (!location.pathname.startsWith('/teacher')) {
+      audioService.stop()
+    }
+  }, [location])
 
   const handleLogout = () => {
     navigate('/');
