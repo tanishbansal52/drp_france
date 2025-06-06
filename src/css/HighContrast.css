@@ -1,0 +1,64 @@
+/* High Contrast Mode Styles */
+/* Change from :root.high-contrast to .student-view.high-contrast */
+.student-view.high-contrast {
+  --spy-primary: #ffffff;
+  --spy-secondary: #ffffff;
+  --spy-danger: #000000;
+  --spy-dark: #000000;
+  --spy-navy: #000000;
+  --spy-blue: #000000;
+  --spy-text: #ffffff;
+  --spy-glow: rgba(255, 255, 255, 0.7);
+  --accent-color: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #dddddd;
+}
+
+/* High contrast overrides - update selectors */
+.student-view.high-contrast .card,
+.student-view.high-contrast .container,
+.student-view.high-contrast .homepage-card {
+  background: #000000 !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: none !important;
+}
+
+.student-view.high-contrast button,
+.student-view.high-contrast .btn {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.student-view.high-contrast button:hover,
+.student-view.high-contrast .btn:hover {
+  background: #333333 !important;
+}
+
+.student-view.high-contrast input,
+.student-view.high-contrast .form-control {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.student-view.high-contrast .rating-button {
+  background: #000000;
+  border: 2px solid #ffffff;
+}
+
+.student-view.high-contrast .rating-button.selected {
+  background: #ffffff;
+  color: #000000;
+}
+
+.student-view.high-contrast .high-contrast-icon {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+.student-view {
+  min-height: 100vh;
+  width: 100%;
+}

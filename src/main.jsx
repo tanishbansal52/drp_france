@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './css/index.css'
+import './css/HighContrast.css'
 import {
     BrowserRouter as Router,
     Routes,
@@ -23,6 +24,8 @@ import Finish from './Finish.jsx';
 import ChooseQuiz from './teacher/ChooseQuiz.jsx';
 import ShowAllQuestions from './teacher/ShowAllQuestions.jsx';
 import TeacherLayout from './teacher/TeacherLayout.jsx';
+import StudentLayout from './student/StudentLayout.jsx'; // Add this line
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -32,17 +35,17 @@ createRoot(document.getElementById('root')).render(
               {/* Home page route */}
               <Route exact path="/" element={<HomePage />} />
 
-              {/* Student route (in order) */}
-              <Route path="/student" element={<StudentLanding />} />
-              <Route path="/waiting/:roomCode" element={<WaitingArea />} />
-              <Route path="/start/:roomCode" element={<Start />} />
-              <Route path="/question1/:roomCode" element={<IndividualQuestion />} />
-              <Route path="/groupquestion/:roomCode" element={<GroupQuestion />} />
-              <Route path="/correct" element={<Correct />} />
-              <Route path="/incorrect" element={<Incorrect />} />
-              <Route path="/end" element={<End />} />
-              <Route path="/debrief" element={<Debrief />} />
-              <Route path="/finish" element={<Finish/>} />
+              {/* Student routes wrapped in StudentLayout */}
+              <Route path="/student" element={<StudentLayout><StudentLanding /></StudentLayout>} />
+              <Route path="/waiting/:roomCode" element={<StudentLayout><WaitingArea /></StudentLayout>} />
+              <Route path="/start/:roomCode" element={<StudentLayout><Start /></StudentLayout>} />
+              <Route path="/question1/:roomCode" element={<StudentLayout><IndividualQuestion /></StudentLayout>} />
+              <Route path="/groupquestion/:roomCode" element={<StudentLayout><GroupQuestion /></StudentLayout>} />
+              <Route path="/correct" element={<StudentLayout><Correct /></StudentLayout>} />
+              <Route path="/incorrect" element={<StudentLayout><Incorrect /></StudentLayout>} />
+              <Route path="/end" element={<StudentLayout><End /></StudentLayout>} />
+              <Route path="/debrief" element={<StudentLayout><Debrief /></StudentLayout>} />
+              <Route path="/finish" element={<StudentLayout><Finish/></StudentLayout>} />
 
               {/* Teacher routes wrapped in TeacherLayout */}
               <Route path="/teacher" element={<TeacherLayout><TeacherLanding /></TeacherLayout>} />
