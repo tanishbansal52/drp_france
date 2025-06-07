@@ -8,8 +8,11 @@ function Correct() {
   const navigate = useNavigate();
   const location = useLocation();
   const roomCode = location.state?.roomCode;
+  const groupId = location.state?.groupId || 0;  
   const questionNo = location.state?.questionNo;
   const [canMove, setCanMove] = useState(false);
+
+  console.log("groupId in Correct:", groupId);
   
   useEffect(() => {
     if (!roomCode || questionNo == null) return;
@@ -38,7 +41,7 @@ function Correct() {
       ? `/groupquestion/${roomCode}`
       : `/end`;
     navigate(nextPath, {
-      state: { roomCode, questionNo: questionNo + 1 }
+      state: { roomCode, questionNo: questionNo + 1, groupId }
     });
   };
 

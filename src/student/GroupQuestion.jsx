@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom' 
+import { useNavigate, useParams, useLocation } from 'react-router-dom' 
 import { canMoveToNextQuestion } from './TeacherLinking'
 
 import NavBar from '../NavBar';
@@ -18,6 +18,10 @@ function GroupQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const location = useLocation();
+  const groupId = location.state?.groupId || 0;
+
+  console.log("groupId in Group q:", groupId);
 
   // New: read question aloud
   const readQuestion = () => {
@@ -77,7 +81,7 @@ function GroupQuestion() {
     if (answer == rightAnswer) {
       // → navigate into Correct.jsx, passing roomCode & questionNo
       navigate('/correct', {
-        state: { roomCode, questionNo: 2 }
+        state: { roomCode, questionNo: 2, groupId }
       })
     } else {
       if (incorrect < 2) {
@@ -88,7 +92,7 @@ function GroupQuestion() {
         return;
       }
       navigate('/incorrect', {
-        state: { roomCode, questionNo: 2 }
+        state: { roomCode, questionNo: 2, groupId }
       })
     }
   };

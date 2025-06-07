@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "../css/Waiting.css";
+import axios from "axios";
 
 function WaitingArea() {
   const location = useLocation();
   const groupName = location.state?.groupName || "Default Group";
+  const groupId = location.state?.groupId || 0;
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const {roomCode} = useParams()
+
+  console.log("Waiting area groupId:", groupId);
 
   const feelingLabels = [
     "Very Negative",
@@ -17,6 +21,18 @@ function WaitingArea() {
     "Positive",
     "Very Positive"
   ];
+
+  const handleRatingSubmit = async () => {
+    console.log(`Rating selected: ${selected}`);
+    try {
+      const resp = await axios.post("http://localhost:8000/api/update-before-rating/", {
+      before_rating: selected,
+      group_id: groupId
+    });
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+    }
+  }
 
   return (
     <>
@@ -43,30 +59,36 @@ function WaitingArea() {
               The mission your teacher has assigned you is <strong>Algebra</strong>!
             </p>
             <p className="question-text">
-              How do you feel about Algebra before the mission?
+              How confident do you feel about Algebra before the mission?
             </p>
           </div>
 
           <div className="feeling-selector">
             <div className="rating-scale">
-              {[1, 2, 3, 4, 5].map((rating) => (
-                <button
-                  key={rating}
-                  type="button"
-                  onClick={() => setSelected(rating)}
-                  className={`rating-button ${selected === rating ? 'selected' : ''}`}
-                >
-                  <span className="rating-number">{rating}</span>
-                  <span className="rating-label">{feelingLabels[rating - 1]}</span>
-                </button>
-              ))}
-            </div>
+  {[1, 2, 3, 4, 5].map((rating) => (
+    <button
+      key={rating}
+      type="button"
+      onClick={() => setSelected(rating)}
+      className={`rating-button ${selected === rating ? 'selected' : ''}`}
+    >
+      <span className="rating-number">{rating}</span>
+      <span className="rating-label">{feelingLabels[rating - 1]}</span>
+    </button>
+  ))}
+  <button onClick={handleRatingSubmit} className="submit-rating-button">
+    Submit Rating
+  </button>
+</div>
+
           </div>
 
           <div className="action-section">
             <Button 
               variant="primary" 
-              onClick={() => navigate(`/start/${roomCode}`)}
+              onClick={() => navigate(`/start/${roomCode}`, {
+        state: { groupName, groupId }
+      })}
               className="view-rules-btn"
             >
               VIEW RULES

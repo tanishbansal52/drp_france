@@ -3,20 +3,20 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TeacherButton from './TeacherButton';
 
-function ChooseQuiz() {
+function PastMissions() {
   const [quizzes, setQuizzes] = useState([]);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('https://drp-belgium.onrender.com/api/quizzes/')
-    // axios.get('http://localhost:8000/api/quizzes/')
-      .then(res => setQuizzes(res.data))
-      .catch(err => {
-        setError('Failed to fetch quizzes.');
-        console.error(err);
-      });
+    // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
+    // // axios.get('http://localhost:8000/api/quizzes/')
+    //   .then(res => setQuizzes(res.data))
+    //   .catch(err => {
+    //     setError('Failed to fetch quizzes.');
+    //     console.error(err);
+    //   });
   }, []);
 
   const handleSubmit = () => {
@@ -56,7 +56,7 @@ function ChooseQuiz() {
         fontSize: '18px',
         fontFamily: 'sans-serif'
       }}>
-        <div style={{ marginBottom: '20px' }}>Loading quizzes...</div>
+        <div style={{ marginBottom: '20px' }}>Loading past missions...</div>
         <div style={{
           width: '40px',
           height: '40px',
@@ -73,8 +73,6 @@ function ChooseQuiz() {
   return (
     <div style={{ 
       padding: '30px', 
-      color: '#aefeff', 
-      fontFamily: 'sans-serif',
       maxWidth: '800px',
       margin: '0 auto',
       minHeight: '100vh'
@@ -82,7 +80,7 @@ function ChooseQuiz() {
       <h2 style={{ 
         marginBottom: '30px',
       }}>
-        Choose Mission:
+        Past Missions:
       </h2>
 
       <div style={{ marginBottom: '40px' }}>
@@ -258,7 +256,7 @@ function ChooseQuiz() {
             }
           }}
         >
-          Preview Questions
+          View Report
         </button>
       </div>
 
@@ -272,4 +270,4 @@ function ChooseQuiz() {
   );
 }
 
-export default ChooseQuiz;
+export default PastMissions;

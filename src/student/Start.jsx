@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Alert } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { canMoveToNextQuestion } from './TeacherLinking'
 
 import '../css/IndividualQuestion.css'
@@ -11,13 +11,20 @@ function Start() {
   const navigate = useNavigate();
   const { roomCode } = useParams()
   const [message, setMessage] = useState('')
+
+  const location = useLocation();
+  const groupId = location.state?.groupId || 0;
+
+  console.log("In start groupId:", groupId)
   
   const handleContinue = async () => {
     setMessage('')
     const ok = await canMoveToNextQuestion(roomCode, 0) 
     console.log("In start can move to next question:", ok)
     if (ok) {
-      navigate(`/question1/${roomCode}`)
+      navigate(`/question1/${roomCode}`, {
+        state: { groupId }
+      })
     } else {
       setMessage('Wait for teacher to move to the first question')
     }

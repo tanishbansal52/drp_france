@@ -2,10 +2,14 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../NavBar';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function End() {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const groupId = location.state?.groupId || 0;
 
   const [selectedRating, setSelectedRating] = useState(null);
 
@@ -17,9 +21,21 @@ function End() {
     { label: 'Very Positive', color: 'bg-green-500', value: 5 }
   ];
 
-  const handleRatingClick = (rating) => {
-    setSelectedRating(rating);
+  const handleRatingClick = async (value) => {
+    setSelectedRating(value);
   };
+
+  const handleRatingSubmit = async () => {
+    console.log(`Rating selected: ${selectedRating}`);
+    try {
+      const resp = await axios.post("http://localhost:8000/api/update-after-rating/", {
+      after_rating: selectedRating,
+      group_id: groupId
+    });
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+    }
+  }
 
   return (
     <>
@@ -27,7 +43,7 @@ function End() {
         <NavBar />
       <h1 className="text-4xl font-bold mb-4">Well done agents!</h1>
       <p className="text-lg text-gray-700 mb-8">You have successfully completed your mission.</p>
-      <p className="text-med text-gray-700 mb-8">How do you feel about algebra now that you have completed your mission?</p>
+      <p className="text-med text-gray-700 mb-8">How confident do you feel about algebra now that you have completed your mission?</p>
     </div>
 
       <div className="mb-8">
@@ -55,6 +71,15 @@ function End() {
               ))}
             </div>
             <span className="text-gray-500 ml-2">+</span>
+          </div>
+          <div className="ml-4"> 
+            <button
+              onClick={handleRatingSubmit}
+              className="btn btn-primary"
+              disabled={selectedRating === null}
+            >
+              Submit Rating
+            </button>
           </div>
         </div>
       </div>

@@ -14,6 +14,7 @@ function TeacherLanding() {
   const handleViewPastMissions = () => {
     // Not implemented yet
     console.log('View past missions - not implemented');
+    navigate('/teacher/pastmissions');
   };
 
   return (

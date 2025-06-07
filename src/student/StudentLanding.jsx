@@ -43,7 +43,7 @@ function StudentLanding() {
 
       console.log("Joined:", res.data);
       navigate(`/waiting/${missionCode}`, {
-        state: { groupName }
+        state: { groupName, groupId: res.data.group_id }
       });
     } catch (err) {
       if (err.response) {
