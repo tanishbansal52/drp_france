@@ -28,7 +28,7 @@ function ShowAllQuestions() {
 
       setQuestions(data)
     } catch (err) {
-      console.error('Error fetching questions:', err)
+      console.error('Error fetching questions:', err) 
       setError(err.message)
     } finally {
       setLoading(false)
