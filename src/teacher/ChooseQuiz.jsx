@@ -10,8 +10,8 @@ function ChooseQuiz() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('https://drp-belgium.onrender.com/api/quizzes/')
-    // axios.get('http://localhost:8000/api/quizzes/')
+    // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
+      axios.get('http://localhost:8000/api/quizzes/')
       .then(res => setQuizzes(res.data))
       .catch(err => {
         setError('Failed to fetch quizzes.');
@@ -19,13 +19,18 @@ function ChooseQuiz() {
       });
   }, []);
 
+
   const handleSubmit = () => {
-    console.log('Selected quiz:', selected);
-    navigate('/teacher/allquestions');
+    const selectedQuiz = quizzes.find(q => q.title === selected);
+    if (selectedQuiz) {
+      console.log('Selected Quiz:', selectedQuiz);
+      console.log('Quiz ID:', selectedQuiz.id);
+      navigate('/teacher/allquestions', { state: { quizId: selectedQuiz.id } });
+    }
   };
 
   const getDifficultyColor = (difficulty) => {
-    switch(difficulty?.toLowerCase()) {
+    switch (difficulty?.toLowerCase()) {
       case 'easy': return '#4ade80';
       case 'medium': return '#f59e0b';
       case 'hard': return '#ef4444';
@@ -35,8 +40,8 @@ function ChooseQuiz() {
 
   if (error) {
     return (
-      <div style={{ 
-        padding: '30px', 
+      <div style={{
+        padding: '30px',
         textAlign: 'center',
         color: '#ff4d4d',
         fontSize: '18px',
@@ -49,8 +54,8 @@ function ChooseQuiz() {
 
   if (!quizzes.length) {
     return (
-      <div style={{ 
-        padding: '30px', 
+      <div style={{
+        padding: '30px',
         textAlign: 'center',
         color: '#aefeff',
         fontSize: '18px',
@@ -71,18 +76,18 @@ function ChooseQuiz() {
   }
 
   return (
-    <div style={{ 
-      padding: '30px', 
-      color: '#aefeff', 
+    <div style={{
+      padding: '30px',
+      color: '#aefeff',
       fontFamily: 'sans-serif',
       maxWidth: '800px',
       margin: '0 auto',
       minHeight: '100vh'
     }}>
-      <h2 style={{ 
-        color: '#00f0ff', 
-        fontWeight: 'bold', 
-        fontSize: '28px', 
+      <h2 style={{
+        color: '#00f0ff',
+        fontWeight: 'bold',
+        fontSize: '28px',
         textAlign: 'left',
         marginBottom: '30px',
         textShadow: '0 0 10px rgba(0, 240, 255, 0.3)'
@@ -98,18 +103,18 @@ function ChooseQuiz() {
               display: 'flex',
               alignItems: 'flex-start',
               marginBottom: '20px',
-              background: selected === quiz.title 
-                ? 'rgba(0, 240, 255, 0.1)' 
+              background: selected === quiz.title
+                ? 'rgba(0, 240, 255, 0.1)'
                 : 'rgba(255, 255, 255, 0.05)',
               padding: '20px',
               borderRadius: '12px',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              border: selected === quiz.title 
-                ? '2px solid rgba(0, 240, 255, 0.5)' 
+              border: selected === quiz.title
+                ? '2px solid rgba(0, 240, 255, 0.5)'
                 : '2px solid transparent',
-              boxShadow: selected === quiz.title 
-                ? '0 0 20px rgba(0, 240, 255, 0.2)' 
+              boxShadow: selected === quiz.title
+                ? '0 0 20px rgba(0, 240, 255, 0.2)'
                 : '0 4px 6px rgba(0, 0, 0, 0.1)',
               transform: 'translateY(0)',
             }}
@@ -147,8 +152,8 @@ function ChooseQuiz() {
               textAlign: 'left',
               flex: 1,
             }}>
-              <div style={{ 
-                fontSize: '20px', 
+              <div style={{
+                fontSize: '20px',
                 color: '#aefeff',
                 fontWeight: '600',
                 marginBottom: '8px',
@@ -156,19 +161,19 @@ function ChooseQuiz() {
               }}>
                 {quiz.title}
               </div>
-              <div style={{ 
+              <div style={{
                 display: 'flex',
                 gap: '20px',
                 flexWrap: 'wrap'
               }}>
-                <div style={{ 
+                <div style={{
                   fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px'
                 }}>
                   <span style={{ color: '#999' }}>Difficulty:</span>
-                  <span style={{ 
+                  <span style={{
                     color: getDifficultyColor(quiz.difficulty),
                     fontWeight: '500',
                     textTransform: 'capitalize'
@@ -176,7 +181,7 @@ function ChooseQuiz() {
                     {quiz.difficulty}
                   </span>
                 </div>
-                <div style={{ 
+                <div style={{
                   fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
@@ -228,7 +233,7 @@ function ChooseQuiz() {
         >
           Back
         </button>
-        
+
         <button
           onClick={handleSubmit}
           disabled={!selected}

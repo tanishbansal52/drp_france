@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import TeacherButton from './TeacherButton';
 
 function ShowAllQuestions() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const quizId = location.state?.quizId 
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -17,7 +19,8 @@ function ShowAllQuestions() {
       setLoading(true)
       setError(null)
 
-      const res = await fetch('https://drp-belgium.onrender.com/api/questions')
+      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
 
@@ -33,8 +36,10 @@ function ShowAllQuestions() {
   }
 
   useEffect(() => {
-    fetchQuestions()
-  }, [])
+    if (quizId) {
+      fetchQuestions()
+    }
+  }, [quizId])
 
   return (
     <>
@@ -55,10 +60,10 @@ function ShowAllQuestions() {
 
         {!loading && !error && (
           <>
-            {questions.slice(1).map((q, index) => (
+            {questions.map((q, index) => (
               <Card key={index} className="mb-3 shadow-sm">
                 <Card.Body>
-                  <div style = {{ whiteSpace: 'pre-wrap' }}> 
+                  <div style={{ whiteSpace: 'pre-wrap' }}>
                     <h5>{q.question_text}</h5>
                   </div>
                   {showAnswers && (
