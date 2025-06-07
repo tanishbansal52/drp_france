@@ -10,8 +10,8 @@ function ChooseQuiz() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
-      axios.get('http://localhost:8000/api/quizzes/')
+    axios.get('https://drp-belgium.onrender.com/api/quizzes/')
+      // axios.get('http://localhost:8000/api/quizzes/')
       .then(res => setQuizzes(res.data))
       .catch(err => {
         setError('Failed to fetch quizzes.');

@@ -19,7 +19,7 @@ function ShowAllQuestions() {
       setLoading(true)
       setError(null)
 
-      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
