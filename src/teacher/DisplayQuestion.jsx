@@ -15,11 +15,10 @@ function DisplayQuestion() {
   const { roomCode } = useParams()
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
-  const [currentIndex, setCurrentIndex] = useState(1)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
-
   const fetchQuestions = async () => {
     try {
       setLoading(true)
@@ -37,7 +36,7 @@ function DisplayQuestion() {
       }
 
       setQuestions(data)
-      setCurrentIndex(1)
+      setCurrentIndex(0)
     } catch (err) {
       console.error('Error fetching questions:', err)
       setError(err.message)
@@ -46,9 +45,6 @@ function DisplayQuestion() {
     }
   }
 
-  // useEffect(() => {
-  //   fetchQuestions()
-  // }, [])
 
     useEffect(() => {
       if (quizId) {
