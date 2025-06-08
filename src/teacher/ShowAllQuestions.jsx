@@ -9,6 +9,8 @@ function ShowAllQuestions() {
   const navigate = useNavigate()
   const location = useLocation()
   const quizId = location.state?.quizId
+  console.log('Quiz ID:', quizId)
+  localStorage.setItem('quizId', quizId);
   const quizTitle = location.state?.quizTitle
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
@@ -78,7 +80,11 @@ function ShowAllQuestions() {
             ))}
 
             <div className="text-center mt-4">
-              <TeacherButton variant="primary" className="me-3" onClick={() => navigate('/teacher/choosequiz')}>
+              <TeacherButton
+                variant="primary"
+                className="me-3"
+                onClick={() => navigate('/teacher/choosequiz', { state: { quizId, quizTitle } })}
+              >
                 Back
               </TeacherButton>
               <TeacherButton
@@ -88,7 +94,10 @@ function ShowAllQuestions() {
               >
                 {showAnswers ? 'Hide Answers' : 'Show Answers'}
               </TeacherButton>
-              <TeacherButton variant="primary" onClick={() => navigate('/teacher/dashboard')}>
+              <TeacherButton
+                variant="primary"
+                onClick={() => navigate('/teacher/dashboard', { state: { quizId:quizId } })}
+              >
                 Continue to Mission Code
               </TeacherButton>
             </div>

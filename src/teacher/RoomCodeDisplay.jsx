@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 
 function RoomCodeDisplay() {
+  const location = useLocation();
+  const quizId = location.state?.quizId
+  console.log('Quiz ID penultimate:', quizId);
+  localStorage.setItem('quizId', quizId);
   const [roomCode, setRoomCode] = useState('');
   const [groups, setGroups] = useState([]);
   const navigate = useNavigate();
@@ -14,7 +18,8 @@ function RoomCodeDisplay() {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setRoomCode(code);
 
-    fetch('https://drp-belgium.onrender.com/api/add-room/', {
+    // fetch('https://drp-belgium.onrender.com/api/add-room/', {
+    fetch('http://localhost:8000/api/add-room/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ room_code: code }),
@@ -37,7 +42,8 @@ function RoomCodeDisplay() {
     if (!roomCode) return;
 
     const interval = setInterval(() => {
-      fetch(`https://drp-belgium.onrender.com/api/get-room-groups/${roomCode}`)
+      // fetch(`https://drp-belgium.onrender.com/api/get-room-groups/${roomCode}`)
+      fetch(`http://localhost:8000/api/get-room-groups/${roomCode}`)
         .then((res) => res.json())
         .then((data) => {
           setGroups(Array.isArray(data) ? data : []);
@@ -208,7 +214,7 @@ function RoomCodeDisplay() {
                 size="lg"
                 onClick={async () => {
                   await incrementRoomsCurrentStatus(roomCode, 1)
-                  navigate(`/teacher/displayquestion/${roomCode}`)
+                  navigate(`/teacher/displayquestion/${roomCode}`, { state: { quizId } })
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'translateY(-2px)';

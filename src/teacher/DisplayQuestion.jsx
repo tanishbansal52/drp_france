@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
-import { useNavigate, useParams} from 'react-router-dom'  
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 
 
 function DisplayQuestion() {
-  const navigate = useNavigate()          
+  const location = useLocation();
+  const quizId = location.state?.quizId 
+  console.log('Quiz ID LAST:', quizId)
+  const navigate = useNavigate()
   const { roomCode } = useParams()
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
@@ -16,14 +19,16 @@ function DisplayQuestion() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
-  
+
   const fetchQuestions = async () => {
     try {
       setLoading(true)
       setError(null)
       setShowAnswer(false)
 
-      const res = await fetch('https://drp-belgium.onrender.com/api/questions')
+      // const res = await fetch('https://drp-belgium.onrender.com/api/questions')
+      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
 
@@ -41,19 +46,24 @@ function DisplayQuestion() {
     }
   }
 
-  useEffect(() => {
-    fetchQuestions()
-  }, [])
+  // useEffect(() => {
+  //   fetchQuestions()
+  // }, [])
 
+    useEffect(() => {
+      if (quizId) {
+        fetchQuestions()
+      }
+    }, [quizId])
 
   // grab the current question (or defaults)
   const current = questions[currentIndex] || {}
-  const topic    = current.quiz || ''
+  const topic = current.quiz || ''
   const question = current.question_text || ''
-  const answer   = current.answer || 'No answer available.'
+  const answer = current.answer || 'No answer available.'
 
   const isLast = currentIndex === questions.length - 1
-  
+
   const handleNext = async () => {
     setShowAnswer(false)
     setCurrentIndex(prev =>
@@ -100,11 +110,11 @@ function DisplayQuestion() {
                   </TeacherButton>
                   {isLast
                     ? <TeacherButton variant="light" onClick={handleFinish}>
-                        Finish Quiz
-                      </TeacherButton>
+                      Finish Quiz
+                    </TeacherButton>
                     : <TeacherButton variant="light" onClick={handleNext}>
-                        Next Question
-                      </TeacherButton>
+                      Next Question
+                    </TeacherButton>
                   }
                 </div>
               </>
