@@ -12,6 +12,8 @@ function End() {
   const groupId = location.state?.groupId || 0;
 
   const [selectedRating, setSelectedRating] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  
 
   const ratings = [
     { label: 'Very Negative', color: 'bg-red-500', value: 1 },
@@ -32,6 +34,7 @@ function End() {
       after_rating: selectedRating,
       group_id: groupId
     });
+    setSubmitted(true);
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
@@ -85,14 +88,13 @@ function End() {
       </div>
     
     <div className="flex flex-col items-center justify-center"> 
-      <a 
-        className="btn btn-warning btn-lg" 
+      <button
+        className="btn btn-warning btn-lg"
         onClick={() => navigate('/debrief')}
-        role="button" 
-        tabIndex={0}
+        disabled={!submitted}
       >
         Continue
-      </a>
+      </button>
     </div>
     </>
   );
