@@ -25,7 +25,7 @@ function WaitingArea() {
   const handleRatingSubmit = async () => {
     console.log(`Rating selected: ${selected}`);
     try {
-      const resp = await axios.post("http://localhost:8000/api/update-before-rating/", {
+      const resp = await axios.post("https://drp-belgium.onrender.com/api/update-before-rating/", {
       before_rating: selected,
       group_id: groupId
     });

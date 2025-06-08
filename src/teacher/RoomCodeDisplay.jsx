@@ -38,7 +38,7 @@ function RoomCodeDisplay() {
     if (!roomCode) return;
 
     const interval = setInterval(() => {
-      fetch(`http://localhost:8000/api/get-room-groups/${roomCode}`)
+      fetch(`https://drp-belgium.onrender.com/api/get-room-groups/${roomCode}`)
         .then((res) => res.json())
         .then((data) => {
           setGroups(Array.isArray(data) ? data : []);

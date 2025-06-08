@@ -35,7 +35,7 @@ function StudentLanding() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/api/join-room/", {
+      const res = await axios.post("https://drp-belgium.onrender.com/api/join-room/", {
         room_code: missionCode,
         group_name: groupName,
         student_names: trimmedNames // Send this to your Django backend
