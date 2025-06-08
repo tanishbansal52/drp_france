@@ -61,6 +61,9 @@ function IndividualQuestion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (answer === '') return
+
     try {
     // Make POST request with Axios
     const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {

@@ -11,8 +11,8 @@ function WaitingArea() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const {roomCode} = useParams()
+  const [submitted, setSubmitted] = useState(false);
 
-  console.log("Waiting area groupId:", groupId);
 
   const feelingLabels = [
     "Very Negative",
@@ -29,6 +29,7 @@ function WaitingArea() {
       before_rating: selected,
       group_id: groupId
     });
+    setSubmitted(true);
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
@@ -65,34 +66,25 @@ function WaitingArea() {
 
           <div className="feeling-selector">
             <div className="rating-scale">
-  {[1, 2, 3, 4, 5].map((rating) => (
-    <button
-      key={rating}
-      type="button"
-      onClick={() => setSelected(rating)}
-      className={`rating-button ${selected === rating ? 'selected' : ''}`}
-    >
-      <span className="rating-number">{rating}</span>
-      <span className="rating-label">{feelingLabels[rating - 1]}</span>
-    </button>
-  ))}
-  <button onClick={handleRatingSubmit} className="submit-rating-button">
-    Submit Rating
-  </button>
-</div>
-
-          </div>
-
-          <div className="action-section">
-            <Button 
-              variant="primary" 
-              onClick={() => navigate(`/start/${roomCode}`, {
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  type="button"
+                  onClick={() => setSelected(rating)}
+                  className={`rating-button ${selected === rating ? 'ring-2 ring-blue-800 ring-inset brightness-200' : ''}`}
+                >
+                  <span className="rating-number">{rating}</span>
+                  <span className="rating-label">{feelingLabels[rating - 1]}</span>
+                </button>
+              ))}
+              <button onClick={handleRatingSubmit} className="btn btn-primary" disabled={!selected}>
+                Submit Rating
+              </button>
+              <button className="btn btn-primary" disabled={!submitted} onClick={() => navigate(`/start/${roomCode}`, {
         state: { groupName, groupId }
       })}
-              className="view-rules-btn"
-            >
-              VIEW RULES
-            </Button>
+            > VIEW RULES </button>
+            </div>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Container, Card, Spinner, Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import TeacherButton from './TeacherButton';
 
 function ShowAllQuestions() {
@@ -11,6 +11,12 @@ function ShowAllQuestions() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswers, setShowAnswers] = useState(false)
+
+  const location = useLocation()
+  const quizTitle = location.state?.quizTitle || 'Quiz'
+  const quizId = location.state?.quizId || null
+
+  console.log(quizId)
 
   const fetchQuestions = async () => {
     try {
@@ -40,7 +46,7 @@ function ShowAllQuestions() {
     <>
       <NavBar />
       <div className="bg-primary text-white text-center py-3 mb-4">
-        <h1 className="m-0 display-5">All Questions - Algebra Basics </h1>
+        <h1 className="m-0 display-5">All Questions - {quizTitle} </h1>
       </div>
       <Container className="pb-5">
         {loading && (
@@ -81,7 +87,7 @@ function ShowAllQuestions() {
               >
                 {showAnswers ? 'Hide Answers' : 'Show Answers'}
               </TeacherButton>
-              <TeacherButton variant="primary" onClick={() => navigate('/teacher/dashboard')}>
+              <TeacherButton variant="primary" onClick={() => navigate('/teacher/dashboard', { state: { quizTitle, quizId } })}>
                 Continue to Mission Code
               </TeacherButton>
             </div>

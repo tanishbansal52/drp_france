@@ -7,6 +7,7 @@ import '../css/Choosequiz.css';
 function ChooseQuiz() {
   const [quizzes, setQuizzes] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -22,7 +23,8 @@ function ChooseQuiz() {
 
   const handleSubmit = () => {
     console.log('Selected quiz:', selected);
-    navigate('/teacher/allquestions');
+    console.log('Selected quiz ID:', selectedId);
+    navigate('/teacher/allquestions', {state: { quizTitle: selected, quizId: selectedId } });
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -121,7 +123,7 @@ function ChooseQuiz() {
               type="radio"
               name="quiz-selection"
               checked={selected === quiz.title}
-              onChange={() => setSelected(quiz.title)}
+              onChange={() => {setSelected(quiz.title); setSelectedId(quiz.quiz_id);}}
               style={{
                 width: '20px',
                 height: '20px',
