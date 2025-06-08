@@ -8,7 +8,8 @@ import TeacherButton from './TeacherButton';
 function ShowAllQuestions() {
   const navigate = useNavigate()
   const location = useLocation()
-  const quizId = location.state?.quizId 
+  const quizId = location.state?.quizId
+  const quizTitle = location.state?.quizTitle
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -19,7 +20,8 @@ function ShowAllQuestions() {
       setLoading(true)
       setError(null)
 
-      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
+      // const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
+      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
@@ -28,7 +30,7 @@ function ShowAllQuestions() {
 
       setQuestions(data)
     } catch (err) {
-      console.error('Error fetching questions:', err) 
+      console.error('Error fetching questions:', err)
       setError(err.message)
     } finally {
       setLoading(false)
@@ -45,7 +47,7 @@ function ShowAllQuestions() {
     <>
       <NavBar />
       <div className="bg-primary text-white text-center py-3 mb-4">
-        <h1 className="m-0 display-5">All Questions - Algebra Basics </h1>
+        <h1 className="m-0 display-5">All Questions - {quizTitle} </h1>
       </div>
       <Container className="pb-5">
         {loading && (

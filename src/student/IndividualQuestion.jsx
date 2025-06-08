@@ -41,8 +41,8 @@ function IndividualQuestion() {
 
   useEffect(() => {
     console.log('Fetching question from API...');
-    fetch('https://drp-belgium.onrender.com/api/questions/1/')
-      // fetch('http://127.0.0.1:8000/api/questions/1/')
+    // fetch('https://drp-belgium.onrender.com/api/questions/1/')
+      fetch('http://127.0.0.1:8000/api/questions/1/')  
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
