@@ -2,42 +2,34 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TeacherButton from './TeacherButton';
-import '../css/Choosequiz.css';
 
-function ChooseQuiz() {
-  const [quizzes, setQuizzes] = useState([]);
+function PastMissions() {
+  const [pastMissions, setPastMissions] = useState([]);
   const [selected, setSelected] = useState(null);
-  // const [selectedId, setSelectedId] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
-      axios.get('http://localhost:8000/api/quizzes/')
-      .then(res => setQuizzes(res.data))
+    axios.get('https://drp-belgium.onrender.com/api/past-missions/')
+    // axios.get('http://localhost:8000/api/past-missions/')
+      .then(res => {
+        setPastMissions(res.data.missions)
+        console.log(res.data)
+      })
       .catch(err => {
         setError('Failed to fetch quizzes.');
         console.error(err);
+        console.error(err.error)
       });
   }, []);
 
-
   const handleSubmit = () => {
-    const selectedQuiz = quizzes.find(q => q.title === selected);
-    if (selectedQuiz) {
-      console.log('Selected Quiz:', selectedQuiz.title);
-      console.log('Quiz ID:', selectedQuiz.quiz_id);
-      navigate('/teacher/allquestions', { 
-        state: { 
-          quizId: selectedQuiz.quiz_id, 
-          quizTitle: selectedQuiz.title 
-        } 
-      });
-    }
+    console.log('Selected quiz:', selected);
+    navigate('/teacher/allquestions');
   };
 
   const getDifficultyColor = (difficulty) => {
-    switch (difficulty?.toLowerCase()) {
+    switch(difficulty?.toLowerCase()) {
       case 'easy': return '#4ade80';
       case 'medium': return '#f59e0b';
       case 'hard': return '#ef4444';
@@ -47,8 +39,8 @@ function ChooseQuiz() {
 
   if (error) {
     return (
-      <div style={{
-        padding: '30px',
+      <div style={{ 
+        padding: '30px', 
         textAlign: 'center',
         color: '#ff4d4d',
         fontSize: '18px',
@@ -59,16 +51,16 @@ function ChooseQuiz() {
     );
   }
 
-  if (!quizzes.length) {
+  if (!pastMissions.length) {
     return (
-      <div style={{
-        padding: '30px',
+      <div style={{ 
+        padding: '30px', 
         textAlign: 'center',
         color: '#aefeff',
         fontSize: '18px',
         fontFamily: 'sans-serif'
       }}>
-        <div style={{ marginBottom: '20px' }}>Loading quizzes...</div>
+        <div style={{ marginBottom: '20px' }}>Loading past missions...</div>
         <div style={{
           width: '40px',
           height: '40px',
@@ -83,10 +75,8 @@ function ChooseQuiz() {
   }
 
   return (
-    <div style={{
-      padding: '30px',
-      color: '#aefeff',
-      fontFamily: 'sans-serif',
+    <div style={{ 
+      padding: '30px', 
       maxWidth: '800px',
       margin: '0 auto',
       minHeight: '100vh'
@@ -94,34 +84,41 @@ function ChooseQuiz() {
       <h2 style={{ 
         marginBottom: '30px',
       }}>
-        Choose Mission:
+        Past Missions:
       </h2>
 
       <div style={{ marginBottom: '40px' }}>
-        {quizzes.map((quiz, index) => (
+        {pastMissions.map((mission, index) => (
           <label
             key={index}
-            className='quiz-option'
             style={{
-              background: selected === quiz.title 
+              display: 'flex',
+              alignItems: 'flex-start',
+              marginBottom: '20px',
+              background: selected === mission.room_code 
                 ? 'rgba(0, 240, 255, 0.1)' 
                 : 'rgba(255, 255, 255, 0.05)',
-              border: selected === quiz.title 
+              padding: '20px',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              border: selected === mission.room_code 
                 ? '2px solid rgba(0, 240, 255, 0.5)' 
                 : '2px solid transparent',
-              boxShadow: selected === quiz.title
-                ? '0 0 20px rgba(0, 240, 255, 0.2)'
+              boxShadow: selected === mission.room_code  
+                ? '0 0 20px rgba(0, 240, 255, 0.2)' 
                 : '0 4px 6px rgba(0, 0, 0, 0.1)',
+              transform: 'translateY(0)',
             }}
             onMouseEnter={e => {
-              if (selected !== quiz.title) {
+              if (selected !== mission.room_code ) {
                 e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
                 e.currentTarget.style.transform = 'translateY(-2px)';
                 e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
               }
             }}
             onMouseLeave={e => {
-              if (selected !== quiz.title) {
+              if (selected !== mission.room_code) {
                 e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
@@ -131,8 +128,8 @@ function ChooseQuiz() {
             <input
               type="radio"
               name="quiz-selection"
-              checked={selected === quiz.title}
-              onChange={() => {setSelected(quiz.title)}}
+              checked={selected === mission.room_code }
+              onChange={() => setSelected(mission.room_code)}
               style={{
                 width: '20px',
                 height: '20px',
@@ -147,44 +144,51 @@ function ChooseQuiz() {
               textAlign: 'left',
               flex: 1,
             }}>
-              <div style={{
-                fontSize: '20px',
+              <div style={{ 
+                fontSize: '20px', 
                 color: '#aefeff',
                 fontWeight: '600',
                 marginBottom: '8px',
                 letterSpacing: '0.5px'
               }}>
-                {quiz.title}
+                {mission.room_code} : Created at {mission.created_at.split("T")
+    .map((part, index) => index === 0 ? part.split("-").reverse().join("-") : part.split(".")[0])
+    .join(", ")}
               </div>
-              <div style={{
+              <div style={{ 
                 display: 'flex',
                 gap: '20px',
                 flexWrap: 'wrap'
               }}>
-                <div style={{
+                <div style={{ 
                   fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px'
                 }}>
-                  <span style={{ color: '#999' }}>Difficulty:</span>
-                  <span style={{
-                    color: getDifficultyColor(quiz.difficulty),
-                    fontWeight: '500',
+                  <span style={{ 
+                    fontWeight: '1000',
                     textTransform: 'capitalize'
                   }}>
-                    {quiz.difficulty}
+                    Quiz title:<strong> {mission.quiz_title}</strong>
+                    <br />
+                    Total groups:<strong>  {mission.total_groups} </strong>  
                   </span>
                 </div>
-                <div style={{
+                <div style={{ 
                   fontSize: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px'
                 }}>
-                  <span style={{ color: '#999' }}>Time:</span>
                   <span style={{ color: '#aefeff', fontWeight: '500' }}>
-                    {quiz.total_time} min
+                    Subject: {mission.quiz_subject}
+                    <br />
+                    Difficulty: {mission.quiz_difficulty}
+                    <br />
+                    Total questions: {mission.total_questions} <strong> </strong>
+                    <br />
+                    Total time: {mission.total_time} minutes
                   </span>
                 </div>
               </div>
@@ -228,7 +232,7 @@ function ChooseQuiz() {
         >
           Back
         </button>
-
+        
         <button
           onClick={handleSubmit}
           disabled={!selected}
@@ -263,7 +267,7 @@ function ChooseQuiz() {
             }
           }}
         >
-          Preview Questions
+          View Report
         </button>
       </div>
 
@@ -277,4 +281,4 @@ function ChooseQuiz() {
   );
 }
 
-export default ChooseQuiz;
+export default PastMissions;

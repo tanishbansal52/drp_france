@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "../css/Waiting.css";
+import axios from "axios";
 
 function WaitingArea() {
   const location = useLocation();
   const groupName = location.state?.groupName || "Default Group";
+  const groupId = location.state?.groupId || 0;
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const {roomCode} = useParams()
+  const [submitted, setSubmitted] = useState(false);
+
 
   const feelingLabels = [
     "Very Negative",
@@ -17,6 +21,19 @@ function WaitingArea() {
     "Positive",
     "Very Positive"
   ];
+
+  const handleRatingSubmit = async () => {
+    console.log(`Rating selected: ${selected}`);
+    try {
+      const resp = await axios.post("https://drp-belgium.onrender.com/api/update-before-rating/", {
+      before_rating: selected,
+      group_id: groupId
+    });
+    setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+    }
+  }
 
   return (
     <>
@@ -43,7 +60,7 @@ function WaitingArea() {
               The mission your teacher has assigned you is <strong>Algebra</strong>!
             </p>
             <p className="question-text">
-              How do you feel about Algebra before the mission?
+              How confident do you feel about Algebra before the mission?
             </p>
           </div>
 
@@ -54,23 +71,20 @@ function WaitingArea() {
                   key={rating}
                   type="button"
                   onClick={() => setSelected(rating)}
-                  className={`rating-button ${selected === rating ? 'selected' : ''}`}
+                  className={`rating-button ${selected === rating ? 'ring-2 ring-blue-800 ring-inset brightness-200' : ''}`}
                 >
                   <span className="rating-number">{rating}</span>
                   <span className="rating-label">{feelingLabels[rating - 1]}</span>
                 </button>
               ))}
+              <button onClick={handleRatingSubmit} className="btn btn-primary" disabled={!selected}>
+                Submit Rating
+              </button>
+              <button className="btn btn-primary" disabled={!submitted} onClick={() => navigate(`/start/${roomCode}`, {
+        state: { groupName, groupId }
+      })}
+            > VIEW RULES </button>
             </div>
-          </div>
-
-          <div className="action-section">
-            <Button 
-              variant="primary" 
-              onClick={() => navigate(`/start/${roomCode}`)}
-              className="view-rules-btn"
-            >
-              VIEW RULES
-            </Button>
           </div>
         </div>
       </div>

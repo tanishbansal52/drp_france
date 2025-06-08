@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'  
+import { useNavigate, useParams, useLocation } from 'react-router-dom'  
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Form, Button, Alert } from 'react-bootstrap'
 import '../css/IndividualQuestion.css'
@@ -15,6 +15,10 @@ function IndividualQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const location = useLocation();
+  const groupId = location.state?.groupId || 0;  
+
+  console.log("groupId in Individual q:", groupId);
 
   // New: read question aloud
   const readQuestion = () => {
@@ -55,59 +59,15 @@ function IndividualQuestion() {
       .catch(error => console.error('Error:', error));
   }, []);
 
-  // const handleSubmit = async(e) => {
-  //   console.log("SOME PATH")
-    // e.preventDefault();
-    // console.log("SOME PATH")
-    // if (answer === '') {
-    //   return;
-    // }
-    // if (answer == rightAnswer) {
-    //   navigate('/correct');
-    // } else {
-    //   if (incorrect < 2) {
-    //     setIncorrect(incorrect + 1);
-    //     setAlertMessage('That was not correct, try again!');
-    //     setShowAlert(true);
-    //     return;
-    //   }
-    //   navigate('/incorrect');
-    // }
-
-
-  //   const res = await
-  //   axios.post("https://drp-belgium.onrender.com/api/submit/", {
-  //       group_id: 1, // Replace with real group ID if needed
-  //       question_id: question.question_id,
-  //       answer: answer
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       if (data.correct == true) {
-  //         console.log("CORRECT PATH")
-  //         navigate('/correct');
-  //       } else {
-  //         console.log("INCORRECT PATH")
-  //         if (incorrect < 2) {
-  //           setIncorrect(incorrect + 1);
-  //           setAlertMessage('That was not correct, try again!');
-  //           setShowAlert(true);
-  //           return;
-  //         }
-  //         navigate('/incorrect');
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Submission error:', err);
-  //     });
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (answer === '') return
+
     try {
     // Make POST request with Axios
     const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
-      group_id: 1, // Replace with real group ID if needed
+      group_id: groupId,
       question_id: question.question_id,
       answer: answer
     });
@@ -118,7 +78,7 @@ function IndividualQuestion() {
     if (data.correct) {
       console.log("CORRECT PATH");
       navigate('/correct', {
-        state: { roomCode, questionNo: 1 }
+        state: { roomCode, questionNo: 1, groupId }
       })
     } else {
       console.log("INCORRECT PATH");
@@ -129,7 +89,7 @@ function IndividualQuestion() {
         return;
       }
       navigate('/incorrect', {
-        state: { roomCode, questionNo: 1 }
+        state: { roomCode, questionNo: 1, groupId }
       })
     }
   } catch (err) {

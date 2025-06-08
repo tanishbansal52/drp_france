@@ -17,6 +17,12 @@ function ShowAllQuestions() {
   const [error, setError] = useState(null)
   const [showAnswers, setShowAnswers] = useState(false)
 
+  // const location = useLocation()
+  // const quizTitle = location.state?.quizTitle || 'Quiz'
+  // const quizId = location.state?.quizId || null
+
+  console.log(quizId)
+
   const fetchQuestions = async () => {
     try {
       setLoading(true)
@@ -94,10 +100,7 @@ function ShowAllQuestions() {
               >
                 {showAnswers ? 'Hide Answers' : 'Show Answers'}
               </TeacherButton>
-              <TeacherButton
-                variant="primary"
-                onClick={() => navigate('/teacher/dashboard', { state: { quizId:quizId } })}
-              >
+              <TeacherButton variant="primary" onClick={() => navigate('/teacher/dashboard', { state: { quizTitle, quizId } })}>
                 Continue to Mission Code
               </TeacherButton>
             </div>

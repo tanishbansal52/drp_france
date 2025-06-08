@@ -2,8 +2,9 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom' 
+import { useNavigate, useParams, useLocation } from 'react-router-dom' 
 import { canMoveToNextQuestion } from './TeacherLinking'
+import axios from 'axios';
 
 import NavBar from '../NavBar';
 
@@ -18,6 +19,8 @@ function GroupQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const location = useLocation();
+  const groupId = location.state?.groupId || 0;
 
   // New: read question aloud
   const readQuestion = () => {
@@ -70,14 +73,29 @@ function GroupQuestion() {
 
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (answer === '') return
+
+    try {
+    // Make POST request with Axios
+    console.log('Submitting answer:', answer);
+    console.log('Group ID:', groupId);
+    console.log('Question ID:', question.question_id);
+    const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
+      group_id: groupId,
+      question_id: 3,
+      answer: answer
+    });
+
+    // Handle the response data
+    const data = response.data; // Axios automatically parses the response
 
     if (answer == rightAnswer) {
       // → navigate into Correct.jsx, passing roomCode & questionNo
       navigate('/correct', {
-        state: { roomCode, questionNo: 2 }
+        state: { roomCode, questionNo: 2, groupId }
       })
     } else {
       if (incorrect < 2) {
@@ -88,9 +106,16 @@ function GroupQuestion() {
         return;
       }
       navigate('/incorrect', {
-        state: { roomCode, questionNo: 2 }
+        state: { roomCode, questionNo: 2, groupId }
       })
     }
+  }
+  catch (err) {
+    // Catch any error that occurs during the request
+    console.error('Submission error:', err.error);
+    setAlertMessage('Something went wrong. Please try again later.');
+    setShowAlert(true);
+  }
   };
 
   const handleColorClick = (letter) => {

@@ -14,6 +14,7 @@ function TeacherLanding() {
   const handleViewPastMissions = () => {
     // Not implemented yet
     console.log('View past missions - not implemented');
+    navigate('/teacher/pastmissions');
   };
 
   return (
@@ -28,7 +29,7 @@ function TeacherLanding() {
           <Col xl={10} lg={12}>
             <Row className="g-5">
               {/* Start New Mission Section */}
-              <Col md={12}>
+              <Col md={6}>
                 <Card className="shadow-lg h-100" style={{ 
                   background: 'rgba(13, 202, 240, 0.1)', 
                   border: '2px solid #0dcaf0',
@@ -53,7 +54,7 @@ function TeacherLanding() {
                 </Card>
               </Col>
 
-              {/* Past Missions Section
+              {/* Past Missions Section */}
               <Col md={6}>
                 <Card className="shadow-lg h-100" style={{ 
                   background: 'rgba(13, 202, 240, 0.05)', 
@@ -77,7 +78,7 @@ function TeacherLanding() {
                     </div>
                   </Card.Body>
                 </Card>
-              </Col> */}
+              </Col>
             </Row>
           </Col>
         </Row>

@@ -12,7 +12,12 @@ function RoomCodeDisplay() {
   localStorage.setItem('quizId', quizId);
   const [roomCode, setRoomCode] = useState('');
   const [groups, setGroups] = useState([]);
+  const [showMembers, setShowMembers] = useState(false);
   const navigate = useNavigate();
+
+  // const location = useLocation()
+  // const quizTitle = location.state?.quizTitle || 'Quiz'
+  // const quizId = location.state?.quizId || null
 
   useEffect(() => {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -22,7 +27,7 @@ function RoomCodeDisplay() {
     fetch('http://localhost:8000/api/add-room/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ room_code: code }),
+      body: JSON.stringify({ room_code: code, quiz_id: quizId }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -137,25 +142,62 @@ function RoomCodeDisplay() {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      overflowY: 'auto',
+      maxHeight: '400px'
     },
-    groupBadge: {
+    groupItem: {
+      width: '100%',
+      marginBottom: '15px',
+      textAlign: 'center'
+    },
+    groupName: {
       background: 'linear-gradient(45deg, rgba(0, 255, 255, 0.15), rgba(0, 128, 255, 0.2))',
       border: '1px solid rgba(0, 255, 255, 0.4)',
       color: '#00ffff',
-      padding: '10px 18px',
+      padding: '12px 20px',
       margin: '6px',
       borderRadius: '20px',
-      fontSize: '0.95rem',
-      fontWeight: '500',
+      fontSize: '1.1rem', // Made slightly bigger
+      fontWeight: '600',
       backdropFilter: 'blur(10px)',
       boxShadow: '0 4px 15px rgba(0, 255, 255, 0.15)',
-      transition: 'all 0.3s ease'
+      transition: 'all 0.3s ease',
+      display: 'inline-block'
+    },
+    membersList: {
+      marginTop: '8px',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: '6px'
+    },
+    memberBadge: {
+      background: 'rgba(0, 255, 255, 0.08)',
+      border: '1px solid rgba(0, 255, 255, 0.25)',
+      color: 'rgba(255, 255, 255, 0.8)',
+      padding: '6px 12px',
+      borderRadius: '12px',
+      fontSize: '0.85rem', // Normal size for members
+      fontWeight: '400',
+      backdropFilter: 'blur(5px)',
+      boxShadow: '0 2px 8px rgba(0, 255, 255, 0.1)'
     },
     waitingText: {
       color: 'rgba(255, 255, 255, 0.6)',
       fontSize: '1rem',
       fontStyle: 'italic'
+    },
+    toggleButton: {
+      background: 'linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.3))',
+      border: '1px solid rgba(0, 255, 255, 0.4)',
+      color: '#00ffff',
+      padding: '10px 20px',
+      fontSize: '0.9rem',
+      fontWeight: '500',
+      borderRadius: '8px',
+      transition: 'all 0.3s ease',
+      marginTop: '15px'
     },
     boxGlow: {
       position: 'absolute',
@@ -248,21 +290,38 @@ function RoomCodeDisplay() {
                 <h2 style={styles.groupsTitle}>Joined Groups</h2>
                 <div style={styles.groupsContainer}>
                   {groups.length > 0 ? (
-                    <div className="d-flex flex-wrap justify-content-center">
+                    <div className="w-100">
                       {groups.map((group, idx) => (
                         <div 
                           key={idx} 
-                          style={styles.groupBadge}
-                          onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-2px) scale(1.05)';
-                            e.target.style.boxShadow = '0 6px 20px rgba(0, 255, 255, 0.25)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0) scale(1)';
-                            e.target.style.boxShadow = '0 4px 15px rgba(0, 255, 255, 0.15)';
-                          }}
+                          style={styles.groupItem}
                         >
-                          {group.name}
+                          <div 
+                            style={styles.groupName}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                              e.target.style.boxShadow = '0 6px 20px rgba(0, 255, 255, 0.25)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'translateY(0) scale(1)';
+                              e.target.style.boxShadow = '0 4px 15px rgba(0, 255, 255, 0.15)';
+                            }}
+                          >
+                            {group.name}
+                          </div>
+                          {console.log(group.members)}
+                          {showMembers && group.members && (
+                            <div style={styles.membersList}>
+                              {group.members.map((member, memberIdx) => (
+                                <div 
+                                  key={memberIdx} 
+                                  style={styles.memberBadge}
+                                >
+                                  {member}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -270,6 +329,20 @@ function RoomCodeDisplay() {
                     <p style={styles.waitingText}>Waiting for groups to join...</p>
                   )}
                 </div>
+                <TeacherButton 
+                  style={styles.toggleButton}
+                  onClick={() => setShowMembers(!showMembers)}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(0, 255, 255, 0.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  {showMembers ? 'Hide group members' : 'See group members'}
+                </TeacherButton>
               </div>
             </div>
           </Col>
