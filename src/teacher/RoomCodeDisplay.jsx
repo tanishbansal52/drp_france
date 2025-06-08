@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 
@@ -11,6 +11,10 @@ function RoomCodeDisplay() {
   const [showMembers, setShowMembers] = useState(false);
   const navigate = useNavigate();
 
+  const location = useLocation()
+  const quizTitle = location.state?.quizTitle || 'Quiz'
+  const quizId = location.state?.quizId || null
+
   useEffect(() => {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setRoomCode(code);
@@ -18,7 +22,7 @@ function RoomCodeDisplay() {
     fetch('https://drp-belgium.onrender.com/api/add-room/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ room_code: code }),
+      body: JSON.stringify({ room_code: code, quiz_id: quizId }),
     })
       .then((response) => {
         if (!response.ok) {
