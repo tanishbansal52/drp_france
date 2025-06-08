@@ -9,6 +9,7 @@ import axios from 'axios';
 function IndividualQuestion() {
   const navigate = useNavigate()
   const { roomCode } = useParams()
+  const [quizId, setQuizId] = useState(null);
   const [answer, setAnswer] = useState('')
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
@@ -19,6 +20,22 @@ function IndividualQuestion() {
   const groupId = location.state?.groupId || 0;  
 
   console.log("groupId in Individual q:", groupId);
+
+    useEffect(() => {
+    if (!roomCode) return;
+    fetch(`http://127.0.0.1:8000/api/get-room-quiz-id/${roomCode}/`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.quiz_id) {
+          setQuizId(data.quiz_id);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching quizId:', err);
+      });
+  }, [roomCode]);
+
+  console.log('Quiz ID VIA ROOM CODE:', quizId);
 
   // New: read question aloud
   const readQuestion = () => {
@@ -46,7 +63,7 @@ function IndividualQuestion() {
   useEffect(() => {
     console.log('Fetching question from API...');
     // fetch('https://drp-belgium.onrender.com/api/questions/1/')
-      fetch('http://127.0.0.1:8000/api/questions/1/')  
+      fetch(`http://127.0.0.1:8000/api/questions/0/${quizId}/`)  
       .then(response => response.json())
       .then(data => {
         // API returns object with 'question' field
@@ -57,7 +74,7 @@ function IndividualQuestion() {
         console.log('Question fetched:', data.question);
       })
       .catch(error => console.error('Error:', error));
-  }, []);
+  }, [quizId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
