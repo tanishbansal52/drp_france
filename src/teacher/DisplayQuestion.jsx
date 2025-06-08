@@ -64,7 +64,7 @@ function DisplayQuestion() {
 
   const handleFinish = async () => {
     await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
-    navigate('/finish')
+    navigate('/teacher/finish', {state: { roomCode }})
   }
 
   return (

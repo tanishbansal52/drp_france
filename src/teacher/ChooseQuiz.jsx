@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TeacherButton from './TeacherButton';
-import '../css/ChooseQuiz.css';
+import '../css/Choosequiz.css'; // Assuming you have a CSS file for styles
 
 function ChooseQuiz() {
   const [quizzes, setQuizzes] = useState([]);

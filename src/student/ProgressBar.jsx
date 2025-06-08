@@ -23,7 +23,7 @@ function MissionProgress() {
     if (path.includes('/groupquestion')) return { stage: 5, name: 'Group Question' };
     if (path.includes('/end')) return { stage: 7, name: 'Reflection' };
     if (path.includes('/debrief')) return { stage: 8, name: 'Debrief' };
-    if (path.includes('/finish')) return { stage: 9, name: 'Complete' };
+    if (path.includes('/teacher/finish')) return { stage: 9, name: 'Complete' };
     
     return { stage: 1, name: 'Waiting Room' }; // Default
   };

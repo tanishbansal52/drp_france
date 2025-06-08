@@ -20,7 +20,7 @@ import HomePage from './HomePage.jsx';
 import TeacherLanding from './teacher/TeacherLanding.jsx';
 import StudentLanding from './student/StudentLanding.jsx';
 import DisplayQuestion from './teacher/DisplayQuestion.jsx';
-import Finish from './Finish.jsx';
+import Finish from './teacher/Finish.jsx';
 import ChooseQuiz from './teacher/ChooseQuiz.jsx';
 import ShowAllQuestions from './teacher/ShowAllQuestions.jsx';
 import TeacherLayout from './teacher/TeacherLayout.jsx';
@@ -46,7 +46,6 @@ createRoot(document.getElementById('root')).render(
               <Route path="/incorrect" element={<StudentLayout><Incorrect /></StudentLayout>} />
               <Route path="/end" element={<StudentLayout><End /></StudentLayout>} />
               <Route path="/debrief" element={<StudentLayout><Debrief /></StudentLayout>} />
-              <Route path="/finish" element={<StudentLayout><Finish/></StudentLayout>} />
 
               {/* Teacher routes wrapped in TeacherLayout */}
               <Route path="/teacher" element={<TeacherLayout><TeacherLanding /></TeacherLayout>} />
@@ -55,6 +54,8 @@ createRoot(document.getElementById('root')).render(
               <Route path="/teacher/dashboard" element={<TeacherLayout><DisplayRoomCode/></TeacherLayout>} />
               <Route path="/teacher/displayquestion/:roomCode" element={<TeacherLayout><DisplayQuestion /></TeacherLayout>} />
               <Route path="/teacher/pastmissions" element={<TeacherLayout><PastMissions/></TeacherLayout>} />
+              <Route path="/teacher/finish" element={<TeacherLayout><Finish/></TeacherLayout>} />
+
           </Routes>
       </Router>
     </>
