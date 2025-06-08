@@ -24,10 +24,10 @@ function ChooseQuiz() {
     const selectedQuiz = quizzes.find(q => q.title === selected);
     if (selectedQuiz) {
       console.log('Selected Quiz:', selectedQuiz.title);
-      console.log('Quiz ID:', selectedQuiz.id);
+      console.log('Quiz ID:', selectedQuiz.quiz_id);
       navigate('/teacher/allquestions', { 
         state: { 
-          quizId: selectedQuiz.id, 
+          quizId: selectedQuiz.quiz_id, 
           quizTitle: selectedQuiz.title 
         } 
       });

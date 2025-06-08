@@ -6,7 +6,6 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 
-
 function DisplayQuestion() {
   const location = useLocation();
   const quizId = location.state?.quizId 
