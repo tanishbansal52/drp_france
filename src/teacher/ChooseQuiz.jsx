@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TeacherButton from './TeacherButton';
+import '../css/ChooseQuiz.css';
 
 function ChooseQuiz() {
   const [quizzes, setQuizzes] = useState([]);
@@ -89,24 +90,17 @@ function ChooseQuiz() {
         {quizzes.map((quiz, index) => (
           <label
             key={index}
+            className='quiz-option'
             style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              marginBottom: '20px',
               background: selected === quiz.title 
                 ? 'rgba(0, 240, 255, 0.1)' 
                 : 'rgba(255, 255, 255, 0.05)',
-              padding: '20px',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
               border: selected === quiz.title 
                 ? '2px solid rgba(0, 240, 255, 0.5)' 
                 : '2px solid transparent',
               boxShadow: selected === quiz.title 
                 ? '0 0 20px rgba(0, 240, 255, 0.2)' 
                 : '0 4px 6px rgba(0, 0, 0, 0.1)',
-              transform: 'translateY(0)',
             }}
             onMouseEnter={e => {
               if (selected !== quiz.title) {
