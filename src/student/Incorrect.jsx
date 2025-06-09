@@ -10,7 +10,7 @@ function Incorrect() {
   const roomCode = location.state?.roomCode;
   const groupId = location.state?.groupId || 0;  
   const questionNo = location.state?.questionNo;
-  const [canMove, setCanMove] = useState(false);
+  const [canMove, setCanMove] = useState(true);
 
   console.log("groupId in Incorrect:", groupId);
 
