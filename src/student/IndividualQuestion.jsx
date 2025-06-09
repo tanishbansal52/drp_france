@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'  
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { Form, Button, Alert } from 'react-bootstrap'
 import '../css/IndividualQuestion.css'
@@ -9,7 +9,10 @@ import axios from 'axios';
 function IndividualQuestion() {
   const navigate = useNavigate()
   const { roomCode } = useParams()
-  const [quizId, setQuizId] = useState(null);
+  const [quizId, setQuizId] = useState();
+  localStorage.setItem('quizId', quizId);
+  const [qNumber, setQNumber] = useState(0); // Start with question 1
+  localStorage.setItem('qNumber', qNumber);
   const [answer, setAnswer] = useState('')
   const [question, setQuestion] = useState('');
   const [incorrect, setIncorrect] = useState(1);
@@ -17,11 +20,11 @@ function IndividualQuestion() {
   const [alertMessage, setAlertMessage] = useState('');
 
   const location = useLocation();
-  const groupId = location.state?.groupId || 0;  
+  const groupId = location.state?.groupId || 0;
 
   console.log("groupId in Individual q:", groupId);
 
-    useEffect(() => {
+  useEffect(() => {
     if (!roomCode) return;
     fetch(`http://127.0.0.1:8000/api/get-room-quiz-id/${roomCode}/`)
       .then(res => res.json())
@@ -61,20 +64,23 @@ function IndividualQuestion() {
   }, [question])
 
   useEffect(() => {
+    if (!quizId && quizId !== 0) return;
     console.log('Fetching question from API...');
     // fetch('https://drp-belgium.onrender.com/api/questions/1/')
-      fetch(`http://127.0.0.1:8000/api/questions/0/${quizId}/`)  
+    fetch(`http://127.0.0.1:8000/api/questions/${qNumber}/${quizId}/`)
       .then(response => response.json())
       .then(data => {
+        console.log('question number:', qNumber);
         // API returns object with 'question' field
         if (data && data.question_text) {
           setQuestion(data);
           // setRightAnswer(data.answer || "0"); // Right answer from API
         }
-        console.log('Question fetched:', data.question);
+        console.log('fetched q number:', qNumber);
+        console.log('Question fetched:', data.question_text);
       })
       .catch(error => console.error('Error:', error));
-  }, [quizId]);
+  }, [quizId, qNumber]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,40 +88,41 @@ function IndividualQuestion() {
     if (answer === '') return
 
     try {
-    // Make POST request with Axios
-    const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
-      group_id: groupId,
-      question_id: question.question_id,
-      answer: answer
-    });
+      // Make POST request with Axios
+      const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
+        group_id: groupId,
+        question_id: question.question_id,
+        answer: answer
+      });
 
-    // Handle the response data
-    const data = response.data; // Axios automatically parses the response
+      // Handle the response data
+      const data = response.data; // Axios automatically parses the response
 
-    if (data.correct) {
-      console.log("CORRECT PATH");
-      navigate('/correct', {
-        state: { roomCode, questionNo: 1, groupId }
-      })
-    } else {
-      console.log("INCORRECT PATH");
-      if (incorrect < 2) {
-        setIncorrect(incorrect + 1);
-        setAlertMessage('That was not correct, try again!');
-        setShowAlert(true);
-        return;
+      if (data.correct) {
+        console.log("CORRECT ANSWER ENTERED PATH");
+        setQNumber(qNumber + 1);
+        navigate('/correct', {
+          state: { roomCode, questionNo: 1, groupId }
+        })
+      } else {
+        console.log("INCORRECT PATH");
+        if (incorrect < 2) {
+          setIncorrect(incorrect + 1);
+          setAlertMessage('That was not correct, try again!');
+          setShowAlert(true);
+          return;
+        }
+        navigate('/incorrect', {
+          state: { roomCode, questionNo: 1, groupId }
+        })
       }
-      navigate('/incorrect', {
-        state: { roomCode, questionNo: 1, groupId }
-      })
+    } catch (err) {
+      // Catch any error that occurs during the request
+      console.error('Submission error:', err);
+      setAlertMessage('Something went wrong. Please try again later.');
+      setShowAlert(true);
     }
-  } catch (err) {
-    // Catch any error that occurs during the request
-    console.error('Submission error:', err);
-    setAlertMessage('Something went wrong. Please try again later.');
-    setShowAlert(true);
-  }
-};
+  };
 
 
   return (
@@ -176,7 +183,7 @@ function IndividualQuestion() {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
-            <div style = {{ whiteSpace: 'pre-wrap' }}> 
+            <div style={{ whiteSpace: 'pre-wrap' }}>
               <p className="h5">{question ? question.question_text : "Loading question"} </p>
             </div>
           </Form.Label>

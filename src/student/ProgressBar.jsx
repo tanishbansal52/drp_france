@@ -11,7 +11,7 @@ function MissionProgress() {
   const getCurrentStage = () => {
     if (path.includes('/waiting')) return { stage: 1, name: 'Waiting Room' };
     if (path.includes('/start')) return { stage: 2, name: 'Rules' };
-    if (path.includes('/question1')) return { stage: 3, name: 'Question 1' };
+    if (path.includes('/textQs')) return { stage: 3, name: 'Question 1' };
     if (path.includes('/correct') || path.includes('/incorrect')) {
       // Check state from location to determine which question's result we're showing
       const questionNo = location.state?.questionNo || 1;

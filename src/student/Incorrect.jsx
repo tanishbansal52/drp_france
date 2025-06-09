@@ -7,8 +7,10 @@ import { canMoveToNextQuestion } from './TeacherLinking'
 function Incorrect() {
   const navigate = useNavigate();
   const location = useLocation();
+  const qNumber = location.state?.qNumber;
+  const quizId = location.state?.quizId || localStorage.getItem('quizId');
   const roomCode = location.state?.roomCode;
-  const groupId = location.state?.groupId || 0;  
+  const groupId = location.state?.groupId || 0;
   const questionNo = location.state?.questionNo;
   const [canMove, setCanMove] = useState(true);
 
@@ -31,64 +33,90 @@ function Incorrect() {
     }
   }, [roomCode, questionNo])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const nextPath = questionNo === 1
-      ? `/groupquestion/${roomCode}`
-      : `/end`
-    navigate(nextPath, {
-      state: { roomCode, questionNo: questionNo + 1, groupId }
-    })
-  }
+  // const handleSubmit = (e) => {
+  //   e.preventDefault()
+  //   const nextPath = questionNo === 1
+  //     ? `/groupquestion/${roomCode}`
+  //     : `/end`
+  //   navigate(nextPath, {
+  //     state: { roomCode, questionNo: questionNo + 1, groupId }
+  //   })
+  // }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Call your API to get the question type
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/question-type/${qNumber}/${quizId}/`);
+      const data = await response.json();
+
+      if (data.type === 'text') {
+        // If type is text, navigate as before
+        navigate(`/textQs/${roomCode}`, {
+          state: { roomCode, questionNo: questionNo + 1, groupId }
+        });
+      } else {
+        // Otherwise, navigate to groupquestion
+        navigate(`/groupquestion/${roomCode}`, {
+          state: { roomCode, questionNo: questionNo + 1, groupId }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching question type:', error);
+      // Optionally handle error (show alert, etc.)
+    }
+  };
 
   return (
     <>
       <NavBar />
       <div style={{ paddingTop: '70px' }} className="text-center">
         <div className="space-y-6 font-handwriting text-2xl text-gray-800">
-            <h1 className="text-3xl">Oh Dear!</h1>
-            <p>That was not the correct answer. You have exhausted</p>
-            <p>all your attempts. You do not gain any points.</p>
-            <p>The total points you have collected so far: 0</p>
-          </div>
+          <h1 className="text-3xl">Oh Dear!</h1>
+          <p>That was not the correct answer. You have exhausted</p>
+          <p>all your attempts. You do not gain any points.</p>
+          <p>The total points you have collected so far: 0</p>
+        </div>
 
-          <button
-            className="btn btn-info mt-4"
-            onClick={handleSubmit}
-            disabled={!canMove}
+        <button
+          className="btn btn-info mt-4"
+          onClick={handleSubmit}
+          disabled={!canMove}
+        >
+          Move to {questionNo === 1 ? 'Group Question' : 'End of Quiz'}
+        </button>
+
+        {!canMove && (
+          <p className="text-center text-gray-600 mt-2">
+            Waiting for your teacher to move to next question...
+          </p>
+        )}
+
+        <div className="d-flex justify-content-center mt-3">
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            className="text-red-500"
           >
-            Move to {questionNo === 1 ? 'Group Question' : 'End of Quiz'}
-          </button>
-
-          {!canMove && (
-            <p className="text-center text-gray-600 mt-2">
-              Waiting for your teacher to move to next question...
-            </p>
-          )}
-
-          <div className="d-flex justify-content-center mt-3">
-            <svg 
-              width="120" 
-              height="120" 
-              viewBox="0 0 120 120" 
-              className="text-red-500"
-            >
-              <path
-                d="M30 30 L90 90 M90 30 L30 90"
-                stroke="currentColor"
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-          </div>
-          <div className="d-flex justify-content-center">
-            <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDV3a2lkanQxajhkbTFoaG11dWZ5Z3o5ZHY3MGdpeDNqYW01ZmRyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y3AuOkzCGoPJ6VGyX2/giphy.gif" alt="Funny gif" />
-          </div>
+            <path
+              d="M30 30 L90 90 M90 30 L30 90"
+              stroke="currentColor"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+        </div>
+        <div className="d-flex justify-content-center">
+          <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDV3a2lkanQxajhkbTFoaG11dWZ5Z3o5ZHY3MGdpeDNqYW01ZmRyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y3AuOkzCGoPJ6VGyX2/giphy.gif" alt="Funny gif" />
+        </div>
       </div>
-    
-        </>
+
+    </>
   );
 }
 export default Incorrect;

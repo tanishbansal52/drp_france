@@ -22,7 +22,7 @@ function Start() {
     const ok = await canMoveToNextQuestion(roomCode, 0) 
     console.log("In start can move to next question:", ok)
     if (ok) {
-      navigate(`/question1/${roomCode}`, {
+      navigate(`/textQs/${roomCode}`, {
         state: { groupId }
       })
     } else {

@@ -7,6 +7,8 @@ import {canMoveToNextQuestion} from './TeacherLinking';
 function Correct() {
   const navigate = useNavigate();
   const location = useLocation();
+  const qNumber = location.state?.qNumber;
+  const quizId = location.state?.quizId || localStorage.getItem('quizId');
   const roomCode = location.state?.roomCode;
   const groupId = location.state?.groupId || 0;  
   const questionNo = location.state?.questionNo;
@@ -34,15 +36,29 @@ function Correct() {
     };
   }, [roomCode, questionNo]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // decide next path
-    const nextPath = questionNo === 1
-      ? `/groupquestion/${roomCode}`
-      : `/end`;
-    navigate(nextPath, {
-      state: { roomCode, questionNo: questionNo + 1, groupId }
-    });
+
+    // Call your API to get the question type
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/question-type/${qNumber}/${quizId}/`);
+      const data = await response.json();
+
+      if (data.type === 'text') {
+        // If type is text, navigate as before
+        navigate(`/textQs/${roomCode}`, {
+          state: { roomCode, questionNo: questionNo + 1, groupId }
+        });
+      } else {
+        // Otherwise, navigate to groupquestion
+        navigate(`/groupquestion/${roomCode}`, {
+          state: { roomCode, questionNo: questionNo + 1, groupId }
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching question type:', error);
+      // Optionally handle error (show alert, etc.)
+    }
   };
 
   return (

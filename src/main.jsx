@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/student" element={<StudentLayout><StudentLanding /></StudentLayout>} />
               <Route path="/waiting/:roomCode" element={<StudentLayout><WaitingArea /></StudentLayout>} />
               <Route path="/start/:roomCode" element={<StudentLayout><Start /></StudentLayout>} />
-              <Route path="/question1/:roomCode" element={<StudentLayout><IndividualQuestion /></StudentLayout>} />
+              <Route path="/textQs/:roomCode" element={<StudentLayout><IndividualQuestion /></StudentLayout>} />
               <Route path="/groupquestion/:roomCode" element={<StudentLayout><GroupQuestion /></StudentLayout>} />
               <Route path="/correct" element={<StudentLayout><Correct /></StudentLayout>} />
               <Route path="/incorrect" element={<StudentLayout><Incorrect /></StudentLayout>} />
