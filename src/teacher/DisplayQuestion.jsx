@@ -28,7 +28,7 @@ function DisplayQuestion() {
     // Updates state with finished groups and total count
     try {
       setGroupsError(null)
-      const resp = await axios.get(`http://localhost:8000/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
       if (resp.status !== 200) {
         throw new Error(`HTTP ${resp.status}`)
       }
