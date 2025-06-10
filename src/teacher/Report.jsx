@@ -21,8 +21,8 @@ const Report = () => {
   const fetchData = async () => {
     try {
       const [reportRes, leaderboardRes] = await Promise.all([
-        axios.get(`http://localhost:8000/api/mission-report/${roomId}/`),
-        axios.get(`http://localhost:8000/api/mission-leaderboard/${roomId}/`)
+        axios.get(`https://drp-belgium.onrender.com/api/mission-report/${roomId}/`),
+        axios.get(`https://drp-belgium.onrender.com/mission-leaderboard/${roomId}/`)
       ]);
 
       if (reportRes.data.success) {
@@ -200,7 +200,7 @@ const Report = () => {
                     <span style="display: inline-block; width: 30px; height: 30px; border-radius: 50%; background-color: ${index === 0 ? '#ffc107' : index === 1 ? '#6c757d' : index === 2 ? '#dc3545' : '#0d6efd'}; color: white; text-align: center; line-height: 30px; font-weight: bold; margin-right: 15px;">
                       ${team.rank}
                     </span>
-                    <strong>${team.group_name}</strong> - ${team.student_count} students
+                    <strong>${team.group_name}</strong> - ${team.student_count} students (${team.student_names.join(', ')})
                   </div>
                   <div>
                     Score: <strong>${team.score}</strong> | Accuracy: <strong>${team.accuracy}%</strong> | Improvement: <strong style="color: #28a745;">+${team.rating_improvement}</strong>
@@ -653,7 +653,7 @@ const Report = () => {
                                 </div>
                                 <div>
                                   <h5 className="mb-1">{team.group_name}</h5>
-                                  <p className="mb-0">{team.student_count} students</p>
+                                  <p className="mb-0">{team.student_count} students ({team.student_names.join(', ')})</p>
                                 </div>
                               </div>
                               <div className="d-flex align-items-center gap-4">
