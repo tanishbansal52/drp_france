@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import axios from 'axios';
+import '../css/Report.css';
 
 const Report = () => {
   const [reportData, setReportData] = useState(null);
@@ -88,16 +89,26 @@ const Report = () => {
     improvement: group.rating_change
   })) || [];
 
-  const questionDifficultyData = reportData?.question_analysis.reduce((acc, q) => {
-    const difficulty = q.difficulty_rating;
-    acc[difficulty] = (acc[difficulty] || 0) + 1;
+  // Prepare question accuracy distribution data from backend response
+  const questionAccuracyData = reportData?.question_analysis?.reduce((acc, q) => {
+    const accuracy = q.accuracy_percentage;
+    let category;
+    if (accuracy >= 80) {
+      category = '80%+ Accuracy';
+    } else if (accuracy >= 50) {
+      category = '50-79% Accuracy';
+    } else {
+      category = '<50% Accuracy';
+    }
+    acc[category] = (acc[category] || 0) + 1;
     return acc;
-  }, {});
+  }, {}) || {};
 
-  const pieData = Object.entries(questionDifficultyData || {}).map(([key, value]) => ({
+  const pieData = Object.entries(questionAccuracyData).map(([key, value]) => ({
     name: key,
     value,
-    color: key === 'Easy' ? '#198754' : key === 'Medium' ? '#ffc107' : '#dc3545'
+    color: key === '80%+ Accuracy' ? '#198754' : 
+           key === '50-79% Accuracy' ? '#ffc107' : '#dc3545'
   }));
 
   return (
@@ -214,11 +225,15 @@ const Report = () => {
                         <div className="card-body">
                           <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={chartData}>
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="name" />
-                              <YAxis />
+                              <CartesianGrid strokeDasharray="3 3"stroke="white"  />
+                              <XAxis dataKey="name" tick={{ fill: 'white' }}
+                                    axisLine={{ stroke: 'white' }}
+                                    tickLine={{ stroke: 'white' }}/>
+                              <YAxis tick={{ fill: 'white' }}
+                                    axisLine={{ stroke: 'white' }}
+                                    tickLine={{ stroke: 'white' }}/>
                               <Tooltip />
-                              <Bar dataKey="score" fill="#0d6efd" radius={4} />
+                              <Bar dataKey="score" fill="#00ffff" radius={4} />
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
