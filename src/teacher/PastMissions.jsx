@@ -24,17 +24,10 @@ function PastMissions() {
   }, []);
 
   const handleSubmit = () => {
-    console.log('Selected quiz:', selected);
-    navigate('/teacher/allquestions');
-  };
-
-  const getDifficultyColor = (difficulty) => {
-    switch(difficulty?.toLowerCase()) {
-      case 'easy': return '#4ade80';
-      case 'medium': return '#f59e0b';
-      case 'hard': return '#ef4444';
-      default: return '#aefeff';
-    }
+    console.log('Selected mission:', selected);
+    navigate('/teacher/report', {
+      state: { room_id: selected }
+    });
   };
 
   if (error) {
@@ -129,7 +122,7 @@ function PastMissions() {
               type="radio"
               name="quiz-selection"
               checked={selected === mission.room_code }
-              onChange={() => setSelected(mission.room_code)}
+              onChange={() => setSelected(mission.room_id)}
               style={{
                 width: '20px',
                 height: '20px',
