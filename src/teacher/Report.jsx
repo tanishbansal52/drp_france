@@ -22,7 +22,7 @@ const Report = () => {
     try {
       const [reportRes, leaderboardRes] = await Promise.all([
         axios.get(`https://drp-belgium.onrender.com/api/mission-report/${roomId}/`),
-        axios.get(`https://drp-belgium.onrender.com/mission-leaderboard/${roomId}/`)
+        axios.get(`https://drp-belgium.onrender.com/api/mission-leaderboard/${roomId}/`)
       ]);
 
       if (reportRes.data.success) {
