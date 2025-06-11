@@ -160,7 +160,7 @@ function IndividualQuestion() {
 
       if (data.correct) {
         console.log("CORRECT ANSWER ENTERED PATH");
-        setQNumber(qNumber + 1);
+        if (qNumber < 2) setQNumber(qNumber + 1); // Prevent qNumber from exceeding 2
         navigate('/correct', {
           state: { roomCode, questionNo: 1, groupId }
         })
