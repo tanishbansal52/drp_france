@@ -25,8 +25,17 @@ function IndividualQuestion() {
   const [spinoffMode, setSpinoffMode] = useState(false);
   const spinoffQuestion = {
     quiz: 'Spinoff Question',
-    question_text: 'How would you extend this concept to a real-world application?',
-    answer: 'You could apply it by...',
+    question_text: `Split into two decoding teams. Each team has one half of a 2-part access code. Use your value of x from Level 1.\nTeam Alpha (2 students):
+Plug x into the equation:
+y = 3x + 2
+Whats the value of y?
+Team Beta (2 students):
+Use the same x in a different code line:
+z = 5x - 6
+Whats the value of z?
+Once both teams have their answers, combine them:
+Final Code for Level 2: y + z = ?`,
+    answer: '35',
     points: 10
   }
 
