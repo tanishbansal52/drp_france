@@ -22,6 +22,51 @@ function ButtonBasedQuestion() {
   const location = useLocation();
   const groupId = location.state?.groupId || 0;
 
+  const [spinoffMode, setSpinoffMode] = useState(false);
+  const spinoffQuestion = {
+    quiz: 'Spinoff Question',
+    question_text: `Split into two decoding teams. Each team has one half of a 2-part access code. Use your value of x from Level 1.
+Team Alpha (2 students):
+Plug x into the equation:
+y = 3x + 2
+Whats the value of y?
+Team Beta (2 students):
+Use the same x in a different code line:
+z = 5x - 6
+Whats the value of z?
+Once both teams have their answers, combine them:
+Final Code for Level 2: y + z = ?`,
+    answer: '35',
+    points: 10
+  }
+
+  // Polling for spinoff mode
+  useEffect(() => {
+    if (!roomCode) return;
+    
+    const checkSpinoffMode = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/get-room-spinoff/${roomCode}/`);
+        const data = await response.json();
+        
+        if (data.spinoff_mode !== undefined) {
+          setSpinoffMode(data.spinoff_mode);
+        }
+      } catch (error) {
+        console.error('Error checking spinoff mode:', error);
+      }
+    };
+
+    // Initial check
+    checkSpinoffMode();
+
+    // Set up polling every 2 seconds
+    const pollInterval = setInterval(checkSpinoffMode, 2000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollInterval);
+  }, [roomCode]);
+
   // New: read question aloud
   const readQuestion = () => {
     if ('speechSynthesis' in window) {
@@ -78,6 +123,30 @@ function ButtonBasedQuestion() {
 
     if (answer === '') return
 
+    // If in spinoff mode, handle differently 
+    if (spinoffMode) {
+      // Handle spinoff question submission
+      console.log('Spinoff answer submitted:', answer);
+      if (answer.toLowerCase() === spinoffQuestion.answer.toLowerCase()) {
+      // → navigate into Correct.jsx, passing roomCode & questionNo
+      navigate('/correct', {
+        state: { roomCode, questionNo: 2, groupId }
+      })
+    } else {
+      if (incorrect < 2) {
+        setIncorrect(incorrect + 1);
+        setAlertMessage('That was not correct, try again!');
+        setShowAlert(true);
+        setAnswer(''); // Clear the answer input
+        return;
+      }
+      navigate('/incorrect', {
+        state: { roomCode, questionNo: 2, groupId }
+      })
+    }
+      return;
+    }
+
     try {
     // Make POST request with Axios
     console.log('Submitting answer:', answer);
@@ -122,6 +191,9 @@ function ButtonBasedQuestion() {
     setAnswer(prev => prev + letter);
   };
 
+  // Get the current question to display
+  const currentQuestion = spinoffMode ? spinoffQuestion : question;
+
   return (
     <>
     <NavBar />
@@ -157,7 +229,7 @@ function ButtonBasedQuestion() {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
-            <p>{question ? question : "Loading question"} </p>
+            <p>{currentQuestion ? currentQuestion : "Loading question"} </p>
           </Form.Label>
           <Alert variant="info" className="my-2">
         💡 Hint: Answer to question1 = {q1Answer}
