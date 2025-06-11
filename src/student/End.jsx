@@ -30,7 +30,8 @@ function End() {
   const handleRatingSubmit = async () => {
     console.log(`Rating selected: ${selectedRating}`);
     try {
-      const resp = await axios.post("https://drp-belgium.onrender.com/api/update-after-rating/", {
+      // const resp = await axios.post("https://drp-belgium.onrender.com/api/update-after-rating/", {
+      const resp = await axios.post("http://localhost:8000/api/update-after-rating/", {
       after_rating: selectedRating,
       group_id: groupId
     });
@@ -47,6 +48,7 @@ function End() {
       <h1 className="text-4xl font-bold mb-4">Well done agents!</h1>
       <p className="text-lg text-gray-700 mb-8">You have successfully completed your mission.</p>
       <p className="text-med text-gray-700 mb-8">How confident do you feel about algebra now that you have completed your mission?</p>
+            <p className="text-med text-gray-700 mb-8">Did you finish early? Click on Bonus to attempt an exciting question!</p>
     </div>
 
       <div className="mb-8">
@@ -87,13 +89,20 @@ function End() {
         </div>
       </div>
     
-    <div className="flex flex-col items-center justify-center"> 
+    <div className="flex flex-col items-center justify-center flex-row gap-4"> 
       <button
         className="btn btn-warning btn-lg"
         onClick={() => navigate('/debrief')}
         disabled={!submitted}
       >
         Continue
+      </button>
+      <button
+        className="btn btn-danger btn-lg"
+        onClick={() => navigate('/challenge')}
+        // disabled={!submitted}
+      >
+        Bonus
       </button>
     </div>
     </>
