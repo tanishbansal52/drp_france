@@ -11,6 +11,12 @@ function ChooseQuiz() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredQuizzes = quizzes.filter(quiz =>
+    quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
       axios.get('http://localhost:8000/api/quizzes/')
@@ -97,8 +103,27 @@ function ChooseQuiz() {
         Choose Mission:
       </h2>
 
+      <input
+        type="text"
+        placeholder="Search by title..."
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '12px 16px',
+          marginBottom: '20px',
+          fontSize: '16px',
+          borderRadius: '8px',
+          border: '1px solid #ccc',
+          background: '#111',
+          color: '#aefeff',
+          outline: 'none',
+          boxShadow: 'inset 0 0 5px rgba(0, 240, 255, 0.2)'
+        }}
+      />
+
       <div style={{ marginBottom: '40px' }}>
-        {quizzes.map((quiz, index) => (
+        {filteredQuizzes.map((quiz, index) => (
           <label
             key={index}
             className='quiz-option'
@@ -191,6 +216,11 @@ function ChooseQuiz() {
             </div>
           </label>
         ))}
+        {filteredQuizzes.length === 0 && (
+          <div style={{ color: '#888', fontSize: '16px', textAlign: 'center' }}>
+            No quizzes match your search.
+          </div>
+        )}        
       </div>
 
       <div style={{
