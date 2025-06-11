@@ -26,7 +26,6 @@ function StudentLanding() {
     e.preventDefault();
 
     const trimmedNames = studentNames.map(name => name.trim()).filter(name => name);
-    console.log("Trimmed Names:", trimmedNames);
 
     if (!missionCode.trim() || !groupName.trim() || trimmedNames.length === 0) {
       setError('Please fill all fields including at least one student name.');

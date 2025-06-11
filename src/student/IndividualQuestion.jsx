@@ -22,6 +22,41 @@ function IndividualQuestion() {
   const location = useLocation();
   const groupId = location.state?.groupId || 0;
 
+  const [spinoffMode, setSpinoffMode] = useState(false);
+  const spinoffQuestion = {
+    quiz: 'Spinoff Question',
+    question_text: 'How would you extend this concept to a real-world application?',
+    answer: 'You could apply it by...',
+    points: 10
+  }
+
+  // Polling for spinoff mode
+  useEffect(() => {
+    if (!roomCode) return;
+    
+    const checkSpinoffMode = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/get-room-spinoff/${roomCode}/`);
+        const data = await response.json();
+        
+        if (data.spinoff_mode !== undefined) {
+          setSpinoffMode(data.spinoff_mode);
+        }
+      } catch (error) {
+        console.error('Error checking spinoff mode:', error);
+      }
+    };
+
+    // Initial check
+    checkSpinoffMode();
+
+    // Set up polling every 2 seconds
+    const pollInterval = setInterval(checkSpinoffMode, 2000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(pollInterval);
+  }, [roomCode]);
+
   console.log("groupId in Individual q:", groupId);
 
   useEffect(() => {
@@ -87,6 +122,31 @@ function IndividualQuestion() {
 
     if (answer === '') return
 
+    // If in spinoff mode, handle differently 
+    if (spinoffMode) {
+      // Handle spinoff question submission
+      console.log('Spinoff answer submitted:', answer);
+      if (answer.toLowerCase() === spinoffQuestion.answer.toLowerCase()) {
+        console.log("CORRECT ANSWER ENTERED PATH");
+        setQNumber(qNumber + 1);
+        navigate('/correct', {
+          state: { roomCode, questionNo: 1, groupId }
+        })
+      } else {
+        console.log("INCORRECT PATH");
+        if (incorrect < 2) {
+          setIncorrect(incorrect + 1);
+          setAlertMessage('That was not correct, try again!');
+          setShowAlert(true);
+          return;
+        }
+        navigate('/incorrect', {
+          state: { roomCode, questionNo: 1, groupId }
+        })
+      }
+      return;
+    }
+
     try {
       // Make POST request with Axios
       const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
@@ -124,17 +184,19 @@ function IndividualQuestion() {
     }
   };
 
+  // Get the current question to display
+  const currentQuestion = spinoffMode ? spinoffQuestion : question;
 
   return (
     <>
       <NavBar />
       <div className="text-center mb-10">
         <h1>Quiz - Algebra</h1>
-        <h2 className="text-info text-xl leading-tight">Q1. Individual Round</h2>
+        <h2 className="text-info text-xl leading-tight">{spinoffMode ? "SpinOff Question" : "Individual Round"}</h2>
         {/* <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4> 
         */}
         <h4 className="text-info text-base font-medium leading-none">
-          This Question is worth {question ? question.points : '...'} points.
+          This Question is worth {currentQuestion ? currentQuestion.points : '...'} points.
         </h4>
 
       </div>
@@ -184,7 +246,7 @@ function IndividualQuestion() {
         <Form.Group controlId="questionAnswerInput">
           <Form.Label>
             <div style={{ whiteSpace: 'pre-wrap' }}>
-              <p className="h5">{question ? question.question_text : "Loading question"} </p>
+              <p className="h5">{currentQuestion ? currentQuestion.question_text : "Loading question"} </p>
             </div>
           </Form.Label>
           <Form.Control

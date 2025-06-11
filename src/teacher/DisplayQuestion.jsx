@@ -5,6 +5,7 @@ import NavBar from '../NavBar'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
+import axios from 'axios'
 
 function DisplayQuestion() {
   const location = useLocation();
@@ -59,6 +60,20 @@ function DisplayQuestion() {
     answer: 'You could apply it by...'
   }
 
+  const toggleSpinoffMode = async (mode) => {
+    setSpinoffMode(mode)
+    try {
+      const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
+        spinoff_mode: mode
+      })
+      console.log('Spinoff toggle response:', resp.data)
+    }
+    catch (err) {
+      console.error('Error in spinoff toggle:', err)
+      setError('Failed in spinoff toggle.')
+    }
+  }
+
   // grab the current question (or defaults)
   const current = spinoffMode ? spinoffQuestion : questions[currentIndex] || {}
   const topic = current.quiz || ''
@@ -69,7 +84,7 @@ function DisplayQuestion() {
 
   const handleNext = async () => {
     setShowAnswer(false)
-    setSpinoffMode(false)
+    toggleSpinoffMode(false)
     setCurrentIndex(prev =>
       questions.length ? (prev + 1) % questions.length : 0
     )
@@ -81,9 +96,9 @@ function DisplayQuestion() {
     navigate('/teacher/finish', {state: { roomCode }})
   }
 
-  const handleSpinOff = () => {
-    setSpinoffMode(true)
+  const handleSpinOff = async () => {
     setShowAnswer(false)
+    toggleSpinoffMode(true)
   }
 
   return (
