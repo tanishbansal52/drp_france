@@ -7,26 +7,40 @@ import '../css/Choosequiz.css';
 function ChooseQuiz() {
   const [quizzes, setQuizzes] = useState([]);
   const [selected, setSelected] = useState(null);
-  // const [selectedId, setSelectedId] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
   const [searchTerm, setSearchTerm] = useState('');
+  const [showFavourites, setShowFavourites] = useState(false);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 
+  // Filter quizzes based on search term
   const filteredQuizzes = quizzes.filter(quiz =>
     quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Filter favorites based on search term
+  const filteredFavorites = quizzes.filter(quiz =>
+    quiz.is_favorite && quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
-    // axios.get('https://drp-belgium.onrender.com/api/quizzes/')
-      axios.get('http://localhost:8000/api/quizzes/')
-      .then(res => setQuizzes(res.data))
-      .catch(err => {
-        setError('Failed to fetch quizzes.');
-        console.error(err);
-      });
+    fetchQuizzes();
   }, []);
 
+  const fetchQuizzes = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/api/quizzes/');
+      // Ensure each quiz has is_favorite property
+      const quizzesWithFavorites = res.data.map(quiz => ({
+        ...quiz,
+        is_favorite: quiz.is_favorite || false
+      }));
+      setQuizzes(quizzesWithFavorites);
+    } catch (err) {
+      setError('Failed to fetch quizzes.');
+      console.error(err);
+    }
+  };
 
   const handleSubmit = () => {
     const selectedQuiz = quizzes.find(q => q.title === selected);
@@ -41,6 +55,36 @@ function ChooseQuiz() {
       });
     }
   };
+
+  const toggleFavorite = async (quiz) => {
+    if (isTogglingFavorite) return; // Prevent multiple clicks
+    
+    setIsTogglingFavorite(true);
+    
+    try {
+      const res = await axios.post('http://localhost:8000/api/toggle-quiz-favourite/', {
+        quiz_id: quiz.quiz_id
+      });
+      
+      // Update the quiz in the local state immediately for better UX
+      setQuizzes(prevQuizzes => 
+        prevQuizzes.map(q => 
+          q.quiz_id === quiz.quiz_id 
+            ? { ...q, is_favorite: !q.is_favorite }
+            : q
+        )
+      );
+      
+    } catch (err) {
+      console.error('Error toggling favourite:', err);
+      setError('Failed to update favorite status.');
+    } finally {
+      setIsTogglingFavorite(false);
+    }
+  };
+
+  // Determine which quizzes to show
+  const quizzesToShow = showFavourites ? filteredFavorites : filteredQuizzes;
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
@@ -122,8 +166,44 @@ function ChooseQuiz() {
         }}
       />
 
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px' 
+      }}>
+        <button
+          onClick={() => setShowFavourites(prev => !prev)}
+          style={{
+            padding: '10px 20px',
+            fontSize: '14px',
+            borderRadius: '6px',
+            border: showFavourites ? '2px solid #ffd700' : '1px solid #00f0ff',
+            background: showFavourites ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
+            color: showFavourites ? '#ffd700' : '#aefeff',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {showFavourites ? '⭐ Showing Favorites' : 'Show Favorites'}
+        </button>
+        
+        {showFavourites && (
+          <div style={{ 
+            fontSize: '14px', 
+            color: '#999',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px'
+          }}>
+            <span>⭐</span>
+            <span>{filteredFavorites.length} favorite{filteredFavorites.length !== 1 ? 's' : ''}</span>
+          </div>
+        )}
+      </div>
+
       <div style={{ marginBottom: '40px' }}>
-        {filteredQuizzes.map((quiz, index) => (
+        {quizzesToShow.map((quiz, index) => (
           <label
             key={index}
             className='quiz-option'
@@ -137,6 +217,14 @@ function ChooseQuiz() {
               boxShadow: selected === quiz.title
                 ? '0 0 20px rgba(0, 240, 255, 0.2)'
                 : '0 4px 6px rgba(0, 0, 0, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '20px',
+              marginBottom: '15px',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              position: 'relative'
             }}
             onMouseEnter={e => {
               if (selected !== quiz.title) {
@@ -161,14 +249,14 @@ function ChooseQuiz() {
               style={{
                 width: '20px',
                 height: '20px',
-                marginTop: '4px',
+                marginRight: '20px',
                 accentColor: '#00f0ff',
                 cursor: 'pointer',
                 transform: 'scale(1.2)',
               }}
             />
+            
             <div style={{
-              marginLeft: '20px',
               textAlign: 'left',
               flex: 1,
             }}>
@@ -214,11 +302,57 @@ function ChooseQuiz() {
                 </div>
               </div>
             </div>
+
+            <div
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await toggleFavorite(quiz);
+              }}
+              title={quiz.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+              style={{
+                cursor: isTogglingFavorite ? 'wait' : 'pointer',
+                marginLeft: '15px',
+                fontSize: '24px',
+                padding: '8px',
+                borderRadius: '50%',
+                transition: 'all 0.3s ease',
+                background: quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                border: quiz.is_favorite ? '2px solid rgba(255, 215, 0, 0.3)' : '2px solid transparent',
+                color: quiz.is_favorite ? '#ffd700' : '#666',
+                textShadow: quiz.is_favorite ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none',
+                opacity: isTogglingFavorite ? 0.6 : 1,
+                transform: quiz.is_favorite ? 'scale(1.1)' : 'scale(1)',
+              }}
+              onMouseEnter={e => {
+                if (!isTogglingFavorite) {
+                  e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.2)' : 'scale(1.1)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+                }
+              }}
+              onMouseLeave={e => {
+                if (!isTogglingFavorite) {
+                  e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.1)' : 'scale(1)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+                }
+              }}
+            >
+              {quiz.is_favorite ? '⭐' : '☆'}
+            </div>
           </label>
         ))}
-        {filteredQuizzes.length === 0 && (
-          <div style={{ color: '#888', fontSize: '16px', textAlign: 'center' }}>
-            No quizzes match your search.
+        
+        {quizzesToShow.length === 0 && (
+          <div style={{ 
+            color: '#888', 
+            fontSize: '16px', 
+            textAlign: 'center',
+            padding: '40px 0'
+          }}>
+            {showFavourites 
+              ? (searchTerm ? 'No favorite quizzes match your search.' : 'No favorite quizzes yet.')
+              : 'No quizzes match your search.'
+            }
           </div>
         )}        
       </div>
