@@ -18,6 +18,8 @@ function DisplayQuestion() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
+  const [spinoffMode, setSpinoffMode] = useState(false)
+
   const fetchQuestions = async () => {
     try {
       setLoading(true)
@@ -51,8 +53,14 @@ function DisplayQuestion() {
       }
     }, [quizId])
 
+  const spinoffQuestion = {
+    quiz: 'Spinoff Question',
+    question_text: 'How would you extend this concept to a real-world application?',
+    answer: 'You could apply it by...'
+  }
+
   // grab the current question (or defaults)
-  const current = questions[currentIndex] || {}
+  const current = spinoffMode ? spinoffQuestion : questions[currentIndex] || {}
   const topic = current.quiz || ''
   const question = current.question_text || ''
   const answer = current.answer || 'No answer available.'
@@ -61,6 +69,7 @@ function DisplayQuestion() {
 
   const handleNext = async () => {
     setShowAnswer(false)
+    setSpinoffMode(false)
     setCurrentIndex(prev =>
       questions.length ? (prev + 1) % questions.length : 0
     )
@@ -70,6 +79,11 @@ function DisplayQuestion() {
   const handleFinish = async () => {
     await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
     navigate('/teacher/finish', {state: { roomCode }})
+  }
+
+  const handleSpinOff = () => {
+    setSpinoffMode(true)
+    setShowAnswer(false)
   }
 
   return (
@@ -85,9 +99,9 @@ function DisplayQuestion() {
             {!loading && error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
               <>
-                <h2 style={{ fontSize: '3rem', lineHeight: 1.2 }}>
+                <h5 style={{ fontSize: '2rem', lineHeight: 1.2, whiteSpace: 'pre-wrap' }}>
                   {question}
-                </h2>
+                </h5>
                 {showAnswer && (
                   <p
                     className="mt-3 text-success"
@@ -103,6 +117,10 @@ function DisplayQuestion() {
                   >
                     {showAnswer ? 'Hide Answer' : 'Show Answer'}
                   </TeacherButton>
+
+                  <TeacherButton variant="light" onClick={handleSpinOff}>
+                      SpinOff Question
+                    </TeacherButton>
                   {isLast
                     ? <TeacherButton variant="light" onClick={handleFinish}>
                       Finish Quiz
