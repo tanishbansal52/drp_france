@@ -29,7 +29,8 @@ function ChooseQuiz() {
 
   const fetchQuizzes = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/quizzes/');
+      // const res = await axios.get('http://localhost:8000/api/quizzes/');
+      const res = await axios.get('https://drp-belgium.onrender.com/api/quizzes/');
       // Ensure each quiz has is_favorite property
       const quizzesWithFavorites = res.data.map(quiz => ({
         ...quiz,
@@ -47,34 +48,35 @@ function ChooseQuiz() {
     if (selectedQuiz) {
       console.log('Selected Quiz:', selectedQuiz.title);
       console.log('Quiz ID:', selectedQuiz.quiz_id);
-      navigate('/teacher/allquestions', { 
-        state: { 
-          quizId: selectedQuiz.quiz_id, 
-          quizTitle: selectedQuiz.title 
-        } 
+      navigate('/teacher/allquestions', {
+        state: {
+          quizId: selectedQuiz.quiz_id,
+          quizTitle: selectedQuiz.title
+        }
       });
     }
   };
 
   const toggleFavorite = async (quiz) => {
     if (isTogglingFavorite) return; // Prevent multiple clicks
-    
+
     setIsTogglingFavorite(true);
-    
+
     try {
-      const res = await axios.post('http://localhost:8000/api/toggle-quiz-favourite/', {
+      // const res = await axios.post('http://localhost:8000/api/toggle-quiz-favourite/', {
+      const res = await axios.post('https://drp-belgium.onrender.com/api/toggle-quiz-favourite/', {
         quiz_id: quiz.quiz_id
       });
-      
+
       // Update the quiz in the local state immediately for better UX
-      setQuizzes(prevQuizzes => 
-        prevQuizzes.map(q => 
-          q.quiz_id === quiz.quiz_id 
+      setQuizzes(prevQuizzes =>
+        prevQuizzes.map(q =>
+          q.quiz_id === quiz.quiz_id
             ? { ...q, is_favorite: !q.is_favorite }
             : q
         )
       );
-      
+
     } catch (err) {
       console.error('Error toggling favourite:', err);
       setError('Failed to update favorite status.');
@@ -141,7 +143,7 @@ function ChooseQuiz() {
       margin: '0 auto',
       minHeight: '100vh'
     }}>
-      <h2 style={{ 
+      <h2 style={{
         marginBottom: '30px',
       }}>
         Choose Mission:
@@ -166,11 +168,11 @@ function ChooseQuiz() {
         }}
       />
 
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '20px' 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px'
       }}>
         <button
           onClick={() => setShowFavourites(prev => !prev)}
@@ -187,10 +189,10 @@ function ChooseQuiz() {
         >
           {showFavourites ? '⭐ Showing Favorites' : 'Show Favorites'}
         </button>
-        
+
         {showFavourites && (
-          <div style={{ 
-            fontSize: '14px', 
+          <div style={{
+            fontSize: '14px',
             color: '#999',
             display: 'flex',
             alignItems: 'center',
@@ -208,11 +210,11 @@ function ChooseQuiz() {
             key={index}
             className='quiz-option'
             style={{
-              background: selected === quiz.title 
-                ? 'rgba(0, 240, 255, 0.1)' 
+              background: selected === quiz.title
+                ? 'rgba(0, 240, 255, 0.1)'
                 : 'rgba(255, 255, 255, 0.05)',
-              border: selected === quiz.title 
-                ? '2px solid rgba(0, 240, 255, 0.5)' 
+              border: selected === quiz.title
+                ? '2px solid rgba(0, 240, 255, 0.5)'
                 : '2px solid transparent',
               boxShadow: selected === quiz.title
                 ? '0 0 20px rgba(0, 240, 255, 0.2)'
@@ -245,7 +247,7 @@ function ChooseQuiz() {
               type="radio"
               name="quiz-selection"
               checked={selected === quiz.title}
-              onChange={() => {setSelected(quiz.title)}}
+              onChange={() => { setSelected(quiz.title) }}
               style={{
                 width: '20px',
                 height: '20px',
@@ -255,7 +257,7 @@ function ChooseQuiz() {
                 transform: 'scale(1.2)',
               }}
             />
-            
+
             <div style={{
               textAlign: 'left',
               flex: 1,
@@ -343,20 +345,20 @@ function ChooseQuiz() {
             </div>
           </label>
         ))}
-        
+
         {quizzesToShow.length === 0 && (
-          <div style={{ 
-            color: '#888', 
-            fontSize: '16px', 
+          <div style={{
+            color: '#888',
+            fontSize: '16px',
             textAlign: 'center',
             padding: '40px 0'
           }}>
-            {showFavourites 
+            {showFavourites
               ? (searchTerm ? 'No favorite quizzes match your search.' : 'No favorite quizzes yet.')
               : 'No quizzes match your search.'
             }
           </div>
-        )}        
+        )}
       </div>
 
       <div style={{

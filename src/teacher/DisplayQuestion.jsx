@@ -69,7 +69,8 @@ function DisplayQuestion() {
       setShowAnswer(false)
 
       // const res = await fetch('https://drp-belgium.onrender.com/api/questions')
-      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      // const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
@@ -115,7 +116,8 @@ Final Code for Level 2: y + z = ?`,
   const toggleSpinoffMode = async (mode) => {
     setSpinoffMode(mode)
     try {
-      const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
+      // const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
+      const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
         spinoff_mode: mode
       })
       console.log('Spinoff toggle response:', resp.data)
