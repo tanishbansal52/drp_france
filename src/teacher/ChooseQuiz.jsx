@@ -317,23 +317,25 @@ function ChooseQuiz() {
                 padding: '8px',
                 borderRadius: '50%',
                 transition: 'all 0.3s ease',
-                background: quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                border: quiz.is_favorite ? '2px solid rgba(255, 215, 0, 0.3)' : '2px solid transparent',
-                color: quiz.is_favorite ? '#ffd700' : '#666',
-                textShadow: quiz.is_favorite ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none',
+                background: quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(174, 254, 255, 0.1)',
+                border: quiz.is_favorite ? '2px solid rgba(255, 215, 0, 0.3)' : '2px solid rgba(174, 254, 255, 0.2)',
+                color: quiz.is_favorite ? '#ffd700' : '#aefeff',
+                textShadow: quiz.is_favorite ? '0 0 10px rgba(255, 215, 0, 0.5)' : '0 0 5px rgba(174, 254, 255, 0.3)',
                 opacity: isTogglingFavorite ? 0.6 : 1,
                 transform: quiz.is_favorite ? 'scale(1.1)' : 'scale(1)',
               }}
               onMouseEnter={e => {
                 if (!isTogglingFavorite) {
                   e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.2)' : 'scale(1.1)';
-                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.2)' : 'rgba(174, 254, 255, 0.2)';
+                  e.currentTarget.style.borderColor = quiz.is_favorite ? 'rgba(255, 215, 0, 0.5)' : 'rgba(174, 254, 255, 0.4)';
                 }
               }}
               onMouseLeave={e => {
                 if (!isTogglingFavorite) {
                   e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.1)' : 'scale(1)';
-                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(174, 254, 255, 0.1)';
+                  e.currentTarget.style.borderColor = quiz.is_favorite ? 'rgba(255, 215, 0, 0.3)' : 'rgba(174, 254, 255, 0.2)';
                 }
               }}
             >
