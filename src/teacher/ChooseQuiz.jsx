@@ -12,15 +12,24 @@ function ChooseQuiz() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFavourites, setShowFavourites] = useState(false);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
+  const [hoveredQuiz, setHoveredQuiz] = useState(null);
+
+  // Clean title by removing difficulty indicators
+  const cleanTitle = (title) => {
+    return title
+      .replace(/\s*\([^)]*\)\s*/g, ' ') // Remove anything in parentheses
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim(); // Remove leading/trailing spaces
+  };
 
   // Filter quizzes based on search term
   const filteredQuizzes = quizzes.filter(quiz =>
-    quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+    cleanTitle(quiz.title).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filter favorites based on search term
+  // Filter favourites based on search term
   const filteredFavorites = quizzes.filter(quiz =>
-    quiz.is_favorite && quiz.title.toLowerCase().includes(searchTerm.toLowerCase())
+    quiz.is_favorite && cleanTitle(quiz.title).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -43,18 +52,15 @@ function ChooseQuiz() {
     }
   };
 
-  const handleSubmit = () => {
-    const selectedQuiz = quizzes.find(q => q.title === selected);
-    if (selectedQuiz) {
-      console.log('Selected Quiz:', selectedQuiz.title);
-      console.log('Quiz ID:', selectedQuiz.quiz_id);
-      navigate('/teacher/allquestions', {
-        state: {
-          quizId: selectedQuiz.quiz_id,
-          quizTitle: selectedQuiz.title
-        }
-      });
-    }
+  const handlePreview = (quiz) => {
+    console.log('Selected Quiz:', quiz.title);
+    console.log('Quiz ID:', quiz.quiz_id);
+    navigate('/teacher/allquestions', { 
+      state: { 
+        quizId: quiz.quiz_id, 
+        quizTitle: quiz.title 
+      } 
+    });
   };
 
   const toggleFavorite = async (quiz) => {
@@ -79,7 +85,7 @@ function ChooseQuiz() {
 
     } catch (err) {
       console.error('Error toggling favourite:', err);
-      setError('Failed to update favorite status.');
+      setError('Failed to update favourite status.');
     } finally {
       setIsTogglingFavorite(false);
     }
@@ -90,10 +96,19 @@ function ChooseQuiz() {
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty?.toLowerCase()) {
-      case 'easy': return '#4ade80';
+      case 'easy': return '#10b981';
       case 'medium': return '#f59e0b';
       case 'hard': return '#ef4444';
-      default: return '#aefeff';
+      default: return '#6b7280';
+    }
+  };
+
+  const getDifficultyBg = (difficulty) => {
+    switch (difficulty?.toLowerCase()) {
+      case 'easy': return 'rgba(16, 185, 129, 0.1)';
+      case 'medium': return 'rgba(245, 158, 11, 0.1)';
+      case 'hard': return 'rgba(239, 68, 68, 0.1)';
+      default: return 'rgba(107, 114, 128, 0.1)';
     }
   };
 
@@ -102,11 +117,15 @@ function ChooseQuiz() {
       <div style={{
         padding: '30px',
         textAlign: 'center',
-        color: '#ff4d4d',
+        color: '#ef4444',
         fontSize: '18px',
-        fontFamily: 'sans-serif'
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        background: 'rgba(239, 68, 68, 0.1)',
+        borderRadius: '12px',
+        margin: '20px auto',
+        maxWidth: '600px'
       }}>
-        {error}
+        ⚠️ {error}
       </div>
     );
   }
@@ -114,18 +133,18 @@ function ChooseQuiz() {
   if (!quizzes.length) {
     return (
       <div style={{
-        padding: '30px',
+        padding: '60px 30px',
         textAlign: 'center',
-        color: '#aefeff',
+        color: '#d1d5db',
         fontSize: '18px',
-        fontFamily: 'sans-serif'
+        fontFamily: 'system-ui, -apple-system, sans-serif'
       }}>
-        <div style={{ marginBottom: '20px' }}>Loading quizzes...</div>
+        <div style={{ marginBottom: '20px' }}>Loading missions...</div>
         <div style={{
           width: '40px',
           height: '40px',
-          border: '4px solid rgba(174, 254, 255, 0.3)',
-          borderTop: '4px solid #00f0ff',
+          border: '4px solid rgba(209, 213, 219, 0.2)',
+          borderTop: '4px solid #00d9ff',
           borderRadius: '50%',
           animation: 'spin 1s linear infinite',
           margin: '0 auto'
@@ -137,305 +156,342 @@ function ChooseQuiz() {
   return (
     <div style={{
       padding: '30px',
-      color: '#aefeff',
-      fontFamily: 'sans-serif',
-      maxWidth: '800px',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      maxWidth: '1200px',
       margin: '0 auto',
       minHeight: '100vh'
     }}>
-      <h2 style={{
-        marginBottom: '30px',
-      }}>
-        Choose Mission:
-      </h2>
-
-      <input
-        type="text"
-        placeholder="Search by title..."
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          marginBottom: '20px',
-          fontSize: '16px',
-          borderRadius: '8px',
-          border: '1px solid #ccc',
-          background: '#111',
-          color: '#aefeff',
-          outline: 'none',
-          boxShadow: 'inset 0 0 5px rgba(0, 240, 255, 0.2)'
-        }}
-      />
-
-      <div style={{
+      {/* Header with Back Button and Favourites Button */}
+      <div style={{ 
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '20px'
+        alignItems: 'flex-start',
+        marginBottom: '30px'
       }}>
-        <button
-          onClick={() => setShowFavourites(prev => !prev)}
-          style={{
-            padding: '10px 20px',
-            fontSize: '14px',
-            borderRadius: '6px',
-            border: showFavourites ? '2px solid #ffd700' : '1px solid #00f0ff',
-            background: showFavourites ? 'rgba(255, 215, 0, 0.1)' : 'transparent',
-            color: showFavourites ? '#ffd700' : '#aefeff',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          {showFavourites ? '⭐ Showing Favorites' : 'Show Favorites'}
-        </button>
-
-        {showFavourites && (
-          <div style={{
-            fontSize: '14px',
-            color: '#999',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px'
-          }}>
-            <span>⭐</span>
-            <span>{filteredFavorites.length} favorite{filteredFavorites.length !== 1 ? 's' : ''}</span>
-          </div>
-        )}
-      </div>
-
-      <div style={{ marginBottom: '40px' }}>
-        {quizzesToShow.map((quiz, index) => (
-          <label
-            key={index}
-            className='quiz-option'
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <button
+            onClick={() => navigate('/teacher')}
             style={{
-              background: selected === quiz.title
-                ? 'rgba(0, 240, 255, 0.1)'
-                : 'rgba(255, 255, 255, 0.05)',
-              border: selected === quiz.title
-                ? '2px solid rgba(0, 240, 255, 0.5)'
-                : '2px solid transparent',
-              boxShadow: selected === quiz.title
-                ? '0 0 20px rgba(0, 240, 255, 0.2)'
-                : '0 4px 6px rgba(0, 0, 0, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '20px',
-              marginBottom: '15px',
-              borderRadius: '12px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '8px',
+              border: '2px solid rgba(75, 85, 99, 0.4)',
+              background: 'rgba(17, 24, 39, 0.8)',
+              color: '#d1d5db',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              position: 'relative'
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              backdropFilter: 'blur(10px)'
             }}
             onMouseEnter={e => {
-              if (selected !== quiz.title) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
+              e.currentTarget.style.background = 'rgba(17, 24, 39, 0.9)';
+              e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.6)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'rgba(17, 24, 39, 0.8)';
+              e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.4)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            ← Back
+          </button>
+        </div>
+
+        <div style={{ 
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center',
+          marginBottom: '40px'
+        }}>
+          <h1 style={{ 
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#00d9ff',
+            marginBottom: '8px',
+            textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
+            letterSpacing: '2px',
+            margin: '0'
+          }}>
+            Choose Mission
+          </h1>
+          <p style={{
+            color: '#9ca3af',
+            fontSize: '15px',
+            margin: '4px 0 0 0'
+          }}>
+            Select a quiz to preview questions
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <button
+            onClick={() => setShowFavourites(prev => !prev)}
+            style={{
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '8px',
+              border: showFavourites ? '2px solid #fbbf24' : '2px solid rgba(75, 85, 99, 0.4)',
+              background: showFavourites ? 'rgba(251, 191, 36, 0.15)' : 'rgba(17, 24, 39, 0.8)',
+              color: showFavourites ? '#fbbf24' : '#d1d5db',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)',
+              minWidth: '180px', // Add fixed width to prevent layout shift
+              textAlign: 'center'
+            }}
+            onMouseEnter={e => {
+              if (!showFavourites) {
+                e.currentTarget.style.background = 'rgba(17, 24, 39, 0.9)';
+                e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.6)';
               }
             }}
             onMouseLeave={e => {
-              if (selected !== quiz.title) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+              if (!showFavourites) {
+                e.currentTarget.style.background = 'rgba(17, 24, 39, 0.8)';
+                e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.4)';
               }
             }}
           >
-            <input
-              type="radio"
-              name="quiz-selection"
-              checked={selected === quiz.title}
-              onChange={() => { setSelected(quiz.title) }}
-              style={{
-                width: '20px',
-                height: '20px',
-                marginRight: '20px',
-                accentColor: '#00f0ff',
-                cursor: 'pointer',
-                transform: 'scale(1.2)',
-              }}
-            />
+            {showFavourites ? '⭐ Favourites Active' : '☆ Show Favourites'}
+          </button>
+        </div>
+        
+      </div>
 
-            <div style={{
-              textAlign: 'left',
-              flex: 1,
-            }}>
-              <div style={{
-                fontSize: '20px',
-                color: '#aefeff',
-                fontWeight: '600',
-                marginBottom: '8px',
-                letterSpacing: '0.5px'
-              }}>
-                {quiz.title}
-              </div>
-              <div style={{
-                display: 'flex',
-                gap: '20px',
-                flexWrap: 'wrap'
-              }}>
-                <div style={{
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{ color: '#999' }}>Difficulty:</span>
-                  <span style={{
-                    color: getDifficultyColor(quiz.difficulty),
-                    fontWeight: '500',
-                    textTransform: 'capitalize'
-                  }}>
-                    {quiz.difficulty}
-                  </span>
-                </div>
-                <div style={{
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{ color: '#999' }}>Time:</span>
-                  <span style={{ color: '#aefeff', fontWeight: '500' }}>
-                    {quiz.total_time} min
-                  </span>
-                </div>
-              </div>
-            </div>
+      {/* Search Bar - Centered and Smaller Width */}
+      <div style={{ 
+        marginBottom: '40px',
+        marginTop: '40px',
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          style={{
+            width: '800px',
+            maxWidth: '100%',
+            padding: '16px 20px',
+            fontSize: '15px',
+            borderRadius: '12px',
+            border: '2px solid rgba(75, 85, 99, 0.3)',
+            background: 'rgba(17, 24, 39, 0.8)',
+            color: '#f9fafb',
+            outline: 'none',
+            transition: 'all 0.3s ease',
+            backdropFilter: 'blur(10px)'
+          }}
+          onFocus={e => {
+            e.currentTarget.style.borderColor = '#00d9ff';
+            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0, 217, 255, 0.1)';
+          }}
+          onBlur={e => {
+            e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.3)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        />
+      </div>
 
+      {/* Quiz Tiles Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+        gap: '28px',
+        marginBottom: '40px'
+      }}>
+        {quizzesToShow.map((quiz, index) => (
+          <div
+            key={quiz.quiz_id}
+            style={{
+              background: 'rgba(17, 24, 39, 0.8)',
+              border: '2px solid rgba(75, 85, 99, 0.2)',
+              borderRadius: '16px',
+              padding: '24px',
+              transition: 'all 0.3s ease',
+              backdropFilter: 'blur(10px)',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={e => {
+              setHoveredQuiz(quiz.quiz_id);
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.4)';
+            }}
+            onMouseLeave={e => {
+              setHoveredQuiz(null);
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+              e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.2)';
+            }}
+            onClick={() => handlePreview(quiz)}
+          >
+            {/* Favorite Button */}
             <div
               onClick={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 await toggleFavorite(quiz);
               }}
-              title={quiz.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+              title={quiz.is_favorite ? 'Remove from favourites' : 'Add to favourites'}
               style={{
+                position: 'absolute',
+                top: '24px',
+                right: '24px',
                 cursor: isTogglingFavorite ? 'wait' : 'pointer',
-                marginLeft: '15px',
-                fontSize: '24px',
-                padding: '8px',
-                borderRadius: '50%',
+                fontSize: '18px',
+                padding: '6px',
+                borderRadius: '8px',
                 transition: 'all 0.3s ease',
-                background: quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(174, 254, 255, 0.1)',
-                border: quiz.is_favorite ? '2px solid rgba(255, 215, 0, 0.3)' : '2px solid rgba(174, 254, 255, 0.2)',
-                color: quiz.is_favorite ? '#ffd700' : '#aefeff',
-                textShadow: quiz.is_favorite ? '0 0 10px rgba(255, 215, 0, 0.5)' : '0 0 5px rgba(174, 254, 255, 0.3)',
+                background: quiz.is_favorite ? 'rgba(251, 191, 36, 0.15)' : 'rgba(75, 85, 99, 0.1)',
+                border: quiz.is_favorite ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid rgba(75, 85, 99, 0.2)',
+                color: quiz.is_favorite ? '#fbbf24' : '#9ca3af',
                 opacity: isTogglingFavorite ? 0.6 : 1,
-                transform: quiz.is_favorite ? 'scale(1.1)' : 'scale(1)',
               }}
               onMouseEnter={e => {
                 if (!isTogglingFavorite) {
-                  e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.2)' : 'scale(1.1)';
-                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.2)' : 'rgba(174, 254, 255, 0.2)';
-                  e.currentTarget.style.borderColor = quiz.is_favorite ? 'rgba(255, 215, 0, 0.5)' : 'rgba(174, 254, 255, 0.4)';
+                  e.currentTarget.style.transform = 'scale(1.1)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(251, 191, 36, 0.25)' : 'rgba(75, 85, 99, 0.2)';
                 }
               }}
               onMouseLeave={e => {
                 if (!isTogglingFavorite) {
-                  e.currentTarget.style.transform = quiz.is_favorite ? 'scale(1.1)' : 'scale(1)';
-                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(255, 215, 0, 0.1)' : 'rgba(174, 254, 255, 0.1)';
-                  e.currentTarget.style.borderColor = quiz.is_favorite ? 'rgba(255, 215, 0, 0.3)' : 'rgba(174, 254, 255, 0.2)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.background = quiz.is_favorite ? 'rgba(251, 191, 36, 0.15)' : 'rgba(75, 85, 99, 0.1)';
                 }
               }}
             >
               {quiz.is_favorite ? '⭐' : '☆'}
             </div>
-          </label>
-        ))}
 
-        {quizzesToShow.length === 0 && (
-          <div style={{
-            color: '#888',
-            fontSize: '16px',
-            textAlign: 'center',
-            padding: '40px 0'
-          }}>
-            {showFavourites
-              ? (searchTerm ? 'No favorite quizzes match your search.' : 'No favorite quizzes yet.')
-              : 'No quizzes match your search.'
-            }
+            {/* Quiz Title */}
+            <div style={{
+              fontSize: '20px',
+              color: '#f9fafb',
+              fontWeight: '600',
+              marginBottom: '40px',
+              marginRight: '40px', // Space for favorite button
+              lineHeight: '1.3',
+              flex: '1'
+            }}>
+              {cleanTitle(quiz.title)}
+            </div>
+
+            {/* Quiz Details - Difficulty and Time stacked */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '12px',
+              position: 'relative',
+              alignItems: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                borderRadius: '16px',
+                background: getDifficultyBg(quiz.difficulty),
+                border: `1px solid ${getDifficultyColor(quiz.difficulty)}30`,
+                alignSelf: 'flex-start'
+              }}>
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: getDifficultyColor(quiz.difficulty)
+                }}></div>
+                <span style={{
+                  fontSize: '14px',
+                  color: getDifficultyColor(quiz.difficulty),
+                  fontWeight: '600',
+                  textTransform: 'capitalize'
+                }}>
+                  {quiz.difficulty}
+                </span>
+              </div>
+              
+              <div style={{
+                fontSize: '14px',
+                display: 'inline-flex', // Change from 'flex'
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px', // Add this
+                borderRadius: '16px', // Add this
+                background: 'rgba(75, 85, 99, 0.1)', // Add this
+                border: '1px solid rgba(75, 85, 99, 0.2)', // Add this
+                color: '#9ca3af',
+                alignSelf: 'flex-start' // Add this to match difficulty
+              }}>
+                <span>⏱️</span>
+                <span style={{ color: '#d1d5db', fontWeight: '500' }}>
+                  {quiz.total_time} min
+                </span>
+              </div>
+
+              {/* Preview Arrow - Positioned absolutely to avoid layout shift */}
+              <div style={{
+                position: 'absolute',
+                top: '90%',
+                right: '-15px',
+                transform: 'translateY(-50%)',
+                opacity: hoveredQuiz === quiz.quiz_id ? 1 : 0,
+                transition: 'all 0.3s ease',
+                pointerEvents: 'none'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '36px',
+                  height: '36px',
+                  background: 'rgba(0, 217, 255, 0.15)',
+                  borderRadius: '50%',
+                  border: '1px solid rgba(0, 217, 255, 0.3)',
+                  color: '#00d9ff',
+                  fontSize: '16px',
+                  fontWeight: '600'
+                }}>
+                  →
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
+      
+      {quizzesToShow.length === 0 && (
+        <div style={{ 
+          color: '#6b7280', 
+          fontSize: '16px', 
+          textAlign: 'center',
+          padding: '60px 20px',
+          background: 'rgba(17, 24, 39, 0.6)',
+          borderRadius: '16px',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>
+            {showFavourites ? '⭐' : '🔍'}
+          </div>
+          {showFavourites 
+            ? (searchTerm ? 'No favourite missions match your search.' : 'No favourite missions yet. Star some missions to see them here!')
+            : 'No missions match your search. Try a different term.'
+          }
+        </div>
+      )}
 
-      <div style={{
-        display: 'flex',
-        gap: '15px',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}>
-        <button
-          onClick={() => navigate('/teacher')}
-          style={{
-            padding: '14px 30px',
-            fontSize: '16px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            border: '2px solid #666',
-            background: 'transparent',
-            color: '#aefeff',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            minWidth: '120px'
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            e.currentTarget.style.borderColor = '#aefeff';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.borderColor = '#666';
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
-        >
-          Back
-        </button>
-
-        <button
-          onClick={handleSubmit}
-          disabled={!selected}
-          style={{
-            padding: '14px 30px',
-            fontSize: '16px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            border: selected ? '2px solid #00f0ff' : '2px solid #444',
-            background: selected ? '#00f0ff' : '#333',
-            color: selected ? '#000' : '#666',
-            cursor: selected ? 'pointer' : 'not-allowed',
-            transition: 'all 0.3s ease',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            minWidth: '180px',
-            boxShadow: selected ? '0 0 20px rgba(0, 240, 255, 0.3)' : 'none',
-            opacity: selected ? 1 : 0.6
-          }}
-          onMouseEnter={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#33f3ff';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 240, 255, 0.4)';
-            }
-          }}
-          onMouseLeave={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#00f0ff';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 240, 255, 0.3)';
-            }
-          }}
-        >
-          Preview Questions
-        </button>
-      </div>
-
-      <style jsx>{`
+      <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }

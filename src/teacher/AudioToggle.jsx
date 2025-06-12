@@ -13,7 +13,7 @@ function AudioToggle() {
     if (isPlaying) {
       audioService.stop();
     } else {
-      audioService.init('/background.mp3');
+      audioService.init('/new-bg-75.mp3');
       audioService.play();
     }
     setIsPlaying(!isPlaying);
