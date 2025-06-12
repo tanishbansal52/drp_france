@@ -33,7 +33,11 @@ function DisplayQuestion() {
     // Updates state with finished groups and total count
     try {
       setGroupsError(null)
-      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+
+      const currentQuestionId = questions[currentIndex]?.question_id;
+      console.log('Current Question ID:', currentQuestionId)
+      if (!currentQuestionId) return;
+      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentQuestionId}/`)
       if (resp.status !== 200) {
         throw new Error(`HTTP ${resp.status}`)
       }
@@ -44,7 +48,7 @@ function DisplayQuestion() {
     }
     catch (err) {
       console.error('Error fetching groups:', err)
-      console.error(err.message)
+      console.error(err.error)
       setGroupsError(err.message)
     }
     finally {
