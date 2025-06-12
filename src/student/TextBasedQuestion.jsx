@@ -10,9 +10,16 @@ import { canMoveToNextQuestion } from './TeacherLinking'
 function TextBasedQuestion() {
   const navigate = useNavigate()
   const { roomCode } = useParams()
-  const location = useLocation()   
+  const location = useLocation()
   const [quizId, setQuizId] = useState();
-  localStorage.setItem('quizId', quizId);
+
+  // Store quizId in localStorage whenever it changes
+  useEffect(() => {
+    if (quizId !== undefined) {
+      localStorage.setItem('quizId', quizId);
+    }
+  }, [quizId]);
+
   console.log("qNumber in TextBased Q:", location.state);
   const [indexOfQuestion, setQNumber] = useState(location.state?.questionNo ?? 1)
   localStorage.setItem('qNumber', indexOfQuestion);
@@ -42,12 +49,12 @@ Final Code for Level 2: y + z = ?`,
   // Polling for spinoff mode
   useEffect(() => {
     if (!roomCode) return;
-    
+
     const checkSpinoffMode = async () => {
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/get-room-spinoff/${roomCode}/`);
         const data = await response.json();
-        
+
         if (data.spinoff_mode !== undefined) {
           setSpinoffMode(data.spinoff_mode);
         }
@@ -135,13 +142,16 @@ Final Code for Level 2: y + z = ?`,
     let cancelled = false
     const poll = async () => {
       if (cancelled) return
-      const currentQuestion = indexOfQuestion + 1
-      const ok = await canMoveToNextQuestion(roomCode, currentQuestion)
-      console.log("In TEXT BASED Q can move to next question is:", ok, "for question number:", currentQuestion, "at index", indexOfQuestion);
-      if (ok) {
-        cancelled = true
-        setShowAlert(false)
-        setQNumber(prev => prev + 1)
+      // Only increment if indexOfQuestion < 2
+      if (indexOfQuestion < 2) {
+        const currentQuestion = indexOfQuestion + 1
+        const ok = await canMoveToNextQuestion(roomCode, currentQuestion)
+        console.log("In TEXT BASED Q can move to next question is:", ok, "for question number:", currentQuestion, "at index", indexOfQuestion);
+        if (ok) {
+          cancelled = true
+          setShowAlert(false)
+          setQNumber(prev => Math.min(prev + 1, 2)) // Prevent going above 2
+        }
       }
     }
     const id = setInterval(poll, 3000)
@@ -158,7 +168,7 @@ Final Code for Level 2: y + z = ?`,
       console.log('Spinoff answer submitted:', answer);
       if (answer.toLowerCase() === spinoffQuestion.answer.toLowerCase()) {
         console.log("CORRECT ANSWER ENTERED PATH");
-        setQNumber(qNumber + 1);
+        setQNumber(prev => Math.min(prev + 1, 2)); // Prevent going above 2
         navigate('/correct', {
           state: { roomCode, questionNo: 1, groupId }
         })
@@ -178,7 +188,7 @@ Final Code for Level 2: y + z = ?`,
     }
 
     try {
-      const {data} = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
+      const { data } = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
         group_id: groupId,
         question_id: question.question_id,
         answer: answer
@@ -203,6 +213,14 @@ Final Code for Level 2: y + z = ?`,
 
   // Get the current question to display
   const currentQuestion = spinoffMode ? spinoffQuestion : question;
+
+  useEffect(() => {
+    if (indexOfQuestion === 3) {
+      navigate('/end', {
+        state: { roomCode, questionNo: indexOfQuestion, groupId, quizId }
+      });
+    }
+  }, [indexOfQuestion, navigate, roomCode, groupId, quizId]);
 
   return (
     <>

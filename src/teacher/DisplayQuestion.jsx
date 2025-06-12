@@ -10,13 +10,14 @@ import axios from 'axios';
 
 function DisplayQuestion() {
   const location = useLocation();
-  const quizId = location.state?.quizId 
+  const quizId = location.state?.quizId
   console.log('Quiz ID LAST:', quizId)
   const navigate = useNavigate()
   const { roomCode } = useParams()
   // instead of individual topic/question/answer, keep the full list
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  console.log('Current Index:', currentIndex)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -33,7 +34,8 @@ function DisplayQuestion() {
     // Updates state with finished groups and total count
     try {
       setGroupsError(null)
-      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+      // const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+      const resp = await axios.get(`http://localhost:8000/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
       if (resp.status !== 200) {
         throw new Error(`HTTP ${resp.status}`)
       }
@@ -54,13 +56,13 @@ function DisplayQuestion() {
 
   useEffect(() => {
     if (questions.length === 0) return
-    
+
     fetchGroupsFinished() // Initial fetch
     const interval = setInterval(fetchGroupsFinished, 2000) // Poll every 2 seconds
-    
+
     return () => clearInterval(interval) // Cleanup
   }, [roomCode, currentIndex, questions])
-  
+
 
   const fetchQuestions = async () => {
     try {
@@ -69,8 +71,8 @@ function DisplayQuestion() {
       setShowAnswer(false)
 
       // const res = await fetch('https://drp-belgium.onrender.com/api/questions')
-      // const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
-      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
+      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      // const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
@@ -90,11 +92,11 @@ function DisplayQuestion() {
   }
 
 
-    useEffect(() => {
-      if (quizId) {
-        fetchQuestions()
-      }
-    }, [quizId])
+  useEffect(() => {
+    if (quizId) {
+      fetchQuestions()
+    }
+  }, [quizId])
 
   const spinoffQuestion = {
     quiz: 'Spinoff Question',
@@ -116,8 +118,8 @@ Final Code for Level 2: y + z = ?`,
   const toggleSpinoffMode = async (mode) => {
     setSpinoffMode(mode)
     try {
-      // const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
-      const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
+      const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
+        // const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
         spinoff_mode: mode
       })
       console.log('Spinoff toggle response:', resp.data)
@@ -134,18 +136,22 @@ Final Code for Level 2: y + z = ?`,
   const question = current.question_text || ''
   const answer = current.answer || 'No answer available.'
 
-  const isLast = currentIndex === questions.length - 1
+  const MAX_INDEX = 2
+
+  const isLast = currentIndex >= MAX_INDEX
 
   const handleNext = async () => {
     setShowAnswer(false)
     toggleSpinoffMode(false)
-    setCurrentIndex(currentIndex + 1)
-    await incrementRoomsCurrentStatus(roomCode, currentIndex + 2)
+    if (currentIndex < MAX_INDEX) {
+      setCurrentIndex(currentIndex + 1)
+      await incrementRoomsCurrentStatus(roomCode, currentIndex + 2)
+    }
   }
 
   const handleFinish = async () => {
     await incrementRoomsCurrentStatus(roomCode, currentIndex + 2)
-    navigate('/teacher/finish', {state: { roomCode }})
+    navigate('/teacher/finish', { state: { roomCode } })
   }
 
   const handleSpinOff = async () => {
@@ -178,10 +184,10 @@ Final Code for Level 2: y + z = ?`,
                 ) : groupsError ? (
                   <p className="text-danger">{groupsError}</p>
                 ) : (
-                  <Card className="mt-3 p-3 text-start"> 
-                  <h4 className="text-info mt-3">
-                    {groupsFinished.length}/{totalGroups} groups finished
-                  </h4>
+                  <Card className="mt-3 p-3 text-start">
+                    <h4 className="text-info mt-3">
+                      {groupsFinished.length}/{totalGroups} groups finished
+                    </h4>
                     <h5 className="mb-3">Groups that finished:</h5>
                     {groupsFinished.length === 0 ? (
                       <p className="text-light">No groups have submitted yet.</p>
@@ -214,8 +220,8 @@ Final Code for Level 2: y + z = ?`,
                   </TeacherButton>
 
                   <TeacherButton variant="light" onClick={handleSpinOff}>
-                      SpinOff Question
-                    </TeacherButton>
+                    SpinOff Question
+                  </TeacherButton>
                   {isLast
                     ? <TeacherButton variant="light" onClick={handleFinish}>
                       Finish Quiz

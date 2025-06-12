@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../NavBar';
+import { useLocation } from 'react-router-dom'
 
 function Challenge() {
+  const location = useLocation();
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const quizId = localStorage.getItem('quizId');
+  const quizId = location.state?.quizId
+  console.log('Quiz ID:', quizId);
 
   useEffect(() => {
     const fetchBonusQuestion = async () => {
       try {
         setLoading(true);
         setError(null);
-        // const apiEndpoint = `http://localhost:8000/api/bonus-question/${quizId}/`;
-        const apiEndpoint = `https://drp-belgium.onrender.com/api/bonus-question/${quizId}/`;
+        const apiEndpoint = `http://localhost:8000/api/bonus-question/${quizId}/`;
+        // const apiEndpoint = `https://drp-belgium.onrender.com/api/bonus-question/${quizId}/`;
         const res = await fetch(apiEndpoint);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
