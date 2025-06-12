@@ -34,8 +34,12 @@ function DisplayQuestion() {
     // Updates state with finished groups and total count
     try {
       setGroupsError(null)
-      // const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
-      const resp = await axios.get(`http://localhost:8000/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+
+      const currentQuestionId = questions[currentIndex]?.question_id;
+      console.log('Current Question ID:', currentQuestionId)
+      if (!currentQuestionId) return;
+      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentQuestionId}/`)
+
       if (resp.status !== 200) {
         throw new Error(`HTTP ${resp.status}`)
       }
@@ -46,7 +50,7 @@ function DisplayQuestion() {
     }
     catch (err) {
       console.error('Error fetching groups:', err)
-      console.error(err.message)
+      console.error(err.error)
       setGroupsError(err.message)
     }
     finally {
@@ -71,8 +75,8 @@ function DisplayQuestion() {
       setShowAnswer(false)
 
       // const res = await fetch('https://drp-belgium.onrender.com/api/questions')
-      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
-      // const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
+      // const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
@@ -118,8 +122,8 @@ Final Code for Level 2: y + z = ?`,
   const toggleSpinoffMode = async (mode) => {
     setSpinoffMode(mode)
     try {
-      const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
-        // const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
+      // const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
+        const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
         spinoff_mode: mode
       })
       console.log('Spinoff toggle response:', resp.data)

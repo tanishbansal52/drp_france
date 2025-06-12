@@ -38,8 +38,8 @@ function ChooseQuiz() {
 
   const fetchQuizzes = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/quizzes/');
-      // const res = await axios.get('https://drp-belgium.onrender.com/api/quizzes/');
+      // const res = await axios.get('http://localhost:8000/api/quizzes/');
+      const res = await axios.get('https://drp-belgium.onrender.com/api/quizzes/');
       // Ensure each quiz has is_favorite property
       const quizzesWithFavorites = res.data.map(quiz => ({
         ...quiz,
@@ -69,8 +69,8 @@ function ChooseQuiz() {
     setIsTogglingFavorite(true);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/toggle-quiz-favourite/', {
-      // const res = await axios.post('https://drp-belgium.onrender.com/api/toggle-quiz-favourite/', {
+      // const res = await axios.post('http://localhost:8000/api/toggle-quiz-favourite/', {
+      const res = await axios.post('https://drp-belgium.onrender.com/api/toggle-quiz-favourite/', {
         quiz_id: quiz.quiz_id
       });
 

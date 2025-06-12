@@ -30,8 +30,8 @@ function End() {
   const handleRatingSubmit = async () => {
     console.log(`Rating selected: ${selectedRating}`);
     try {
-      // const resp = await axios.post("https://drp-belgium.onrender.com/api/update-after-rating/", {
-      const resp = await axios.post("http://localhost:8000/api/update-after-rating/", {
+      const resp = await axios.post("https://drp-belgium.onrender.com/api/update-after-rating/", {
+      // const resp = await axios.post("http://localhost:8000/api/update-after-rating/", {
         after_rating: selectedRating,
         group_id: groupId
       });

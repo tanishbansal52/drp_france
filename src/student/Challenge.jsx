@@ -17,8 +17,8 @@ function Challenge() {
       try {
         setLoading(true);
         setError(null);
-        const apiEndpoint = `http://localhost:8000/api/bonus-question/${quizId}/`;
-        // const apiEndpoint = `https://drp-belgium.onrender.com/api/bonus-question/${quizId}/`;
+        // const apiEndpoint = `http://localhost:8000/api/bonus-question/${quizId}/`;
+        const apiEndpoint = `https://drp-belgium.onrender.com/api/bonus-question/${quizId}/`;
         const res = await fetch(apiEndpoint);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
