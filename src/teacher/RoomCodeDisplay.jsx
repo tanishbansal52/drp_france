@@ -23,8 +23,8 @@ function RoomCodeDisplay() {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setRoomCode(code);
 
-    fetch('https://drp-belgium.onrender.com/api/add-room/', {
-    // fetch('http://localhost:8000/api/add-room/', {
+    // fetch('https://drp-belgium.onrender.com/api/add-room/', {
+    fetch('http://localhost:8000/api/add-room/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ room_code: code, quiz_id: quizId }),
@@ -47,8 +47,8 @@ function RoomCodeDisplay() {
     if (!roomCode) return;
 
     const interval = setInterval(() => {
-      fetch(`https://drp-belgium.onrender.com/api/get-room-groups/${roomCode}`)
-      // fetch(`http://localhost:8000/api/get-room-groups/${roomCode}`)
+      // fetch(`https://drp-belgium.onrender.com/api/get-room-groups/${roomCode}`)
+      fetch(`http://localhost:8000/api/get-room-groups/${roomCode}`)
         .then((res) => res.json())
         .then((data) => {
           setGroups(Array.isArray(data) ? data : []);

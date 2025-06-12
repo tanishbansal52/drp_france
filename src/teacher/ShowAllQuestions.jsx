@@ -28,8 +28,8 @@ function ShowAllQuestions() {
       setLoading(true)
       setError(null)
 
-      const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
-      // const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
+      // const apiEndpoint = `https://drp-belgium.onrender.com/api/questions-data/${quizId}/`
+      const apiEndpoint = `http://localhost:8000/api/questions-data/${quizId}/`
       const res = await fetch(apiEndpoint)
       if (res.status === 404) {
         setQuestions([])
