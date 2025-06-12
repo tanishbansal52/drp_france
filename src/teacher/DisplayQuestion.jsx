@@ -5,7 +5,8 @@ import NavBar from '../NavBar'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
-import axios from 'axios'
+import axios from 'axios';
+
 
 function DisplayQuestion() {
   const location = useLocation();
@@ -20,6 +21,47 @@ function DisplayQuestion() {
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [spinoffMode, setSpinoffMode] = useState(false)
+
+=======
+
+  const [groupsFinished, setGroupsFinished] = useState([])
+  const [totalGroups, setTotalGroups] = useState(0)
+  const [groupsLoading, setGroupsLoading] = useState(false)
+  const [groupsError, setGroupsError] = useState(null)
+
+  const fetchGroupsFinished = async () => {
+    // Fetches groups that have finished the current question
+    // Updates state with finished groups and total count
+    try {
+      setGroupsError(null)
+      const resp = await axios.get(`https://drp-belgium.onrender.com/api/groups-finished-question/${roomCode}/${currentIndex + 1}/`)
+      if (resp.status !== 200) {
+        throw new Error(`HTTP ${resp.status}`)
+      }
+      console.log('Groups finished response:', resp.data)
+
+      setGroupsFinished(resp.data.finished_groups || [])
+      setTotalGroups(resp.data.total_groups || 0)
+    }
+    catch (err) {
+      console.error('Error fetching groups:', err)
+      console.error(err.message)
+      setGroupsError(err.message)
+    }
+    finally {
+      setGroupsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (questions.length === 0) return
+    
+    fetchGroupsFinished() // Initial fetch
+    const interval = setInterval(fetchGroupsFinished, 2000) // Poll every 2 seconds
+    
+    return () => clearInterval(interval) // Cleanup
+  }, [roomCode, currentIndex, questions])
+  
 
   const fetchQuestions = async () => {
     try {
@@ -123,9 +165,37 @@ Final Code for Level 2: y + z = ?`,
             {!loading && error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
               <>
+
                 <h5 style={{ fontSize: '2rem', lineHeight: 1.2, whiteSpace: 'pre-wrap' }}>
                   {question}
                 </h5>
+
+
+                {/* Finished Groups Display */}
+                {groupsLoading ? (
+                  <Spinner animation="border" variant="secondary" />
+                ) : groupsError ? (
+                  <p className="text-danger">{groupsError}</p>
+                ) : (
+                  <Card className="mt-3 p-3 text-start"> 
+                  <h4 className="text-info mt-3">
+                    {groupsFinished.length}/{totalGroups} groups finished
+                  </h4>
+                    <h5 className="mb-3">Groups that finished:</h5>
+                    {groupsFinished.length === 0 ? (
+                      <p className="text-light">No groups have submitted yet.</p>
+                    ) : (
+                      <ul className="list-unstyled">
+                        {groupsFinished.map((group, idx) => (
+                          <li key={idx} className="mb-2 text-light">
+                            <strong>{group.group_name}</strong> ({group.student_names.join(', ')})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </Card>
+                )}
+
                 {showAnswer && (
                   <p
                     className="mt-3 text-success"

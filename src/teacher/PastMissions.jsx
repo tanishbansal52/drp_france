@@ -23,17 +23,20 @@ function PastMissions() {
       });
   }, []);
 
-  const handleSubmit = () => {
-    console.log('Selected quiz:', selected);
-    navigate('/teacher/allquestions');
+  const handleViewReport = () => {
+    console.log('Selected mission:', selected);
+    navigate('/teacher/report', {
+      state: { room_id: selected }
+    });
   };
 
-  const getDifficultyColor = (difficulty) => {
-    switch(difficulty?.toLowerCase()) {
-      case 'easy': return '#4ade80';
-      case 'medium': return '#f59e0b';
-      case 'hard': return '#ef4444';
-      default: return '#aefeff';
+  const handleRelaunchMission = () => {
+    const selectedMission = pastMissions.find(mission => mission.room_id === selected);
+    if (selectedMission) {
+      console.log('Relaunching mission with quiz ID:', selectedMission.quiz_id);
+      navigate('/teacher/dashboard', {
+        state: { quizId: selectedMission.quiz_id }
+      });
     }
   };
 
@@ -95,17 +98,17 @@ function PastMissions() {
               display: 'flex',
               alignItems: 'flex-start',
               marginBottom: '20px',
-              background: selected === mission.room_code 
+              background: selected === mission.room_id 
                 ? 'rgba(0, 240, 255, 0.1)' 
                 : 'rgba(255, 255, 255, 0.05)',
               padding: '20px',
               borderRadius: '12px',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              border: selected === mission.room_code 
+              border: selected === mission.room_id 
                 ? '2px solid rgba(0, 240, 255, 0.5)' 
                 : '2px solid transparent',
-              boxShadow: selected === mission.room_code  
+              boxShadow: selected === mission.room_id  
                 ? '0 0 20px rgba(0, 240, 255, 0.2)' 
                 : '0 4px 6px rgba(0, 0, 0, 0.1)',
               transform: 'translateY(0)',
@@ -128,8 +131,8 @@ function PastMissions() {
             <input
               type="radio"
               name="quiz-selection"
-              checked={selected === mission.room_code }
-              onChange={() => setSelected(mission.room_code)}
+              checked={selected === mission.room_id }
+              onChange={() => setSelected(mission.room_id)}
               style={{
                 width: '20px',
                 height: '20px',
@@ -234,7 +237,44 @@ function PastMissions() {
         </button>
         
         <button
-          onClick={handleSubmit}
+          onClick={handleRelaunchMission}
+          disabled={!selected}
+          style={{
+            padding: '14px 30px',
+            fontSize: '16px',
+            fontWeight: '600',
+            borderRadius: '8px',
+            border: selected ? '2px solid #ff6b35' : '2px solid #444',
+            background: selected ? '#ff6b35' : '#333',
+            color: selected ? '#fff' : '#666',
+            cursor: selected ? 'pointer' : 'not-allowed',
+            transition: 'all 0.3s ease',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            minWidth: '180px',
+            boxShadow: selected ? '0 0 20px rgba(255, 107, 53, 0.3)' : 'none',
+            opacity: selected ? 1 : 0.6
+          }}
+          onMouseEnter={e => {
+            if (selected) {
+              e.currentTarget.style.background = '#ff8c66';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 107, 53, 0.4)';
+            }
+          }}
+          onMouseLeave={e => {
+            if (selected) {
+              e.currentTarget.style.background = '#ff6b35';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 107, 53, 0.3)';
+            }
+          }}
+        >
+          Relaunch Mission
+        </button>
+
+        <button
+          onClick={handleViewReport}
           disabled={!selected}
           style={{
             padding: '14px 30px',

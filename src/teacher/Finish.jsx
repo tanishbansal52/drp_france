@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import NavBar from '../NavBar'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useEffect } from 'react'
 
 const Finish = ({ onRestart }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const roomCode = location.state?.roomCode;
+  const [roomId, setRoomId] = useState(0);
 
   useEffect(() => {
     const markComplete = async () => {
@@ -16,6 +18,7 @@ const Finish = ({ onRestart }) => {
           room_code: roomCode
         });
         console.log("Response:", resp.data);
+        setRoomId(resp.data.room_id);
       } catch (error) {
         console.error('Error submitting rating:', error);
       }
@@ -35,6 +38,9 @@ const Finish = ({ onRestart }) => {
             Restart Mission
           </Button>
         )}
+        <button className="btn btn-primary mt-3" onClick={() => navigate('/teacher/report/', {state: { room_id: roomId }})}>
+          View Mission Report
+        </button>
       </div>
     </>
   )

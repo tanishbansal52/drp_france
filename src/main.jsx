@@ -27,6 +27,8 @@ import TeacherLayout from './teacher/TeacherLayout.jsx';
 import StudentLayout from './student/StudentLayout.jsx'; 
 import PastMissions from './teacher/PastMissions.jsx';
 import Challenge from './student/Challenge.jsx';
+import Report from './teacher/Report.jsx';
+
 
 
 createRoot(document.getElementById('root')).render(
@@ -56,6 +58,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/teacher/dashboard" element={<TeacherLayout><DisplayRoomCode/></TeacherLayout>} />
               <Route path="/teacher/displayquestion/:roomCode" element={<TeacherLayout><DisplayQuestion /></TeacherLayout>} />
               <Route path="/teacher/pastmissions" element={<TeacherLayout><PastMissions/></TeacherLayout>} />
+              <Route path="/teacher/report" element={<TeacherLayout><Report/></TeacherLayout>} />
               <Route path="/teacher/finish" element={<TeacherLayout><Finish/></TeacherLayout>} />
 
           </Routes>
