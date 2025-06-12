@@ -10,8 +10,8 @@ function PastMissions() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // axios.get('https://drp-belgium.onrender.com/api/past-missions/')
-    axios.get('http://localhost:8000/api/past-missions/')
+    axios.get('https://drp-belgium.onrender.com/api/past-missions/')
+    // axios.get('http://localhost:8000/api/past-missions/')
       .then(res => {
         setPastMissions(res.data.missions)
         console.log(res.data)
