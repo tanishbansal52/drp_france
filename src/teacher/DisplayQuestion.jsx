@@ -61,14 +61,12 @@ function DisplayQuestion() {
 
   const handleNext = async () => {
     setShowAnswer(false)
-    setCurrentIndex(prev =>
-      questions.length ? (prev + 1) % questions.length : 0
-    )
-    await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
+    setCurrentIndex(currentIndex + 1)
+    await incrementRoomsCurrentStatus(roomCode, currentIndex + 2)
   }
 
   const handleFinish = async () => {
-    await incrementRoomsCurrentStatus(roomCode, currentIndex + 1)
+    await incrementRoomsCurrentStatus(roomCode, currentIndex + 2)
     navigate('/teacher/finish', {state: { roomCode }})
   }
 

@@ -8,7 +8,7 @@ import axios from 'axios';
 
 import NavBar from '../NavBar';
 
-function GroupQuestion() {
+function ButtonBasedQuestion() {
   const navigate = useNavigate();
   const { roomCode } = useParams();
   const [answer, setAnswer] = useState('')
@@ -196,4 +196,4 @@ function GroupQuestion() {
   )
 }
 
-export default GroupQuestion;
+export default ButtonBasedQuestion;

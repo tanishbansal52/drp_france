@@ -13,8 +13,8 @@ import Incorrect from './student/Incorrect.jsx';
 import End from './student/End.jsx';
 import Start from './student/Start.jsx';
 import WaitingArea from './student/Waiting.jsx';
-import IndividualQuestion from './student/IndividualQuestion.jsx'
-import GroupQuestion from './student/GroupQuestion.jsx';
+import TextBasedQuestion from './student/TextBasedQuestion.jsx'
+import ButtonBasedQuestion from './student/ButtonBasedQuestion.jsx';
 import DisplayRoomCode from './teacher/RoomCodeDisplay.jsx';
 import HomePage from './HomePage.jsx';
 import TeacherLanding from './teacher/TeacherLanding.jsx';
@@ -40,8 +40,8 @@ createRoot(document.getElementById('root')).render(
               <Route path="/student" element={<StudentLayout><StudentLanding /></StudentLayout>} />
               <Route path="/waiting/:roomCode" element={<StudentLayout><WaitingArea /></StudentLayout>} />
               <Route path="/start/:roomCode" element={<StudentLayout><Start /></StudentLayout>} />
-              <Route path="/textQs/:roomCode" element={<StudentLayout><IndividualQuestion /></StudentLayout>} />
-              <Route path="/groupquestion/:roomCode" element={<StudentLayout><GroupQuestion /></StudentLayout>} />
+              <Route path="/textQs/:roomCode" element={<StudentLayout><TextBasedQuestion /></StudentLayout>} />
+              <Route path="/groupquestion/:roomCode" element={<StudentLayout><ButtonBasedQuestion /></StudentLayout>} />
               <Route path="/correct" element={<StudentLayout><Correct /></StudentLayout>} />
               <Route path="/incorrect" element={<StudentLayout><Incorrect /></StudentLayout>} />
               <Route path="/end" element={<StudentLayout><End /></StudentLayout>} />

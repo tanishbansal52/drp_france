@@ -5,42 +5,37 @@ import { Form, Button, Alert } from 'react-bootstrap'
 import '../css/IndividualQuestion.css'
 import NavBar from '../NavBar';
 import axios from 'axios';
+import { canMoveToNextQuestion } from './TeacherLinking'
 
-function IndividualQuestion() {
+function TextBasedQuestion() {
   const navigate = useNavigate()
   const { roomCode } = useParams()
+  const location = useLocation()   
   const [quizId, setQuizId] = useState();
   localStorage.setItem('quizId', quizId);
-  const [qNumber, setQNumber] = useState(0); // Start with question 1
-  localStorage.setItem('qNumber', qNumber);
+  console.log("qNumber in TextBased Q:", location.state);
+  const [indexOfQuestion, setQNumber] = useState(location.state?.questionNo ?? 1)
+  localStorage.setItem('qNumber', indexOfQuestion);
   const [answer, setAnswer] = useState('')
   const [question, setQuestion] = useState('');
-  const [incorrect, setIncorrect] = useState(1);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
-  const location = useLocation();
   const groupId = location.state?.groupId || 0;
 
   console.log("groupId in Individual q:", groupId);
 
+  // Fetch quizId...
   useEffect(() => {
     if (!roomCode) return;
     fetch(`http://127.0.0.1:8000/api/get-room-quiz-id/${roomCode}/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.quiz_id) {
-          setQuizId(data.quiz_id);
-        }
-      })
-      .catch(err => {
-        console.error('Error fetching quizId:', err);
-      });
+      .then(r => r.json())
+      .then(d => d.quiz_id && setQuizId(d.quiz_id))
+      .catch(console.error)
   }, [roomCode]);
 
   console.log('Quiz ID VIA ROOM CODE:', quizId);
 
-  // New: read question aloud
+  // read question aloud
   const readQuestion = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
@@ -51,7 +46,6 @@ function IndividualQuestion() {
       alert('Speech Synthesis not supported in this browser.')
     }
   }
-
   useEffect(() => {
     const onKeyDown = e => {
       if (e.key.toLowerCase() === 'r') {
@@ -63,58 +57,72 @@ function IndividualQuestion() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [question])
 
+  // Fetch question...
   useEffect(() => {
     if (!quizId && quizId !== 0) return;
-    console.log('Fetching question from API...');
-    // fetch('https://drp-belgium.onrender.com/api/questions/1/')
-    fetch(`http://127.0.0.1:8000/api/questions/${qNumber}/${quizId}/`)
-      .then(response => response.json())
-      .then(data => {
-        console.log('question number:', qNumber);
-        // API returns object with 'question' field
-        if (data && data.question_text) {
-          setQuestion(data);
-          // setRightAnswer(data.answer || "0"); // Right answer from API
+    const fetchQuestion = async () => {
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/questions/${indexOfQuestion}/${quizId}/`
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
-        console.log('fetched q number:', qNumber);
-        console.log('Question fetched:', data.question_text);
-      })
-      .catch(error => console.error('Error:', error));
-  }, [quizId, qNumber]);
+        const data = await res.json();
+        if (data?.question_text) {
+          setQuestion(data);
+        } else {
+          throw new Error('No question text');
+        }
+      } catch (err) {
+        console.error('Error fetching question:', err);
+        console.log("No response from server must mean we're at the finish! ><")
+        navigate('/end', {
+          state: { roomCode, questionNo: indexOfQuestion, groupId, quizId }
+        });
+      }
+    };
+
+    fetchQuestion();
+  }, [quizId, indexOfQuestion]);
+
+  // Poll teacher to move on when stuck on an incorrect
+  useEffect(() => {
+    let cancelled = false
+    const poll = async () => {
+      if (cancelled) return
+      const currentQuestion = indexOfQuestion + 1
+      const ok = await canMoveToNextQuestion(roomCode, currentQuestion)
+      console.log("In TEXT BASED Q can move to next question is:", ok, "for question number:", currentQuestion, "at index", indexOfQuestion);
+      if (ok) {
+        cancelled = true
+        setShowAlert(false)
+        setQNumber(prev => prev + 1)
+      }
+    }
+    const id = setInterval(poll, 3000)
+    return () => { cancelled = true; clearInterval(id) }
+  }, [roomCode, indexOfQuestion])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (answer === '') return
+    if (!answer) return
 
     try {
-      // Make POST request with Axios
-      const response = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
+      const {data} = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
         group_id: groupId,
         question_id: question.question_id,
         answer: answer
       });
 
-      // Handle the response data
-      const data = response.data; // Axios automatically parses the response
-
       if (data.correct) {
-        console.log("CORRECT ANSWER ENTERED PATH");
-        setQNumber(qNumber + 1);
         navigate('/correct', {
-          state: { roomCode, questionNo: 1, groupId }
+          state: { roomCode, questionNo: indexOfQuestion, groupId }
         })
       } else {
-        console.log("INCORRECT PATH");
-        if (incorrect < 2) {
-          setIncorrect(incorrect + 1);
-          setAlertMessage('That was not correct, try again!');
-          setShowAlert(true);
-          return;
-        }
-        navigate('/incorrect', {
-          state: { roomCode, questionNo: 1, groupId }
-        })
+        setAlertMessage('That was not correct, try again!')
+        setShowAlert(true)
+        setAnswer('')
       }
     } catch (err) {
       // Catch any error that occurs during the request
@@ -157,26 +165,8 @@ function IndividualQuestion() {
       </div>
 
       {showAlert && (
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setShowAlert(false)}
-          className="mx-3 mb-3 alert-animated"
-          style={{
-            animation: 'slideDown 0.3s ease-out',
-            boxShadow: '0 4px 12px rgba(220, 53, 69, 0.3)',
-            border: '2px solid #dc3545'
-          }}
-        >
-          <Alert.Heading>
-            <i className="bi bi-exclamation-triangle-fill me-2"></i>
-            Oops!  {alertMessage}
-          </Alert.Heading>
-
-          <hr />
-          <p className="mb-0" style={{ fontSize: '0.9em', color: '#721c24' }}>
-            💡 Hint: Make sure you're entering the numbers in the correct order.
-          </p>
+        <Alert variant="danger" dismissible onClose={() => setShowAlert(false)}>
+          {alertMessage}
         </Alert>
       )}
 
@@ -219,4 +209,4 @@ function IndividualQuestion() {
   )
 }
 
-export default IndividualQuestion
+export default TextBasedQuestion

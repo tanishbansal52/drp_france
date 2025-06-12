@@ -255,6 +255,7 @@ function RoomCodeDisplay() {
                 style={styles.startButton}
                 size="lg"
                 onClick={async () => {
+                  // Going to question 1
                   await incrementRoomsCurrentStatus(roomCode, 1)
                   navigate(`/teacher/displayquestion/${roomCode}`, { state: { quizId } })
                 }}
