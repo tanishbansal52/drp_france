@@ -22,7 +22,6 @@ function DisplayQuestion() {
   const [showAnswer, setShowAnswer] = useState(false)
   const [spinoffMode, setSpinoffMode] = useState(false)
 
-=======
 
   const [groupsFinished, setGroupsFinished] = useState([])
   const [totalGroups, setTotalGroups] = useState(0)
