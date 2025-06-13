@@ -22,32 +22,46 @@ function Correct() {
   
   // helper to fetch next-question type & navigate
   const navigateNext = async () => {
-    let res
-    try {
-      res  = await fetch(
-        `https://drp-belgium.onrender.com/api/question-type/${(currentQuestionIndex + 1)}/${quizId}/`
-      );
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
-      console.log("Received data:", data);
-      const nextPath =
-        data.q_type === "text"
+      try {
+        // Use (currentQuestionIndex + 1) to get the type of the next question
+        const res = await fetch(
+          `https://drp-belgium.onrender.com/api/question-type/${currentQuestionIndex + 1}/${quizId}/`
+        );
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        console.log("Received data:", data);
+        
+        // Determine path based on question type
+        const nextPath = data.q_type === "text"
           ? `/textQs/${roomCode}`
           : `/groupquestion/${roomCode}`;
-      
-      navigate(nextPath, {
-        state: { roomCode, questionNo: currentQuestionIndex + 1, groupId, quizId }
-      });
-    } catch (err) {
-      console.error('Error fetching question type:', err);
-      console.log("No response from server must mean we're at the finish! ><")
-      navigate(`/end`, {
-        state: { roomCode, questionNo: currentQuestionIndex + 1, groupId, quizId }
-      });
-    }
-  };
+        
+        // Navigate with the correct next question index
+        navigate(nextPath, {
+          state: { 
+            roomCode, 
+            questionNo: currentQuestionIndex + 1, 
+            groupId, 
+            quizId 
+          }
+        });
+      } catch (err) {
+        console.error('Error fetching question type:', err);
+        console.log("No response from server must mean we're at the finish! ><");
+        navigate(`/end`, {
+          state: { 
+            roomCode, 
+            questionNo: currentQuestionIndex + 1, 
+            groupId, 
+            quizId 
+          }
+        });
+      }
+    };
 
   // Function to fetch bonus question
   const fetchBonusQuestion = async () => {
