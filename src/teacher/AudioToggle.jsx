@@ -44,7 +44,7 @@ function AudioToggle() {
       onClick={toggleAudio}
       title={isPlaying ? "Mute Background" : "Play Background"}
     >
-      {isPlaying ? "♪" : "▶"}
+      {isPlaying ? "🔊" : "🔇"}
     </div>
   );
 }

@@ -330,7 +330,7 @@ function RoomCodeDisplay() {
                     <p style={styles.waitingText}>Waiting for groups to join...</p>
                   )}
                 </div>
-                <TeacherButton 
+                <button 
                   style={styles.toggleButton}
                   onClick={() => setShowMembers(!showMembers)}
                   onMouseEnter={(e) => {
@@ -343,7 +343,7 @@ function RoomCodeDisplay() {
                   }}
                 >
                   {showMembers ? 'Hide group members' : 'See group members'}
-                </TeacherButton>
+                </button>
               </div>
             </div>
           </Col>

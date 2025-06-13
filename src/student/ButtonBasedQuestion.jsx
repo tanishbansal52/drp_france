@@ -74,7 +74,7 @@ Final Code for Level 2: y + z = ?`,
       // question is stored as a string (data.question_text)
       const text = question || ''
       const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'en-US'
+      utterance.lang = 'en-GB'
       window.speechSynthesis.speak(utterance)
     } else {
       alert('Speech Synthesis not supported in this browser.')

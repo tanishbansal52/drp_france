@@ -7,7 +7,6 @@ import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 import axios from 'axios';
 
-
 function DisplayQuestion() {
   const location = useLocation();
   const quizId = location.state?.quizId
@@ -22,12 +21,16 @@ function DisplayQuestion() {
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [spinoffMode, setSpinoffMode] = useState(false)
-
+  const [spinoffUsed, setSpinoffUsed] = useState(false) 
+  const [showEndQuizModal, setShowEndQuizModal] = useState(false)
+    
 
   const [groupsFinished, setGroupsFinished] = useState([])
   const [totalGroups, setTotalGroups] = useState(0)
   const [groupsLoading, setGroupsLoading] = useState(false)
   const [groupsError, setGroupsError] = useState(null)
+
+  
 
   const fetchGroupsFinished = async () => {
     // Fetches groups that have finished the current question
@@ -67,7 +70,6 @@ function DisplayQuestion() {
     return () => clearInterval(interval) // Cleanup
   }, [roomCode, currentIndex, questions])
 
-
   const fetchQuestions = async () => {
     try {
       setLoading(true)
@@ -95,7 +97,6 @@ function DisplayQuestion() {
     }
   }
 
-
   useEffect(() => {
     if (quizId) {
       fetchQuestions()
@@ -108,11 +109,11 @@ function DisplayQuestion() {
 Team Alpha (2 students):
 Plug x into the equation:
 y = 3x + 2
-Whats the value of y?
+What's the value of y?
 Team Beta (2 students):
 Use the same x in a different code line:
 z = 5x - 6
-Whats the value of z?
+What's the value of z?
 Once both teams have their answers, combine them:
 Final Code for Level 2: y + z = ?`,
     answer: '35',
@@ -121,9 +122,11 @@ Final Code for Level 2: y + z = ?`,
 
   const toggleSpinoffMode = async (mode) => {
     setSpinoffMode(mode)
+    if (mode) {
+      setSpinoffUsed(true)  // When enabling spinoff mode, mark it as used
+    }
     try {
-      // const resp = await axios.post(`http://localhost:8000/api/toggle-spinoff/${roomCode}/`, {
-        const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
+      const resp = await axios.post(`https://drp-belgium.onrender.com/api/toggle-spinoff/${roomCode}/`, {
         spinoff_mode: mode
       })
       console.log('Spinoff toggle response:', resp.data)
@@ -163,84 +166,388 @@ Final Code for Level 2: y + z = ?`,
     toggleSpinoffMode(true)
   }
 
+  const handleEndQuiz = () => {
+    navigate('/')
+  }
+
   return (
-    <>
+    <div style={{ 
+      minHeight: '100vh', 
+      color: 'white',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       <NavBar />
-      <div className="bg-primary text-white text-center py-3 mb-4">
-        <h1 className="m-0 display-5">{topic}</h1>
+      
+      {/* Header */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+        marginBottom: '60px',
+        padding: '20px 30px 0 30px',
+        position: 'relative'
+      }}>
+
+        <div style={{ 
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <h1 style={{ 
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#00d9ff',
+            marginBottom: '0',
+            textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
+            letterSpacing: '2px'
+          }}>
+            Mission: {(topic || 'Algebra').replace(/\s*\([^)]*\)/g, '')}
+          </h1>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          {/* Division X Logo */}
+          <div 
+            className="division-x-logo"
+            onClick={() => setShowEndQuizModal(true)}
+            style={{ cursor: 'pointer' }}
+          >
+            Division X
+          </div>
+        </div>
       </div>
-      <Container className="d-flex justify-content-center align-items-center min-vh-80">
-        <Card className="shadow-lg p-5 text-center w-100">
-          <Card.Body>
-            {loading && <Spinner animation="border" variant="light" />}
-            {!loading && error && <p className="text-danger">{error}</p>}
-            {!loading && !error && (
-              <>
 
-                <h5 style={{ fontSize: '2rem', lineHeight: 1.2, whiteSpace: 'pre-wrap' }}>
-                  {question}
-                </h5>
-
-
-                {/* Finished Groups Display */}
-                {groupsLoading ? (
-                  <Spinner animation="border" variant="secondary" />
-                ) : groupsError ? (
-                  <p className="text-danger">{groupsError}</p>
-                ) : (
-                  <Card className="mt-3 p-3 text-start">
-                    <h4 className="text-info mt-3">
-                      {groupsFinished.length}/{totalGroups} groups finished
-                    </h4>
-                    <h5 className="mb-3">Groups that finished:</h5>
-                    {groupsFinished.length === 0 ? (
-                      <p className="text-light">No groups have submitted yet.</p>
-                    ) : (
-                      <ul className="list-unstyled">
-                        {groupsFinished.map((group, idx) => (
-                          <li key={idx} className="mb-2 text-light">
-                            <strong>{group.group_name}</strong> ({group.student_names.join(', ')})
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </Card>
-                )}
-
-                {showAnswer && (
-                  <p
-                    className="mt-3 text-success"
-                    style={{ fontSize: '1.5rem', fontWeight: 500 }}
-                  >
-                    Answer: {answer}
-                  </p>
-                )}
-                <div className="mt-4 d-flex justify-content-center gap-3">
-                  <TeacherButton
-                    variant="light"
-                    onClick={() => setShowAnswer(v => !v)}
-                  >
-                    {showAnswer ? 'Hide Answer' : 'Show Answer'}
-                  </TeacherButton>
-
-                  <TeacherButton variant="light" onClick={handleSpinOff}>
-                    SpinOff Question
-                  </TeacherButton>
-                  {isLast
-                    ? <TeacherButton variant="light" onClick={handleFinish}>
-                      Finish Quiz
-                    </TeacherButton>
-                    : <TeacherButton variant="light" onClick={handleNext}>
-                      Next Question
-                    </TeacherButton>
-                  }
+      {/* Main Content */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: '0 30px 20px 30px'
+      }}>
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.6)',
+          borderRadius: '12px',
+          padding: '24px',
+          maxWidth: '1200px',
+          width: '100%',
+          position: 'relative',
+          border: '1px solid rgba(0, 217, 255, 0.3)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {loading && (
+            <div style={{ textAlign: 'center' }}>
+              <Spinner animation="border" variant="info" />
+            </div>
+          )}
+          
+          {!loading && error && (
+            <p style={{ color: '#ff4444', textAlign: 'center', fontSize: '1.2rem' }}>
+              {error}
+            </p>
+          )}
+          
+          {!loading && !error && (
+            <>
+              {/* Show Answer Button in top right of question box */}
+               <div style={{ 
+              position: 'absolute', 
+              top: '20px', 
+              right: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              {showAnswer && (
+                <div style={{
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  borderRadius: '8px',
+                  padding: '4px 10px',
+                  borderLeft: '4px solid #10b981',
+                  maxWidth: '300px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: 'flex', 
+                  alignItems: 'center',
+                  height: '32px'
+                }}>
+                  <span style={{ fontSize: '14px', color: '#d1fae5', lineHeight: '1' }}>
+                    {answer}
+                  </span>
                 </div>
-              </>
-            )}
-          </Card.Body>
-        </Card>
-      </Container>
-    </>
+              )}
+              <TeacherButton
+                onClick={() => setShowAnswer(v => !v)}
+                style={{
+                  background: showAnswer 
+                    ? 'rgba(100, 116, 139, 0.3)' 
+                    : 'rgba(0, 217, 255, 0.2)',
+                  color: showAnswer ? '#94a3b8' : '#00d9ff',
+                  border: `1px solid ${showAnswer 
+                    ? 'rgba(100, 116, 139, 0.5)' 
+                    : 'rgba(0, 217, 255, 0.5)'}`,
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!showAnswer) {
+                    e.target.style.background = 'rgba(0, 217, 255, 0.3)'
+                    e.target.style.boxShadow = '0 0 10px rgba(0, 217, 255, 0.2)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!showAnswer) {
+                    e.target.style.background = 'rgba(0, 217, 255, 0.2)'
+                    e.target.style.boxShadow = 'none'
+                  }
+                }}
+              >
+                {showAnswer ? "HIDE ANSWER" : "SHOW ANSWER"}
+              </TeacherButton>
+            </div>
+
+              {/* Question Header - Added to match ShowAllQuestions */}
+              <div className="mb-3" style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: '16px' 
+              }}>
+                <span style={{
+                  background: 'rgba(0, 217, 255, 0.2)',
+                  color: '#00d9ff',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  border: '1px solid rgba(0, 217, 255, 0.3)'
+                }}>
+                  Question {currentIndex + 1}
+                </span>
+              </div>
+
+              {/* Question Content */}
+              <div style={{ 
+                fontSize: '20px', 
+                lineHeight: '1.6', 
+                marginBottom: '30px',
+                marginTop: '20px',
+                whiteSpace: 'pre-wrap',
+                color: '#f0f4f8',
+                textAlign: 'center',
+                padding: '0 60px',
+                maxWidth: '1000px', 
+                margin: '20px auto 30px',
+                fontWeight: '500'
+  
+              }}>
+                {question}
+              </div>
+
+              {/* Bottom Row with Groups Progress (left) and Buttons (right) */}
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', // Changed from flex-end to space-between
+                alignItems: 'center',
+                marginTop: '30px' // Added margin to separate from question content
+              }}>
+                {/* Groups Progress - Moved to bottom left */}
+                <div style={{
+                  background: 'rgba(0, 217, 255, 0.05)',
+                  borderRadius: '10px',
+                  padding: '12px 20px',
+                  maxWidth: '500px',
+                  minWidth: '350px',
+                  width: '45%'
+                }}>
+                  <h4 style={{ 
+                    color: '#00d9ff', 
+                    marginBottom: '8px',
+                    fontSize: '18px',
+                    fontWeight: '600'
+                  }}>
+                    {groupsLoading ? (
+                      <Spinner animation="border" size="sm" variant="info" />
+                    ) : (
+                      `${groupsFinished.length}/${totalGroups} groups finished`
+                    )}
+                  </h4>
+                  
+                  {groupsFinished.length === 0 ? (
+                    <div style={{ color: '#6b7280', fontSize: '14px' }}>
+                      No groups have submitted yet.
+                    </div>
+                  ) : (
+                    <div style={{ 
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '10px',
+                      fontSize: '15px'
+                    }}>
+                      {groupsFinished.map((group, idx) => (
+                        <div key={idx} style={{ 
+                          background: 'rgba(0, 217, 255, 0.1)',
+                          padding: '8px 14px',
+                          borderRadius: '5px',
+                          border: '1px solid rgba(0, 217, 255, 0.2)',
+                          color: '#00d9ff',
+                          fontWeight: '500'
+                        }}>
+                          {group.group_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Right Buttons */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '15px',
+                  alignItems: 'center'
+                }}>
+                  <TeacherButton
+                    onClick={handleSpinOff}
+                    disabled={spinoffUsed}
+                    style={{
+                      background: spinoffUsed 
+                        ? 'rgba(100, 116, 139, 0.3)' 
+                        : 'rgba(0, 217, 255, 0.2)',
+                      color: spinoffUsed ? '#94a3b8' : '#00d9ff',
+                      border: `1px solid ${spinoffUsed 
+                        ? 'rgba(100, 116, 139, 0.5)' 
+                        : 'rgba(0, 217, 255, 0.5)'}`,
+                      padding: '10px 20px',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      cursor: spinoffUsed ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!spinoffUsed) {
+                        e.target.style.background = 'rgba(0, 217, 255, 0.3)'
+                        e.target.style.boxShadow = '0 0 10px rgba(0, 217, 255, 0.2)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!spinoffUsed) {
+                        e.target.style.background = 'rgba(0, 217, 255, 0.2)'
+                        e.target.style.boxShadow = 'none'
+                      }
+                    }}
+                  >
+                    SPINOFF
+                  </TeacherButton>
+
+                  {!loading && !error && (
+                      isLast ? (
+                        <TeacherButton
+                          onClick={handleFinish}
+                          style={{
+                            background: 'rgba(0, 217, 255, 0.2)',
+                            color: '#00d9ff',
+                            border: '1px solid rgba(0, 217, 255, 0.5)',
+                            padding: '10px 20px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          FINISH →
+                        </TeacherButton>
+                      ) : (
+                        <TeacherButton
+                          onClick={handleNext}
+                          style={{
+                            background: 'rgba(0, 217, 255, 0.2)',
+                            color: '#00d9ff',
+                            border: '1px solid rgba(0, 217, 255, 0.5)',
+                            padding: '10px 20px',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          NEXT →
+                        </TeacherButton>
+                      )
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* End Quiz Modal */}
+      {showEndQuizModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: '#1a1a2e',
+            border: '2px solid #00ff88',
+            borderRadius: '15px',
+            padding: '30px',
+            textAlign: 'center',
+            minWidth: '300px'
+          }}>
+            <h3 style={{ color: '#00ff88', marginBottom: '20px' }}>
+              Are you sure you want to end the quiz?
+            </h3>
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+              <TeacherButton
+                onClick={handleEndQuiz}
+                style={{
+                  background: '#ff4444',
+                  border: 'none',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                YES, END QUIZ
+              </TeacherButton>
+              <TeacherButton
+                onClick={() => setShowEndQuizModal(false)}
+                style={{
+                  background: 'transparent',
+                  border: '2px solid #00ff88',
+                  color: '#00ff88',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                CANCEL
+              </TeacherButton>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

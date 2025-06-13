@@ -5,40 +5,42 @@ import TeacherButton from './TeacherButton';
 
 function PastMissions() {
   const [pastMissions, setPastMissions] = useState([]);
-  const [selected, setSelected] = useState(null);
   const [error, setError] = useState('');
+  const [hoveredMission, setHoveredMission] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('https://drp-belgium.onrender.com/api/past-missions/')
-    // axios.get('http://localhost:8000/api/past-missions/')
-      .then(res => {
-        setPastMissions(res.data.missions)
-        console.log(res.data)
+    // Replace with your actual API call
+    fetch('https://drp-belgium.onrender.com/api/past-missions/')
+    // fetch('http://localhost:8000/api/past-missions/')
+      .then(res => res.json())
+      .then(data => {
+        // Sort missions in reverse chronological order (newest first)
+        const sortedMissions = data.missions.sort((a, b) => 
+          new Date(b.created_at) - new Date(a.created_at)
+        );
+        setPastMissions(sortedMissions);
+        console.log(data);
       })
       .catch(err => {
         setError('Failed to fetch quizzes.');
         console.error(err);
-        console.error(err.error)
       });
   }, []);
 
-  const handleViewReport = () => {
-    console.log('Selected mission:', selected);
-    navigate('/teacher/report', {
-      state: { room_id: selected }
+  const handleViewReport = (roomId) => {
+    console.log('Selected mission:', roomId);
+    navigate('/teacher/report', { state: { room_id: roomId } });
+  };
+
+  const handleRelaunchMission = (mission) => {
+    console.log('Relaunching mission with quiz ID:', mission.quiz_id);
+    // Navigate to the dashboard page with the quiz ID (not roomcode)
+    navigate('/teacher/dashboard', {
+      state: { quizId: mission.quiz_id }
     });
   };
 
-  const handleRelaunchMission = () => {
-    const selectedMission = pastMissions.find(mission => mission.room_id === selected);
-    if (selectedMission) {
-      console.log('Relaunching mission with quiz ID:', selectedMission.quiz_id);
-      navigate('/teacher/dashboard', {
-        state: { quizId: selectedMission.quiz_id }
-      });
-    }
-  };
 
   if (error) {
     return (
@@ -79,236 +81,251 @@ function PastMissions() {
 
   return (
     <div style={{ 
-      padding: '30px', 
-      maxWidth: '800px',
+      padding: '40px', 
+      maxWidth: '1400px',
       margin: '0 auto',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
-      <h2 style={{ 
-        marginBottom: '30px',
+      {
+        <div style={{ 
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '60px',
+        position: 'relative'
       }}>
-        Past Missions:
-      </h2>
-
-      <div style={{ marginBottom: '40px' }}>
-        {pastMissions.map((mission, index) => (
-          <label
-            key={index}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TeacherButton
+            onClick={() => navigate('/teacher')}
             style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              marginBottom: '20px',
-              background: selected === mission.room_id 
-                ? 'rgba(0, 240, 255, 0.1)' 
-                : 'rgba(255, 255, 255, 0.05)',
-              padding: '20px',
-              borderRadius: '12px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              borderRadius: '8px',
+              border: '2px solid rgba(0, 240, 255, 0.4)',
+              background: 'transparent',
+              color: '#00f0ff',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              border: selected === mission.room_id 
-                ? '2px solid rgba(0, 240, 255, 0.5)' 
-                : '2px solid transparent',
-              boxShadow: selected === mission.room_id  
-                ? '0 0 20px rgba(0, 240, 255, 0.2)' 
-                : '0 4px 6px rgba(0, 0, 0, 0.1)',
-              transform: 'translateY(0)',
-            }}
-            onMouseEnter={e => {
-              if (selected !== mission.room_code ) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
-              }
-            }}
-            onMouseLeave={e => {
-              if (selected !== mission.room_code) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-              }
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}
           >
-            <input
-              type="radio"
-              name="quiz-selection"
-              checked={selected === mission.room_id }
-              onChange={() => setSelected(mission.room_id)}
-              style={{
-                width: '20px',
-                height: '20px',
-                marginTop: '4px',
-                accentColor: '#00f0ff',
-                cursor: 'pointer',
-                transform: 'scale(1.2)',
-              }}
-            />
-            <div style={{
-              marginLeft: '20px',
-              textAlign: 'left',
-              flex: 1,
-            }}>
-              <div style={{ 
-                fontSize: '20px', 
-                color: '#aefeff',
-                fontWeight: '600',
-                marginBottom: '8px',
-                letterSpacing: '0.5px'
-              }}>
-                {mission.room_code} : Created at {mission.created_at.split("T")
-    .map((part, index) => index === 0 ? part.split("-").reverse().join("-") : part.split(".")[0])
-    .join(", ")}
-              </div>
-              <div style={{ 
-                display: 'flex',
-                gap: '20px',
-                flexWrap: 'wrap'
-              }}>
-                <div style={{ 
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{ 
-                    fontWeight: '1000',
-                    textTransform: 'capitalize'
-                  }}>
-                    Quiz title:<strong> {mission.quiz_title}</strong>
-                    <br />
-                    Total groups:<strong>  {mission.total_groups} </strong>  
-                  </span>
-                </div>
-                <div style={{ 
-                  fontSize: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  <span style={{ color: '#aefeff', fontWeight: '500' }}>
-                    Subject: {mission.quiz_subject}
-                    <br />
-                    Difficulty: {mission.quiz_difficulty}
-                    <br />
-                    Total questions: {mission.total_questions} <strong> </strong>
-                    <br />
-                    Total time: {mission.total_time} minutes
-                  </span>
-                </div>
-              </div>
-            </div>
-          </label>
-        ))}
-      </div>
+            ← Back
+          </TeacherButton>
+        </div>
 
-      <div style={{
-        display: 'flex',
-        gap: '15px',
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}>
-        <button
-          onClick={() => navigate('/teacher')}
-          style={{
-            padding: '14px 30px',
+        <div style={{ 
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <h1 style={{ 
+            fontSize: '32px',
+            color: '#00f0ff',
+            fontWeight: '300',
+            margin: '0 0 8px 0',
+            letterSpacing: '2px'
+          }}>
+            Past Missions
+          </h1>
+          <p style={{
             fontSize: '16px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            border: '2px solid #666',
-            background: 'transparent',
-            color: '#aefeff',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            minWidth: '120px'
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            e.currentTarget.style.borderColor = '#aefeff';
-            e.currentTarget.style.transform = 'translateY(-2px)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.borderColor = '#666';
-            e.currentTarget.style.transform = 'translateY(0)';
-          }}
-        >
-          Back
-        </button>
+            color: 'rgba(174, 254, 255, 0.7)',
+            margin: '0',
+            fontWeight: '400'
+          }}>
+            View reports for past missions, or relaunch
+          </p>
+        </div>
         
-        <button
-          onClick={handleRelaunchMission}
-          disabled={!selected}
-          style={{
-            padding: '14px 30px',
-            fontSize: '16px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            border: selected ? '2px solid #ff6b35' : '2px solid #444',
-            background: selected ? '#ff6b35' : '#333',
-            color: selected ? '#fff' : '#666',
-            cursor: selected ? 'pointer' : 'not-allowed',
-            transition: 'all 0.3s ease',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            minWidth: '180px',
-            boxShadow: selected ? '0 0 20px rgba(255, 107, 53, 0.3)' : 'none',
-            opacity: selected ? 1 : 0.6
-          }}
-          onMouseEnter={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#ff8c66';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 107, 53, 0.4)';
-            }
-          }}
-          onMouseLeave={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#ff6b35';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 107, 53, 0.3)';
-            }
-          }}
-        >
-          Relaunch Mission
-        </button>
+        {/* This empty div balances the layout */}
+        <div style={{ visibility: 'hidden', width: '120px' }}></div>
+      </div>
+      }
 
-        <button
-          onClick={handleViewReport}
-          disabled={!selected}
-          style={{
-            padding: '14px 30px',
-            fontSize: '16px',
-            fontWeight: '600',
-            borderRadius: '8px',
-            border: selected ? '2px solid #00f0ff' : '2px solid #444',
-            background: selected ? '#00f0ff' : '#333',
-            color: selected ? '#000' : '#666',
-            cursor: selected ? 'pointer' : 'not-allowed',
-            transition: 'all 0.3s ease',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            minWidth: '180px',
-            boxShadow: selected ? '0 0 20px rgba(0, 240, 255, 0.3)' : 'none',
-            opacity: selected ? 1 : 0.6
-          }}
-          onMouseEnter={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#33f3ff';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 240, 255, 0.4)';
-            }
-          }}
-          onMouseLeave={e => {
-            if (selected) {
-              e.currentTarget.style.background = '#00f0ff';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 240, 255, 0.3)';
-            }
-          }}
-        >
-          View Report
-        </button>
+      {/* Missions List */}
+      <div style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        maxWidth: '700px',
+        margin: '0 auto' 
+      }}>
+        {pastMissions.map((mission, index) => {
+          // Clean up quiz title by removing bracketed content
+          const cleanQuizTitle = mission.quiz_title.replace(/\s*\([^)]*\)/g, '').trim();
+          
+          // Format date and time
+          const formattedDateTime = mission.created_at.split("T")
+            .map((part, index) => {
+              if (index === 0) {
+                return part.split("-").reverse().join("-"); // Date part
+              } else {
+                return part.split(".")[0]; // Time part
+              }
+            })
+            .join(", ");
+          
+          // Capitalize first letter of difficulty
+          const capitalizedDifficulty = mission.quiz_difficulty.charAt(0).toUpperCase() + mission.quiz_difficulty.slice(1);
+          
+          return (
+            <div
+              key={index}
+              style={{
+                position: 'relative',
+                background: 'rgba(255, 255, 255, 0.05)',
+                padding: '20px 24px',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(10px)',
+                overflow: 'hidden',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+              onMouseEnter={e => {
+                setHoveredMission(mission.room_id);
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 0, 0, 0.15)';
+                e.currentTarget.style.borderColor = 'rgba(0, 240, 255, 0.3)';
+              }}
+              onMouseLeave={e => {
+                setHoveredMission(null);
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+              }}
+            >
+              {/* Left Content */}
+              <div style={{ flex: 1 }}>
+                {/* Room Code and Date */}
+                <div style={{ 
+                  fontSize: '20px', 
+                  color: '#00f0ff',
+                  fontWeight: '600',
+                  marginBottom: '8px',
+                  letterSpacing: '0.5px',
+                  textAlign: 'left'
+                }}>
+                  {mission.room_code} ({formattedDateTime})
+                </div>
+                
+                {/* Mission Details in Variable: Value Format */}
+                <div style={{ 
+                  fontSize: '14px',
+                  color: 'rgba(174, 254, 255, 0.7)',
+                  lineHeight: '1.4',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  gap: '4px'
+                }}>
+                  <div>Topic: {mission.quiz_subject}</div>
+                  <div>Difficulty: {capitalizedDifficulty}</div>
+                  <div>Questions: {mission.total_questions}</div>
+                  <div>Duration: {mission.total_time} Minutes</div>
+                </div>
+              </div>
+
+              {/* Right Action Buttons - Only show on hover */}
+              <div style={{
+                opacity: hoveredMission === mission.room_id ? 1 : 0,
+                transform: hoveredMission === mission.room_id ? 'translateX(0)' : 'translateX(20px)',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                minWidth: '160px',
+                alignItems: 'stretch'
+              }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewReport(mission.room_id);
+                  }}
+                  style={{
+                    padding: '10px 16px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: '2px solid #00f0ff',
+                    background: '#00f0ff',
+                    color: '#000',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#33f3ff';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = '#00f0ff';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  View Report
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRelaunchMission(mission);
+                  }}
+                  style={{
+                    padding: '10px 16px',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: '2px solid #ff6b35',
+                    background: '#ff6b35',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#ff8c66';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = '#ff6b35';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  Relaunch Mission
+                </button>
+              </div>
+
+              {/* Hover Indicator */}
+              <div style={{
+                position: 'absolute',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                height: '3px',
+                background: hoveredMission === mission.room_id 
+                  ? 'linear-gradient(90deg, #ff6b35, #00f0ff)' 
+                  : 'transparent',
+                transition: 'all 0.3s ease'
+              }} />
+            </div>
+          );
+        })}
       </div>
 
       <style jsx>{`

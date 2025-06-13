@@ -91,7 +91,7 @@ Final Code for Level 2: y + z = ?`,
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       const utterance = new SpeechSynthesisUtterance(question.question_text)
-      utterance.lang = 'en-US'
+      utterance.lang = 'en-GB'
       window.speechSynthesis.speak(utterance)
     } else {
       alert('Speech Synthesis not supported in this browser.')

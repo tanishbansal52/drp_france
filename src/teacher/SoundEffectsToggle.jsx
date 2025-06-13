@@ -39,7 +39,7 @@ function SoundEffectsToggle() {
       onClick={toggleSoundEffects}
       title={isEnabled ? "Mute Sound Effects" : "Enable Sound Effects"}
     >
-      {isEnabled ? "🔊" : "🔇"}
+      {isEnabled ? "🔔" : "🔕"}
     </div>
   );
 }
