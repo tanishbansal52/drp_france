@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TeacherButton from './TeacherButton';
+import soundEffectsService from '../SoundEffectsService';
 import '../css/Choosequiz.css';
 
 function ChooseQuiz() {
@@ -53,6 +54,8 @@ function ChooseQuiz() {
   };
 
   const handlePreview = (quiz) => {
+    soundEffectsService.playClick();
+
     console.log('Selected Quiz:', quiz.title);
     console.log('Quiz ID:', quiz.quiz_id);
     navigate('/teacher/allquestions', { 
@@ -169,7 +172,7 @@ function ChooseQuiz() {
         marginBottom: '30px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <button
+          <TeacherButton
             onClick={() => navigate('/teacher')}
             style={{
               padding: '10px 20px',
@@ -197,7 +200,7 @@ function ChooseQuiz() {
             }}
           >
             ← Back
-          </button>
+          </TeacherButton>
         </div>
 
         <div style={{ 
@@ -228,7 +231,7 @@ function ChooseQuiz() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <button
+          <TeacherButton
             onClick={() => setShowFavourites(prev => !prev)}
             style={{
               padding: '10px 20px',
@@ -258,7 +261,7 @@ function ChooseQuiz() {
             }}
           >
             {showFavourites ? '⭐ Favourites Active' : '☆ Show Favourites'}
-          </button>
+          </TeacherButton>
         </div>
         
       </div>
@@ -380,7 +383,7 @@ function ChooseQuiz() {
               color: '#f9fafb',
               fontWeight: '600',
               marginBottom: '40px',
-              marginRight: '40px', // Space for favorite button
+              marginRight: '40px', // Space for favourite button
               lineHeight: '1.3',
               flex: '1'
             }}>

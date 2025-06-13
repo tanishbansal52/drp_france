@@ -65,7 +65,15 @@ function ShowAllQuestions() {
   }
 
   const EmptyState = () => (
-    <div className="text-center py-5">
+    <div className="text-center py-5" style={{
+      background: 'rgba(30, 41, 59, 0.6)',
+      border: '1px solid rgba(0, 217, 255, 0.3)',
+      borderRadius: '12px',
+      padding: '30px',
+      maxWidth: '800px',
+      margin: '0 auto',
+      backdropFilter: 'blur(10px)'
+    }}>
       <h4 style={{ color: '#9ca3af' }}>No questions available yet</h4>
       <p style={{ color: '#6b7280' }}>Questions will appear here once added.</p>
     </div>
