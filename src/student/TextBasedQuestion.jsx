@@ -166,24 +166,9 @@ Final Code for Level 2: y + z = ?`,
     if (spinoffMode) {
       // Handle spinoff question submission
       console.log('Spinoff answer submitted:', answer);
-      if (answer.toLowerCase() === spinoffQuestion.answer.toLowerCase()) {
-        console.log("CORRECT ANSWER ENTERED PATH");
-        setQNumber(prev => Math.min(prev + 1, 2)); // Prevent going above 2
-        navigate('/correct', {
-          state: { roomCode, questionNo: 1, groupId }
+      navigate('/correct', {
+          state: { roomCode, questionNo: indexOfQuestion, groupId }
         })
-      } else {
-        console.log("INCORRECT PATH");
-        if (incorrect < 2) {
-          setIncorrect(incorrect + 1);
-          setAlertMessage('That was not correct, try again!');
-          setShowAlert(true);
-          return;
-        }
-        navigate('/incorrect', {
-          state: { roomCode, questionNo: 1, groupId }
-        })
-      }
       return;
     }
 
