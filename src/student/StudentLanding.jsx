@@ -93,14 +93,17 @@ function StudentLanding() {
                 />
               </Form.Group>
 
-              <Form.Control
-                type="text"
-                placeholder="Enter your group name"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                className="text-center text-uppercase"
-                style={{ textTransform: 'uppercase' }}
-              />
+              <Form.Group className="mb-3">
+                <Form.Label>GROUP NAME</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your group name"
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  className="text-center text-uppercase"
+                  style={{ textTransform: 'uppercase' }}
+                />
+              </Form.Group>
 
               <Form.Label>STUDENTS</Form.Label>
               {studentNames.map((name, index) => (

@@ -30,7 +30,7 @@ function PastMissions() {
 
   const handleViewReport = (roomId) => {
     console.log('Selected mission:', roomId);
-    navigate('/teacher/report', { state: { room_id: roomId } });
+    navigate('/teacher/report', { state: { roomId: roomId } });
   };
 
   const handleRelaunchMission = (mission) => {
