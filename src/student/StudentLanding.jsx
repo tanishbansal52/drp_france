@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -28,7 +28,7 @@ function StudentLanding() {
     const trimmedNames = studentNames.map(name => name.trim()).filter(name => name);
 
     if (!missionCode.trim() || !groupName.trim() || trimmedNames.length === 0) {
-      setError('Please fill all fields including at least one student name.');
+      setError('Please complete the required fields.');
       setShowError(true);
       return;
     }
@@ -60,42 +60,49 @@ function StudentLanding() {
         DIVISION X
       </div>
 
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Card className="shadow-lg p-4 text-center" style={{ maxWidth: "500px", width: "100%" }}>
-          <Card.Body>
-            <Card.Title className="mb-4 display-5 text-light">MISSION LOGIN</Card.Title>
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Card className="shadow-lg p-3 text-center" style={{ maxWidth: "450px", width: "100%" }}>    
+          <Card.Body className="py-2" style={{ position: 'relative' }}>
+            <Card.Title className="mb-4 display-6 text-light">MISSION LOGIN</Card.Title>
 
             {showError && (
-              <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
+              <div 
+                className="text-center text-danger mb-3"
+                style={{ 
+                  padding: '6px 10px',
+                  backgroundColor: 'rgba(255, 220, 220, 0.9)',
+                  borderRadius: '4px',
+                  fontSize: '0.9rem',
+                  marginTop: '-10px'
+                }}
+              >
                 {error || 'Please enter all required fields.'}
-              </Alert>
+              </div>
             )}
 
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-4">
+              <Form.Group className="mb-3">
                 <Form.Label>MISSION CODE</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter 4-digit code"
                   value={missionCode}
                   onChange={(e) => setMissionCode(e.target.value)}
-                  className="text-center fs-4"
+                  className="text-center"
                   maxLength={4}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-4">
-                <Form.Label>GROUP NAME</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter your group name"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  className="text-center"
-                />
-              </Form.Group>
+              <Form.Control
+                type="text"
+                placeholder="Enter your group name"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className="text-center text-uppercase"
+                style={{ textTransform: 'uppercase' }}
+              />
 
-              <Form.Label>STUDENT NAMES</Form.Label>
+              <Form.Label>STUDENTS</Form.Label>
               {studentNames.map((name, index) => (
                 <Form.Control
                   key={index}
@@ -103,25 +110,27 @@ function StudentLanding() {
                   placeholder={`Student ${index + 1}`}
                   value={name}
                   onChange={(e) => handleNameChange(index, e.target.value)}
-                  className="mb-2 text-center"
+                  className="mb-2 text-center text-uppercase"
+                  style={{ textTransform: 'uppercase' }}
                 />
               ))}
 
               <Button
                 variant="outline-info"
-                className="mb-3"
+                className="mb-2"
+                size="sm"
                 onClick={handleAddNameField}
               >
-                + Add another student
+                + student
               </Button>
 
-              <Button variant="primary" type="submit" size="lg" className="w-100 mt-3">
+              <Button variant="primary" type="submit" className="w-100 mt-2">
                 JOIN MISSION
               </Button>
             </Form>
           </Card.Body>
         </Card>
-      </Container>
+      </div>
     </>
   );
 }
