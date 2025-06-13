@@ -6,12 +6,14 @@ import '../css/IndividualQuestion.css'
 import NavBar from '../NavBar';
 import axios from 'axios';
 import { canMoveToNextQuestion } from './TeacherLinking'
+import { FaVolumeUp, FaArrowRight } from 'react-icons/fa'
 
 function TextBasedQuestion() {
   const navigate = useNavigate()
   const { roomCode } = useParams()
   const location = useLocation()
   const [quizId, setQuizId] = useState();
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   // Store quizId in localStorage whenever it changes
   useEffect(() => {
@@ -28,6 +30,7 @@ function TextBasedQuestion() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const groupId = location.state?.groupId || 0;
+  const [incorrect, setIncorrect] = useState(0);
 
   const [spinoffMode, setSpinoffMode] = useState(false);
   const spinoffQuestion = {
@@ -89,14 +92,26 @@ Final Code for Level 2: y + z = ?`,
   // read question aloud
   const readQuestion = () => {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
-      const utterance = new SpeechSynthesisUtterance(question.question_text)
+      if (window.speechSynthesis.speaking) {
+        // If already speaking, cancel speech
+        window.speechSynthesis.cancel()
+        setIsSpeaking(false)
+        return
+      }
+      
+      // Otherwise start speech
+      window.speechSynthesis.cancel() // Clear any previous instances first
+      const utterance = new SpeechSynthesisUtterance(currentQuestion.question_text)
       utterance.lang = 'en-GB'
+      
+      utterance.onend = () => setIsSpeaking(false)
+      setIsSpeaking(true)
       window.speechSynthesis.speak(utterance)
     } else {
       alert('Speech Synthesis not supported in this browser.')
     }
   }
+  
   useEffect(() => {
     const onKeyDown = e => {
       if (e.key.toLowerCase() === 'r') {
@@ -223,18 +238,48 @@ Final Code for Level 2: y + z = ?`,
   }, [indexOfQuestion, navigate, roomCode, groupId, quizId]);
 
   return (
-    <>
+    <div style={{ 
+      minHeight: '100vh', 
+      color: 'white',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       <NavBar />
-      <div className="text-center mb-10">
-        <h1>Quiz - Algebra</h1>
-        <h2 className="text-info text-xl leading-tight">{spinoffMode ? "SpinOff Question" : "Individual Round"}</h2>
-        {/* <h4 className="text-muted text-base font-medium leading-none">This Question is worth 10 points.</h4> 
-        */}
-        <h4 className="text-info text-base font-medium leading-none">
-          This Question is worth {currentQuestion ? currentQuestion.points : '...'} points.
-        </h4>
-
+      
+      {/* Header */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginBottom: '30px',
+        padding: '20px 30px 0 30px',
+        position: 'relative'
+      }}>
+        <div style={{ 
+          textAlign: 'center'
+        }}>
+          <h1 style={{ 
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#00d9ff',
+            marginBottom: '0',
+            textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
+            letterSpacing: '2px'
+          }}>
+            Mission: Algebra
+          </h1>
+          <h2 style={{ 
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#00d9ff',
+            opacity: '0.8',
+            marginTop: '8px'
+          }}>
+            {spinoffMode ? "SpinOff Question" : "Individual Round"}
+          </h2>
+        </div>
       </div>
+
+      {/* Progress Indicator */}
       <div className="col-auto">
         <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
           <div className="bg-dark border rounded p-2 d-flex align-items-center">
@@ -253,48 +298,148 @@ Final Code for Level 2: y + z = ?`,
         </div>
       </div>
 
-      {showAlert && (
-        <Alert variant="danger" dismissible onClose={() => setShowAlert(false)}>
-          {alertMessage}
-        </Alert>
-      )}
+      {/* Main Content */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: '0 30px 20px 30px'
+      }}>
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.6)',
+          borderRadius: '12px',
+          padding: '24px',
+          maxWidth: '1000px',
+          width: '100%',
+          position: 'relative',
+          border: '1px solid rgba(0, 217, 255, 0.3)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {/* Question Header */}
+          <div className="mb-3" style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '16px' 
+          }}>
+            <span style={{
+              background: 'rgba(0, 217, 255, 0.2)',
+              color: '#00d9ff',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '16px',
+              fontWeight: '600',
+              border: '1px solid rgba(0, 217, 255, 0.3)'
+            }}>
+              Question {spinoffMode ? "SpinOff" : (indexOfQuestion || 1)}
+            </span>
+          </div>
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="questionAnswerInput">
-          <Form.Label>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
-              <p className="h5">{currentQuestion ? currentQuestion.question_text : "Loading question"} </p>
-            </div>
-          </Form.Label>
-          <Form.Control
-            placeholder="Enter your answer here"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-          />
-        </Form.Group>
-        <div className="d-flex justify-content-center gap-3 mt-3">
-          <Button variant="secondary" size="lg" onClick={readQuestion}>
-            Read Q Aloud
-          </Button>
-          <Button variant="dark" size="lg" type="submit">
-            Submit
-          </Button>
+          {/* Alert for incorrect answers */}
+          {showAlert && (
+            <Alert 
+              variant="danger" 
+              dismissible 
+              onClose={() => setShowAlert(false)}
+              style={{
+                marginBottom: '20px',
+                borderRadius: '8px',
+                border: '1px solid rgba(220, 53, 69, 0.3)',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                color: '#f8d7da',
+                fontWeight: '500'
+              }}
+            >
+              {alertMessage}
+            </Alert>
+          )}
+
+          {/* Question Content with Read Aloud Button */}
+          <div style={{ 
+            fontSize: '20px', 
+            lineHeight: '1.6', 
+            marginBottom: '30px',
+            marginTop: '20px',
+            whiteSpace: 'pre-wrap',
+            color: '#ffffff',
+            textAlign: 'center',
+            padding: '0 60px',
+            position: 'relative',
+            fontWeight: '500'
+          }}>
+            {currentQuestion ? currentQuestion.question_text : "Loading question"}
+            <button 
+              onClick={readQuestion}
+              className="volume-button"
+              style={{
+                background: 'none',
+                border: 'none',
+                outline: 'none',
+                boxShadow: 'none',
+                color: isSpeaking ? '#ff6b6b' : '#00d9ff',
+                fontSize: '18px',
+                padding: 0,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                verticalAlign: 'middle',
+                marginLeft: '6px',
+                position: 'relative',
+                zIndex: '5'
+              }}
+              title={window.speechSynthesis?.speaking ? "Stop reading" : "Read question aloud"}
+            >
+              <FaVolumeUp style={{ pointerEvents: 'none' }} />
+            </button>
+          </div>
+
+          {/* Answer Form */}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="questionAnswerInput" style={{ position: 'relative' }}>
+              <Form.Control
+                placeholder="Enter your answer here"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  border: '1px solid rgba(0, 217, 255, 0.3)',
+                  borderRadius: '8px',
+                  color: 'white',
+                  padding: '12px 16px',
+                  paddingRight: '50px', // Add space for the arrow
+                  fontSize: '18px',
+                  marginBottom: '20px'
+                }}
+              />
+              <Button 
+                variant="link" 
+                type="submit"
+                style={{
+                  position: 'absolute',
+                  right: '-892px',
+                  top: '-66.5px',
+                  height: '100%',
+                  color: '#00d9ff',
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  fontSize: '20px',
+                  padding: '8px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: '5'
+                }}
+                aria-label="Submit answer"
+              >
+                <FaArrowRight />
+              </Button>
+            </Form.Group>
+          </Form>
         </div>
-      </Form>
-
-      <style jsx>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-    </>
+      </div>
+    </div>
   )
 }
 
