@@ -33,6 +33,7 @@ function WaitingArea() {
   const groupId = location.state?.groupId || 0;
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+  console.log(selected, "Selected rating in WaitingArea");
   const {roomCode} = useParams();
   const [submitted, setSubmitted] = useState(false);
   const [showRules, setShowRules] = useState(false);
@@ -72,22 +73,14 @@ function WaitingArea() {
   }, [roomCode, groupId, navigate]);
 
   const handleRatingSelection = async (rating) => {
-    // If the rating is already selected, deselect it
-    if (selected === rating) {
-      setSelected(null);
-      setSubmitted(false);
-      return;
-    }
-    
-    // Otherwise, select the new rating
     setSelected(rating);
-    
     try {
       await axios.post("https://drp-belgium.onrender.com/api/update-before-rating/", {
         before_rating: rating,
         group_id: groupId
       });
       setSubmitted(true);
+      console.log('Rating submitted:', rating);
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
