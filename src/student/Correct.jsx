@@ -21,7 +21,7 @@ function Correct() {
     let res
     try {
       res  = await fetch(
-        `http://127.0.0.1:8000/api/question-type/${(currentQuestionIndex + 1)}/${quizId}/`
+        `https://drp-belgium.onrender.com/api/question-type/${(currentQuestionIndex + 1)}/${quizId}/`
       );
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);

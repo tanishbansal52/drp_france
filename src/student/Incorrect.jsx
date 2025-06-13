@@ -49,7 +49,7 @@ function Incorrect() {
 
     // Call your API to get the question type
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/question-type/${qNumber}/${quizId}/`);
+      const response = await fetch(`https://drp-belgium.onrender.com/api/question-type/${qNumber}/${quizId}/`);
       const data = await response.json();
 
       if (data.type === 'text') {

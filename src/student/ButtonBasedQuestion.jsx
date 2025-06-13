@@ -46,7 +46,7 @@ Final Code for Level 2: y + z = ?`,
     
     const checkSpinoffMode = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/get-room-spinoff/${roomCode}/`);
+        const response = await fetch(`https://drp-belgium.onrender.com/api/get-room-spinoff/${roomCode}/`);
         const data = await response.json();
         
         if (data.spinoff_mode !== undefined) {

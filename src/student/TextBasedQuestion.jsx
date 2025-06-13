@@ -52,7 +52,7 @@ Final Code for Level 2: y + z = ?`,
 
     const checkSpinoffMode = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/get-room-spinoff/${roomCode}/`);
+        const response = await fetch(`https://drp-belgium.onrender.com/api/get-room-spinoff/${roomCode}/`);
         const data = await response.json();
 
         if (data.spinoff_mode !== undefined) {
@@ -78,7 +78,7 @@ Final Code for Level 2: y + z = ?`,
   // Fetch quizId...
   useEffect(() => {
     if (!roomCode) return;
-    fetch(`http://127.0.0.1:8000/api/get-room-quiz-id/${roomCode}/`)
+    fetch(`https://drp-belgium.onrender.com/api/get-room-quiz-id/${roomCode}/`)
       .then(r => r.json())
       .then(d => d.quiz_id && setQuizId(d.quiz_id))
       .catch(console.error)
@@ -114,7 +114,7 @@ Final Code for Level 2: y + z = ?`,
     const fetchQuestion = async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/questions/${indexOfQuestion}/${quizId}/`
+          `https://drp-belgium.onrender.com/api/questions/${indexOfQuestion}/${quizId}/`
         );
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
