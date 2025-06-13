@@ -11,7 +11,6 @@ import Debrief from './student/Debrief.jsx';
 import Correct from './student/Correct.jsx';
 import Incorrect from './student/Incorrect.jsx';
 import End from './student/End.jsx';
-import Start from './student/Start.jsx';
 import WaitingArea from './student/Waiting.jsx';
 import TextBasedQuestion from './student/TextBasedQuestion.jsx'
 import ButtonBasedQuestion from './student/ButtonBasedQuestion.jsx';
@@ -42,7 +41,6 @@ createRoot(document.getElementById('root')).render(
               {/* Student routes wrapped in StudentLayout */}
               <Route path="/student" element={<StudentLayout><StudentLanding /></StudentLayout>} />
               <Route path="/waiting/:roomCode" element={<StudentLayout><WaitingArea /></StudentLayout>} />
-              <Route path="/start/:roomCode" element={<StudentLayout><Start /></StudentLayout>} />
               <Route path="/textQs/:roomCode" element={<StudentLayout><TextBasedQuestion /></StudentLayout>} />
               <Route path="/groupquestion/:roomCode" element={<StudentLayout><ButtonBasedQuestion /></StudentLayout>} />
               <Route path="/correct" element={<StudentLayout><Correct /></StudentLayout>} />
