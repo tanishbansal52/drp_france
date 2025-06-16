@@ -240,7 +240,7 @@ Final Code for Level 2: y + z = ?`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       // special background when robot theme is active
       background: isRobotTheme
-        ? 'url(/public/robot-bg.svg) center/cover no-repeat'
+        ? 'url(/contrails up.png) center/cover no-repeat'
         : undefined
     }}>
 
@@ -337,25 +337,6 @@ Final Code for Level 2: y + z = ?`,
           }}>
             {spinoffMode ? "SpinOff Question" : "Individual Round"}
           </h2>
-        </div>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="col-auto">
-        <div className="position-fixed" style={{ bottom: '20px', right: '20px' }}>
-          <div className="bg-dark border rounded p-2 d-flex align-items-center">
-            <span className="me-2">Stage 1 of 2</span>
-            <div className="progress" style={{ width: '100px', height: '8px' }}>
-              <div
-                className="progress-bar bg-primary"
-                role="progressbar"
-                style={{ width: '50%' }}
-                aria-valuenow="50"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              ></div>
-            </div>
-          </div>
         </div>
       </div>
 

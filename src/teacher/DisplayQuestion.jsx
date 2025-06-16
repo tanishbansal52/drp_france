@@ -207,7 +207,7 @@ Final Code for Level 2: y + z = ?`,
             letterSpacing: '2px',
             whiteSpace: 'nowrap'
           }}>
-            Mission: {(topic || 'Algebra').replace(/\s*\([^)]*\)/g, '')}
+            Mission: {(topic || 'Error Loading Topic').replace(/\s*\([^)]*\)/g, '')}
           </h1>
         </div>
 

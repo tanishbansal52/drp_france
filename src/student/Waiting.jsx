@@ -199,7 +199,7 @@ function WaitingArea() {
               marginBottom: '0',
               color: '#ffffff'
             }}>
-              Topic: <strong>Algebra</strong>
+              Topic: <strong>Fractions & Percentages</strong>
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ function WaitingArea() {
             marginBottom: '20px',
             textAlign: 'center'
           }}>
-            How confident do you feel about Algebra before the mission?
+            How confident do you feel about <strong>Fractions & Percentages</strong> before the mission?
           </p>
 
           <div style={{
