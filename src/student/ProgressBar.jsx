@@ -4,33 +4,39 @@ import '../css/ProgressBar.css';
 
 function MissionProgress() {
   const location = useLocation();
-  const { roomCode } = useParams();
   const path = location.pathname;
   
-  // Determine current mission stage
-  const getCurrentStage = () => {
-    if (path.includes('/waiting')) return { stage: 1, name: 'Waiting Room' };
-    if (path.includes('/start')) return { stage: 2, name: 'Rules' };
-    if (path.includes('/textQs')) return { stage: 3, name: 'Question 1' };
-    if (path.includes('/correct') || path.includes('/incorrect')) {
-      // Check state from location to determine which question's result we're showing
-      const questionNo = location.state?.questionNo || 1;
-      return { 
-        stage: questionNo === 1 ? 4 : 6, 
-        name: `Q${questionNo} Result` 
-      };
+  // Simplified progress calculation
+  const getProgress = () => {
+    // Start/Waiting: 0%
+    if (path.includes('/waiting') || path.includes('/start')) {
+      return { percent: 0, name: 'Starting Mission' };
     }
-    if (path.includes('/groupquestion')) return { stage: 5, name: 'Group Question' };
-    if (path.includes('/end')) return { stage: 7, name: 'Reflection' };
-    if (path.includes('/debrief')) return { stage: 8, name: 'Debrief' };
-    if (path.includes('/teacher/finish')) return { stage: 9, name: 'Complete' };
     
-    return { stage: 1, name: 'Waiting Room' }; // Default
+    // Question 1: 50%
+    if (path.includes('/textQs') && (!location.state?.questionNo || location.state?.questionNo === 0)) {
+      return { percent: 50, name: 'Question 1' };
+    }
+    
+    // Any state related to question 1 results
+    if ((path.includes('/correct') || path.includes('/incorrect')) && 
+        location.state?.questionNo === 0) {
+      return { percent: 50, name: 'Question 1' };
+    }
+    
+    // Question 2 or any later stage: 100%
+    if (path.includes('/textQs') || path.includes('/groupquestion') || 
+        path.includes('/end') || path.includes('/debrief') || 
+        path.includes('/teacher/finish') ||
+        (path.includes('/correct') || path.includes('/incorrect'))) {
+      return { percent: 100, name: 'Question 2' };
+    }
+    
+    // Default fallback
+    return { percent: 0, name: 'Mission Progress' };
   };
   
-  const currentStage = getCurrentStage();
-  const totalStages = 9;
-  const progressPercent = ((currentStage.stage - 1) / (totalStages - 1)) * 100;
+  const progress = getProgress();
 
   return (
     <div className="mission-progress-container">
@@ -38,14 +44,14 @@ function MissionProgress() {
       <div className="mission-progress-bar">
         <div 
           className="mission-progress-fill" 
-          style={{ width: `${progressPercent}%` }}
+          style={{ width: `${progress.percent}%` }}
         >
           <div className="mission-progress-pulse"></div>
         </div>
       </div>
       <div className="mission-details">
-        <span>Current: {currentStage.name}</span>
-        <span>{Math.round(progressPercent)}%</span>
+        <span>Current: {progress.name}</span>
+        <span>{progress.percent}%</span>
       </div>
     </div>
   );

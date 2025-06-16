@@ -337,7 +337,7 @@ Final Code for Level 2: y + z = ?`,
               </div>
 
               {/* Question Content */}
-              {isRobotQuestion1 ? <RobotQuestion1/> : isRobotQuestion2? <RobotQuestion2/> : (<div style={{ 
+              {isRobotQuestion1 ? <RobotQuestion1 isTeacherMode={true}/> : isRobotQuestion2? <RobotQuestion2 isTeacherMode={true}/> : (<div style={{ 
                 fontSize: '20px', 
                 lineHeight: '1.6', 
                 marginBottom: '30px',
@@ -349,7 +349,6 @@ Final Code for Level 2: y + z = ?`,
                 maxWidth: '1000px', 
                 margin: '20px auto 30px',
                 fontWeight: '500'
-  
               }}>
                 {question}
               </div>

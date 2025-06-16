@@ -184,14 +184,29 @@ Final Code for Level 2: y + z = ?`,
     return () => { cancelled = true; clearInterval(id) }
   }, [roomCode, indexOfQuestion])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!answer) return
+  // Update the handleSubmit function around line 190-220:
+
+const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    let submittedAnswer = answer;
+    
+    // For robot questions, get the answer from localStorage
+    if (isRobotQuestion1) {
+      submittedAnswer = localStorage.getItem('robotAnswer') || '';
+      console.log("Robot answer submitted:", submittedAnswer);
+    }
+    
+    if (!submittedAnswer) {
+      setAlertMessage('Please enter an answer');
+      setShowAlert(true);
+      return;
+    }
 
     // If in spinoff mode, handle differently 
     if (spinoffMode) {
       // Handle spinoff question submission
-      console.log('Spinoff answer submitted:', answer);
+      console.log('Spinoff answer submitted:', submittedAnswer); // Changed from answer
       navigate('/correct', {
           state: { roomCode, questionNo: indexOfQuestion, groupId }
         })
@@ -202,7 +217,7 @@ Final Code for Level 2: y + z = ?`,
       const { data } = await axios.post("https://drp-belgium.onrender.com/api/submit/", {
         group_id: groupId,
         question_id: question.question_id,
-        answer: answer
+        answer: submittedAnswer // Changed from answer
       });
 
       if (data.correct) {
@@ -292,7 +307,7 @@ Final Code for Level 2: y + z = ?`,
           position: 'absolute',
           top: '15%',
           left: '2%',
-          width: '200px',
+          width: '220px',
           opacity: 1,
           transform: 'scaleX(-1)',
           filter: 'brightness(1.5)'  
@@ -326,7 +341,7 @@ Final Code for Level 2: y + z = ?`,
             textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
             letterSpacing: '2px'
           }}>
-            Student Mission: Fractions & Percentages
+            Mission: Fractions & Percentages
           </h1>
           <h2 style={{ 
             fontSize: '18px',
@@ -442,51 +457,73 @@ Final Code for Level 2: y + z = ?`,
               </div>
             )}
 
-          {/* Answer Form */}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="questionAnswerInput" style={{ position: 'relative' }}>
-              <Form.Control
-                placeholder="Enter your answer here"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  border: '1px solid rgba(0, 217, 255, 0.3)',
-                  borderRadius: '8px',
-                  color: 'white',
-                  padding: '12px 16px',
-                  paddingRight: '50px', // Add space for the arrow
-                  fontSize: '18px',
-                  marginBottom: '20px'
-                }}
-              />
-              <Button 
-                variant="link" 
-                type="submit"
-                style={{
-                  position: 'absolute',
-                  right: '-892px',
-                  top: '-66.5px',
-                  height: '100%',
-                  color: '#00d9ff',
-                  background: 'none',
-                  border: 'none',
-                  outline: 'none',
-                  boxShadow: 'none',
-                  fontSize: '20px',
-                  padding: '8px 12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  zIndex: '5'
-                }}
-                aria-label="Submit answer"
-              >
-                <FaArrowRight />
-              </Button>
-            </Form.Group>
-          </Form>
+{/* Answer Form */}
+{!isRobotQuestion1 && !isRobotQuestion2 && (
+  <Form onSubmit={handleSubmit}>
+    <Form.Group controlId="questionAnswerInput" style={{ position: 'relative' }}>
+      <Form.Control
+        placeholder="Enter your answer here"
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        style={{
+          background: 'rgba(15, 23, 42, 0.5)',
+          border: '1px solid rgba(0, 217, 255, 0.3)',
+          borderRadius: '8px',
+          color: 'white',
+          padding: '12px 16px',
+          paddingRight: '50px', // Add space for the arrow
+          fontSize: '18px',
+          marginBottom: '20px'
+        }}
+      />
+      <Button 
+        variant="link" 
+        type="submit"
+        style={{
+          position: 'absolute',
+          right: '-892px',
+          top: '-66.5px',
+          height: '100%',
+          color: '#00d9ff',
+          background: 'none',
+          border: 'none',
+          outline: 'none',
+          boxShadow: 'none',
+          fontSize: '20px',
+          padding: '8px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          zIndex: '5'
+        }}
+        aria-label="Submit answer"
+      >
+        <FaArrowRight />
+      </Button>
+    </Form.Group>
+  </Form>
+)}
+
+{/* Add submit button for robot questions */}
+{(isRobotQuestion1 || isRobotQuestion2) && (
+  <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <Button 
+      onClick={handleSubmit}
+      style={{
+        background: 'rgba(0, 217, 255, 0.2)',
+        border: '1px solid rgba(0, 217, 255, 0.5)',
+        borderRadius: '8px',
+        color: '#00d9ff',
+        padding: '10px 20px',
+        fontSize: '18px',
+        fontWeight: '600'
+      }}
+    >
+      Submit
+    </Button>
+  </div>
+)}
         </div>
       </div>
     </div>
