@@ -8,20 +8,43 @@ import axios from 'axios';
 function End() {
   const navigate = useNavigate();
 
+  const noHoverStyle = `
+  button.rating-button-no-hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: none !important;
+  }
+  
+  button.rating-button-no-hover:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+  
+  button.rating-button-no-hover:hover::before {
+    display: none !important;
+  }
+  
+  button.rating-button-no-hover::before {
+    display: none !important;
+  }
+`;
+
+const feelingLabels = [
+  "Very Negative",
+  "Negative", 
+  "Neutral",
+  "Positive",
+  "Very Positive"
+];
+
   const location = useLocation();
   const groupId = location.state?.groupId || 0;
   const quizId = location.state?.quizId || localStorage.getItem('quizId');
   const isRobotTheme = Number(quizId) === 16;
   const [selectedRating, setSelectedRating] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-
-  const ratings = [
-    { label: 'Very Negative', color: 'bg-red-500', value: 1 },
-    { label: 'Negative', color: 'bg-orange-500', value: 2 },
-    { label: 'Neutral', color: 'bg-yellow-500', value: 3 },
-    { label: 'Positive', color: 'bg-lime-500', value: 4 },
-    { label: 'Very Positive', color: 'bg-green-500', value: 5 }
-  ];
 
   const handleRatingClick = async (value) => {
     setSelectedRating(value);
@@ -42,6 +65,8 @@ function End() {
   }
 
   return (
+    <>
+      <style>{noHoverStyle}</style>
     <div style={{ 
       minHeight: '100vh', 
       color: 'white',
@@ -73,7 +98,7 @@ function End() {
             letterSpacing: '2px'
           }}>
             {isRobotTheme 
-              ? 'System Shutdown' 
+              ? 'Mission Complete' 
               : 'Mission Complete'}
           </h1>
           <p style={{
@@ -82,7 +107,7 @@ function End() {
             margin: '4px 0 0 0'
           }}>
             {isRobotTheme
-              ? 'Well done! You have defeated the final boss.'
+              ? 'Well done! You have defeated Baron von Frogface.'
               : 'You have successfully completed your mission'}
           </p>
         </div>
@@ -112,64 +137,70 @@ function End() {
             marginBottom: '30px',
             color: '#f0f4f8' 
           }}>
-            How confident do you feel about Fractions now?
+            How confident do you feel about Fractions & Percentages now?
           </p>
-          
-          <div style={{ 
+
+          <div style={{
             display: 'flex',
             justifyContent: 'center',
+            gap: '1rem',
+            flexWrap: 'wrap',
             marginBottom: '30px'
           }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              width: '80%',
-              maxWidth: '500px'
-            }}>
-              <span style={{ color: '#9ca3af', marginRight: '10px' }}>−</span>
-              <div style={{ 
-                display: 'flex',
-                flex: '1',
-                height: '48px',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                border: '2px solid rgba(75, 85, 99, 0.4)'
-              }}>
-                {ratings.map((rating) => (
-                  <button
-                    key={rating.value}
-                    onClick={() => handleRatingClick(rating.value)}
-                    style={{ 
-                      flex: '1',
-                      border: 'none',
-                      position: 'relative',
-                      background: rating.color.replace('bg-', ''),
-                      transition: 'all 0.2s ease',
-                      outline: selectedRating === rating.value ? '2px solid #3b82f6' : 'none',
-                      filter: selectedRating === rating.value ? 'brightness(1.1)' : 'brightness(1)'
-                    }}
-                    title={rating.label}
-                  >
-                    <div style={{
-                      position: 'absolute',
-                      inset: '0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <span style={{
-                        fontWeight: 'bold',
-                        fontSize: '18px',
-                        textShadow: selectedRating === rating.value ? '0 0 8px rgba(255, 255, 255, 0.5)' : 'none'
-                      }}>
-                        {rating.value}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-              <span style={{ color: '#9ca3af', marginLeft: '10px' }}>+</span>
-            </div>
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <button
+                key={rating}
+                type="button"
+                onClick={() => handleRatingClick(rating)}
+                className="rating-button-no-hover"
+                style={{ 
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '80px',
+                  height: '80px',
+                  background: selectedRating === rating ? '#00d4ff' : 'rgba(255, 255, 255, 0.1)',
+                  border: selectedRating === rating ? '2px solid #ffffff' : '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '8px',
+                  color: selectedRating === rating ? '#000' : '#ffffff',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  transform: selectedRating === rating ? 'scale(1.1)' : 'scale(1)',
+                  boxShadow: selectedRating === rating ? '0 0 20px rgba(0, 217, 255, 0.7)' : 'none',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                {selectedRating === rating && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '0',
+                    background: '#00a020',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderBottomLeftRadius: '8px'
+                  }}>
+                    <span style={{ color: '#fff', fontSize: '16px', fontWeight: 'bold' }}>✓</span>
+                  </div>
+                )}
+                <span style={{
+                  fontSize: '1.4rem',
+                  fontWeight: '700',
+                  marginBottom: '0.2rem'
+                }}>{rating}</span>
+                <span style={{
+                  fontSize: '0.7rem',
+                  fontWeight: '500',
+                  textAlign: 'center',
+                  lineHeight: '1.1'
+                }}>{feelingLabels[rating - 1]}</span>
+              </button>
+            ))}
           </div>
 
           <button
@@ -190,7 +221,7 @@ function End() {
               opacity: selectedRating === null ? '0.6' : '1'
             }}
           >
-            Submit Rating
+            Submit
           </button>
 
           {submitted && (
@@ -202,7 +233,7 @@ function End() {
               color: '#00c853',
               border: '1px solid rgba(0, 200, 83, 0.3)'
             }}>
-              Thank you for your feedback!
+              Thank you for the feedback!
             </div>
           )}
         </div>
@@ -232,6 +263,7 @@ function End() {
         )}
       </div>
     </div>
+  </>
   );
 }
 
