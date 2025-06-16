@@ -157,14 +157,20 @@ Final Code for Level 2: y + z = ?`,
     let cancelled = false
     const poll = async () => {
       if (cancelled) return
-      // Only increment if indexOfQuestion < 2
-      if (indexOfQuestion < 2) {
-        const currentQuestion = indexOfQuestion + 1
-        const ok = await canMoveToNextQuestion(roomCode, currentQuestion)
-        console.log("In TEXT BASED Q can move to next question is:", ok, "for question number:", currentQuestion, "at index", indexOfQuestion);
-        if (ok) {
-          cancelled = true
-          setShowAlert(false)
+      // Remove this condition to always poll for next question
+      // including the final question
+      const currentQuestion = indexOfQuestion + 1
+      const ok = await canMoveToNextQuestion(roomCode, currentQuestion)
+      console.log("In TEXT BASED Q can move to next question is:", ok, "for question number:", currentQuestion, "at index", indexOfQuestion);
+      if (ok) {
+        cancelled = true
+        setShowAlert(false)
+        // Navigate to End if this is the final question
+        if (indexOfQuestion >= 2) {
+          navigate('/end', {
+            state: { roomCode, questionNo: indexOfQuestion, groupId, quizId }
+          });
+        } else {
           setQNumber(prev => Math.min(prev + 1, 2)) // Prevent going above 2
         }
       }
