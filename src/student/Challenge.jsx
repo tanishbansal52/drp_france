@@ -9,7 +9,7 @@ function Challenge() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const quizId = location.state?.quizId
+  const quizId = location.state?.quizId;
   console.log('Quiz ID:', quizId);
 
   useEffect(() => {
@@ -17,7 +17,6 @@ function Challenge() {
       try {
         setLoading(true);
         setError(null);
-        // const apiEndpoint = `http://localhost:8000/api/bonus-question/${quizId}/`;
         const apiEndpoint = `https://drp-belgium.onrender.com/api/bonus-question/${quizId}/`;
         const res = await fetch(apiEndpoint);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -30,9 +29,7 @@ function Challenge() {
       }
     };
 
-    if (quizId) {
-      fetchBonusQuestion();
-    }
+    if (quizId) fetchBonusQuestion();
   }, [quizId]);
 
   return (
@@ -40,14 +37,13 @@ function Challenge() {
       <div className="flex flex-col items-center justify-center">
         <NavBar />
         <h1 className="text-4xl font-bold mb-4 text-cyan-400">Bonus Question!</h1>
-        {loading && (
-          <p className="text-lg text-gray-700 mb-8">Loading...</p>
-        )}
-        {error && (
-          <p className="text-lg text-red-600 mb-8">{error}</p>
-        )}
+        {loading && <p className="text-lg text-gray-700 mb-8">Loading...</p>}
+        {error && <p className="text-lg text-red-600 mb-8">{error}</p>}
         {!loading && !error && question && (
-          <h2 className="text-2xl font-semibold mb-4 text-cyan-200" style={{ whiteSpace: 'pre-line', textAlign: 'center' }}>
+          <h2
+            className="text-2xl font-semibold mb-4 text-cyan-200"
+            style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+          >
             {question.question_text}
           </h2>
         )}

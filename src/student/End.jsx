@@ -11,7 +11,7 @@ function End() {
   const location = useLocation();
   const groupId = location.state?.groupId || 0;
   const quizId = location.state?.quizId || localStorage.getItem('quizId');
-
+  const isRobotTheme = Number(quizId) === 16;
   const [selectedRating, setSelectedRating] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
@@ -45,7 +45,10 @@ function End() {
     <div style={{ 
       minHeight: '100vh', 
       color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      background: isRobotTheme
+        ? 'url(/public/robot-bg.svg) center/cover no-repeat'
+        : undefined
     }}>
       <NavBar/>
       
@@ -62,21 +65,25 @@ function End() {
           textAlign: 'center'
         }}>
           <h1 style={{ 
-            fontSize: '32px',
+            fontSize: '65px',
             fontWeight: '700',
             color: '#00d9ff',
             marginBottom: '8px',
             textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
             letterSpacing: '2px'
           }}>
-            Mission Complete
+            {isRobotTheme 
+              ? 'System Shutdown' 
+              : 'Mission Complete'}
           </h1>
           <p style={{
             color: '#9ca3af',
-            fontSize: '15px',
+            fontSize: '20px',
             margin: '4px 0 0 0'
           }}>
-            You have successfully completed your mission
+            {isRobotTheme
+              ? 'Well done! You have defeated the final boss.'
+              : 'You have successfully completed your mission'}
           </p>
         </div>
       </div>
@@ -105,7 +112,7 @@ function End() {
             marginBottom: '30px',
             color: '#f0f4f8' 
           }}>
-            How confident do you feel about algebra now that you have completed your mission?
+            How confident do you feel about Fractions now?
           </p>
           
           <div style={{ 
@@ -199,6 +206,30 @@ function End() {
             </div>
           )}
         </div>
+
+        {/* robot UI overlay */}
+        {isRobotTheme && (
+          <div className="robot-overlay" style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none'
+          }}>
+          <img
+            src="/r1_nobg.png"
+            alt="Robot Q2"
+            style={{
+              position: 'absolute',
+              top: '63%',
+              left: '38%',
+              width: '300px',
+              opacity: 1,
+              filter: 'brightness(1.5)'  
+            }}/>
+          </div>
+        )}
       </div>
     </div>
   );

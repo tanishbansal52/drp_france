@@ -6,6 +6,8 @@ import '../css/IndividualQuestion.css'
 import NavBar from '../NavBar';
 import axios from 'axios';
 import { canMoveToNextQuestion } from './TeacherLinking'
+import RobotQuestion1 from './robotHardCoded/RobotQuestion1'
+import RobotQuestion2 from './robotHardCoded/RobotQuestion2'
 import { FaVolumeUp, FaArrowRight } from 'react-icons/fa'
 
 function TextBasedQuestion() {
@@ -14,14 +16,6 @@ function TextBasedQuestion() {
   const location = useLocation()
   const [quizId, setQuizId] = useState();
   const [isSpeaking, setIsSpeaking] = useState(false);
-
-  // Store quizId in localStorage whenever it changes
-  useEffect(() => {
-    if (quizId !== undefined) {
-      localStorage.setItem('quizId', quizId);
-    }
-  }, [quizId]);
-
   console.log("qNumber in TextBased Q:", location.state);
   const [indexOfQuestion, setQNumber] = useState(location.state?.questionNo ?? 1)
   localStorage.setItem('qNumber', indexOfQuestion);
@@ -31,8 +25,19 @@ function TextBasedQuestion() {
   const [alertMessage, setAlertMessage] = useState('');
   const groupId = location.state?.groupId || 0;
   const [incorrect, setIncorrect] = useState(0);
-
   const [spinoffMode, setSpinoffMode] = useState(false);
+
+  // flag for robot-theme when quizId is 16 and question index is 0
+  const isRobotTheme = quizId === 16
+  const isRobotQuestion1 = isRobotTheme && indexOfQuestion === 0
+  const isRobotQuestion2 = isRobotTheme && indexOfQuestion === 1
+  // Store quizId in localStorage whenever it changes
+  useEffect(() => {
+    if (quizId !== undefined) {
+      localStorage.setItem('quizId', quizId);
+    }
+  }, [quizId]);
+
   const spinoffQuestion = {
     quiz: 'Spinoff Question',
     question_text: `Split into two decoding teams. Each team has one half of a 2-part access code. Use your value of x from Level 1.\nTeam Alpha (2 students):
@@ -221,7 +226,7 @@ Final Code for Level 2: y + z = ?`,
   const currentQuestion = spinoffMode ? spinoffQuestion : question;
 
   useEffect(() => {
-    if (indexOfQuestion === 3) {
+    if (indexOfQuestion === 2) {
       navigate('/end', {
         state: { roomCode, questionNo: indexOfQuestion, groupId, quizId }
       });
@@ -232,8 +237,73 @@ Final Code for Level 2: y + z = ?`,
     <div style={{ 
       minHeight: '100vh', 
       color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      // special background when robot theme is active
+      background: isRobotTheme
+        ? 'url(/public/robot-bg.svg) center/cover no-repeat'
+        : undefined
     }}>
+
+
+
+    {/* robot UI overlay */}
+    {isRobotTheme && isRobotQuestion1 && !isRobotQuestion2 && (
+      <div className="robot-overlay" style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none'
+      }}>
+      <img
+        src="/r4_nobg.png"
+        alt="Robot Q1"
+        style={{
+          position: 'absolute',
+          top: '15%',
+          left: '2%',
+          width: '200px',
+          opacity: 1,
+          transform: 'scaleX(-1)',
+          filter: 'brightness(1.5)'  
+        }}/>
+        <img src="/Frog 1 no background.png" alt="frog 1" style={{
+          position: 'absolute', top: '50%', right: '2%', width: '225px', opacity: 1 
+        }}/>
+      </div>
+    )}
+
+
+    {/* robot UI overlay */}
+    {isRobotTheme && isRobotQuestion2 && (
+      <div className="robot-overlay" style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none'
+      }}>
+      <img
+        src="/r2_nobg.png"
+        alt="Robot Q2"
+        style={{
+          position: 'absolute',
+          top: '15%',
+          left: '2%',
+          width: '200px',
+          opacity: 1,
+          transform: 'scaleX(-1)',
+          filter: 'brightness(1.5)'  
+        }}/>
+        <img src="/Frog 2 no background.png" alt="frog 2" style={{
+          position: 'absolute', top: '50%', right: '2%', width: '225px', opacity: 1, 
+          filter: 'brightness(1.2)'  
+        }}/>
+      </div>
+    )}
+
       <NavBar />
       
       {/* Header */}
@@ -346,42 +416,49 @@ Final Code for Level 2: y + z = ?`,
           )}
 
           {/* Question Content with Read Aloud Button */}
-          <div style={{ 
-            fontSize: '20px', 
-            lineHeight: '1.6', 
-            marginBottom: '30px',
-            marginTop: '20px',
-            whiteSpace: 'pre-wrap',
-            color: '#ffffff',
-            textAlign: 'center',
-            padding: '0 60px',
-            position: 'relative',
-            fontWeight: '500'
-          }}>
-            {currentQuestion ? currentQuestion.question_text : "Loading question"}
-            <button 
-              onClick={readQuestion}
-              className="volume-button"
-              style={{
-                background: 'none',
-                border: 'none',
-                outline: 'none',
-                boxShadow: 'none',
-                color: isSpeaking ? '#ff6b6b' : '#00d9ff',
-                fontSize: '18px',
-                padding: 0,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                verticalAlign: 'middle',
-                marginLeft: '6px',
+          {isRobotQuestion1 ? (
+            <RobotQuestion1 roomCode={roomCode} groupId={groupId} />
+          ) : 
+            isRobotQuestion2 ? (
+              <RobotQuestion2 roomCode={roomCode} groupId={groupId} />
+            ) : (
+              <div style={{ 
+                fontSize: '20px', 
+                lineHeight: '1.6', 
+                marginBottom: '30px',
+                marginTop: '20px',
+                whiteSpace: 'pre-wrap',
+                color: '#ffffff',
+                textAlign: 'center',
+                padding: '0 60px',
                 position: 'relative',
-                zIndex: '5'
-              }}
-              title={window.speechSynthesis?.speaking ? "Stop reading" : "Read question aloud"}
-            >
-              <FaVolumeUp style={{ pointerEvents: 'none' }} />
-            </button>
-          </div>
+                fontWeight: '500'
+              }}>
+                {currentQuestion ? currentQuestion.question_text : "Loading question"}
+                <button 
+                  onClick={readQuestion}
+                  className="volume-button"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    color: isSpeaking ? '#ff6b6b' : '#00d9ff',
+                    fontSize: '18px',
+                    padding: 0,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    verticalAlign: 'middle',
+                    marginLeft: '6px',
+                    position: 'relative',
+                    zIndex: '5'
+                  }}
+                  title={window.speechSynthesis?.speaking ? "Stop reading" : "Read question aloud"}
+                >
+                  <FaVolumeUp style={{ pointerEvents: 'none' }} />
+                </button>
+              </div>
+            )}
 
           {/* Answer Form */}
           <Form onSubmit={handleSubmit}>

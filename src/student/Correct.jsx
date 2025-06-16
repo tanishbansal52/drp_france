@@ -11,8 +11,14 @@ function Correct() {
   const quizId = location.state?.quizId || localStorage.getItem('quizId');
   const roomCode = location.state?.roomCode;
   const groupId = location.state?.groupId || 0;  
+  const indexOfQuestion = location.state?.questionNo || -1; // Default to 0 if not provided
   const currentQuestionIndex = location.state?.questionNo;
-  
+
+  // flag for robot-theme when quizId is 16 and question index is 0
+  const isRobotTheme = quizId == "16"
+  const isRobotQuestion1 = isRobotTheme && indexOfQuestion === 0
+  const isRobotQuestion2 = isRobotTheme && indexOfQuestion === 1
+
   // Add state for bonus question modal
   const [showBonusOption, setShowBonusOption] = useState(false);
   const [bonusQuestion, setBonusQuestion] = useState(null);
@@ -65,6 +71,18 @@ function Correct() {
 
   // Function to fetch bonus question
   const fetchBonusQuestion = async () => {
+  // Inject hard-coded bonus question for robot theme (quizId 16)
+    if (quizId == "16") {
+      setBonusQuestion({
+        question_text:
+          "The Robot's core is made of J energy crystals (red, blue, green). Together they store 1000 units of energy. Red stores twice as much as blue, Green stores 25% less than red. How much energy does the red crystal store?"
+      });
+      setBonusLoading(false);
+      setBonusError(null);
+      setShowFullBonusQuestion(true);
+      return;
+    }
+
     try {
       setBonusLoading(true);
       setBonusError(null);
@@ -115,8 +133,20 @@ function Correct() {
   return (
     <>
     <NavBar />
-    <div style={{ paddingTop: '120px', position: 'relative', width: '100%' }} className="text-center">
-
+      <div
+        className="text-center"
+        style={{
+          paddingTop: '50px',
+          position: 'relative',
+          width: '100%',
+          minHeight: '100vh',
+          // robot background
+          background: isRobotTheme
+            ? 'url(/public/robot-bg.svg) center/cover no-repeat'
+            : undefined,
+          color: '#ffffff'
+        }}
+      >
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -125,7 +155,7 @@ function Correct() {
         position: 'relative' // Add this to establish positioning context
       }}>
         <h1 style={{ 
-          fontSize: '32px',
+          fontSize: '60px',
           fontWeight: '700',
           color: '#00d9ff',
           marginBottom: '8px',
@@ -133,14 +163,23 @@ function Correct() {
           letterSpacing: '2px',
           margin: '0'
         }}>
-          Correct!
+        {isRobotQuestion1
+          ? 'System Recharged'
+          : isRobotQuestion2
+          ? 'Successful Attack'
+          : 'Correct!'}
         </h1>
         <p style={{
           color: '#9ca3af',
-          fontSize: '15px',
+          fontSize: '20px',
           margin: '4px 0 0 0'
         }}>
-          Waiting for teacher to move to next question...
+          
+        {isRobotQuestion1
+          ? 'Waiting for teacher to move to next question...'
+          : isRobotQuestion2
+          ? 'Waiting for teacher to end mission'
+          : 'Waiting for teacher to move to next question...'}
         </p>
       {/* Bonus Question Button placed here instead */}
       {showBonusOption && !showFullBonusQuestion && (
@@ -272,11 +311,61 @@ function Correct() {
             </div>
           </>
         )}
-        
+
+
+        {/* robot UI overlay */}
+        {isRobotTheme && isRobotQuestion1 && (
+          <div className="robot-overlay" style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none'
+          }}>
+          <img
+            src="/r3_nobg.png"
+            alt="Robot Q2"
+            style={{
+              position: 'absolute',
+              top: '33%',
+              left: '35%',
+              width: '350px',
+              opacity: 1,
+              filter: 'brightness(1.5)'  
+            }}/>
+          </div>
+        )}
+        {/* robot UI overlay */}
+        {isRobotTheme && isRobotQuestion2 && (
+          <div className="robot-overlay" style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none'
+          }}>
+          <img
+            src="/r1_nobg.png"
+            alt="Robot Q2"
+            style={{
+              position: 'absolute',
+              top: '33%',
+              left: '35%',
+              width: '350px',
+              opacity: 1,
+              filter: 'brightness(1.5)'  
+            }}/>
+          </div>
+        )}
+
         {/* Gif */}
-        <div className="d-flex justify-content-center">
+        { !isRobotTheme &&
+          <div className="d-flex justify-content-center">
           <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY25pZXBzNWtxcTZibGEzcjNjcGdsazhmZW51b3hrOTZibG85eXk0aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ely3apij36BJhoZ234/giphy.gif" alt="Funny gif" />
         </div>
+        }
       </div>
     </>
   );
