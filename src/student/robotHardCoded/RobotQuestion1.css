@@ -1,0 +1,19 @@
+.fraction {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+.fraction .num {
+  display: block;
+  border-bottom: 1px solid currentColor;
+  line-height: 1;
+  padding: 0 2px;
+  font-size: 1.5em; 
+}
+.fraction .den {
+  display: block;
+  line-height: 1;
+  padding: 0 2px;
+  font-size: 1.5em; 
+}
