@@ -335,7 +335,7 @@ Final Code for Level 2: y + z = ?`,
             opacity: '0.8',
             marginTop: '8px'
           }}>
-            {spinoffMode ? "SpinOff Question" : "Individual Round"}
+            {isRobotQuestion1? "Individual Round" : "Group Round"}
           </h2>
         </div>
       </div>

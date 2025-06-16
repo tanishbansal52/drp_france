@@ -8,6 +8,8 @@ import TeacherButton from './TeacherButton';
 import axios from 'axios';
 import RobotQuestion1 from '../student/robotHardCoded/RobotQuestion1'
 import RobotQuestion2 from '../student/robotHardCoded/RobotQuestion2'
+import RobotSpinoffQuestion1 from '../student/robotSpinoffHardCoded/RobotSpinoffQuestion1'
+import RobotSpinoffQuestion2 from '../student/robotSpinoffHardCoded/RobotSpinoffQuestion2'
 
 function DisplayQuestion() {
   const location = useLocation();
@@ -337,7 +339,14 @@ Final Code for Level 2: y + z = ?`,
               </div>
 
               {/* Question Content */}
-              {isRobotQuestion1 ? <RobotQuestion1/> : isRobotQuestion2? <RobotQuestion2/> : (<div style={{ 
+              {spinoffMode ? (
+                currentIndex === 0 ? <RobotSpinoffQuestion1 /> : <RobotSpinoffQuestion2 />
+              ) : isRobotQuestion1 ? (
+                <RobotQuestion1 />
+              ) : isRobotQuestion2 ? (
+                <RobotQuestion2 />
+              )
+              : (<div style={{ 
                 fontSize: '20px', 
                 lineHeight: '1.6', 
                 marginBottom: '30px',
@@ -419,7 +428,6 @@ Final Code for Level 2: y + z = ?`,
                 }}>
                   <TeacherButton
                     onClick={handleSpinOff}
-                    disabled={spinoffUsed}
                     style={{
                       background: spinoffUsed 
                         ? 'rgba(100, 116, 139, 0.3)' 
