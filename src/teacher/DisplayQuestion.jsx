@@ -6,6 +6,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { incrementRoomsCurrentStatus } from './utils/api'
 import TeacherButton from './TeacherButton';
 import axios from 'axios';
+import RobotQuestion1 from '../student/robotHardCoded/RobotQuestion1'
+import RobotQuestion2 from '../student/robotHardCoded/RobotQuestion2'
 
 function DisplayQuestion() {
   const location = useLocation();
@@ -17,6 +19,8 @@ function DisplayQuestion() {
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   console.log('Current Index:', currentIndex)
+  const isRobotQuestion1 = quizId == "16" && currentIndex === 0
+  const isRobotQuestion2 = quizId == "16" && currentIndex === 1
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -333,7 +337,7 @@ Final Code for Level 2: y + z = ?`,
               </div>
 
               {/* Question Content */}
-              <div style={{ 
+              {isRobotQuestion1 ? <RobotQuestion1/> : isRobotQuestion2? <RobotQuestion2/> : (<div style={{ 
                 fontSize: '20px', 
                 lineHeight: '1.6', 
                 marginBottom: '30px',
@@ -349,6 +353,7 @@ Final Code for Level 2: y + z = ?`,
               }}>
                 {question}
               </div>
+              )}
 
               {/* Bottom Row with Groups Progress (left) and Buttons (right) */}
               <div style={{ 
