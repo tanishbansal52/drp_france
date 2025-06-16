@@ -382,6 +382,7 @@ Final Code for Level 2: y + z = ?`,
             <Alert 
               variant="danger" 
               dismissible 
+              closeVariant="dark"       // ← add this
               onClose={() => setShowAlert(false)}
               style={{
                 marginBottom: '20px',

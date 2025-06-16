@@ -41,7 +41,20 @@
   color: #888;
 }
 
-.button-space {
-  margin-top: 16px;
-  margin-bottom: 16px;
+
+/* restore Alert’s close button */
+.btn-close {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.btn-close::before,
+.btn-close::after {
+  content: "×" !important;
+  display: block !important;
+  font-size: 1.5rem !important;
+  color: #000 !important; /* or whatever color you need */
+  line-height: 1 !important;
 }
