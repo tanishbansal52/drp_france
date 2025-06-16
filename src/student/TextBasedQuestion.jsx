@@ -326,7 +326,7 @@ Final Code for Level 2: y + z = ?`,
             textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
             letterSpacing: '2px'
           }}>
-            Mission: Fractions & Percentages
+            Student Mission: Fractions & Percentages
           </h1>
           <h2 style={{ 
             fontSize: '18px',
