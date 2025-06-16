@@ -373,7 +373,7 @@ Final Code for Level 2: y + z = ?`,
               fontWeight: '600',
               border: '1px solid rgba(0, 217, 255, 0.3)'
             }}>
-              Question {spinoffMode ? "SpinOff" : (indexOfQuestion || 1)}
+              Question {spinoffMode ? "SpinOff" : (indexOfQuestion + 1 || 1)}
             </span>
           </div>
 
