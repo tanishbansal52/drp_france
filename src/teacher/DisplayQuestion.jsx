@@ -143,7 +143,7 @@ Final Code for Level 2: y + z = ?`,
   const question = current.question_text || ''
   const answer = current.answer || 'No answer available.'
 
-  const MAX_INDEX = 2
+  const MAX_INDEX = 1
 
   const isLast = currentIndex >= MAX_INDEX
 
