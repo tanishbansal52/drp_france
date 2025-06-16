@@ -254,10 +254,8 @@ function RoomCodeDisplay() {
               <TeacherButton
                 style={styles.startButton}
                 size="lg"
-                onClick={async () => {
-                  // Going to question 1
-                  await incrementRoomsCurrentStatus(roomCode, 1)
-                  navigate(`/teacher/displayquestion/${roomCode}`, { state: { quizId } })
+                onClick={() => {
+                  navigate(`/teacher/missionintro/${roomCode}`, { state: { quizId } })
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'translateY(-2px)';

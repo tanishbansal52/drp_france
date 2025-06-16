@@ -27,6 +27,7 @@ import StudentLayout from './student/StudentLayout.jsx';
 import PastMissions from './teacher/PastMissions.jsx';
 import Challenge from './student/Challenge.jsx';
 import Report from './teacher/Report.jsx';
+import MissionIntro from './teacher/MissionIntro.jsx';
 
 
 
@@ -58,6 +59,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="/teacher/pastmissions" element={<TeacherLayout><PastMissions/></TeacherLayout>} />
               <Route path="/teacher/report" element={<TeacherLayout><Report/></TeacherLayout>} />
               <Route path="/teacher/finish" element={<TeacherLayout><Finish/></TeacherLayout>} />
+              <Route path="/teacher/missionintro/:roomCode" element={<MissionIntro />} />
 
           </Routes>
       </Router>
