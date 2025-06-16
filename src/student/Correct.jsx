@@ -11,7 +11,7 @@ function Correct() {
   const quizId = location.state?.quizId || localStorage.getItem('quizId');
   const roomCode = location.state?.roomCode;
   const groupId = location.state?.groupId || 0;  
-  const indexOfQuestion = location.state?.questionNo || -1; // Default to 0 if not provided
+  const indexOfQuestion = location.state?.questionNo || 0; // Default to 0 if not provided
   const currentQuestionIndex = location.state?.questionNo;
 
   // flag for robot-theme when quizId is 16 and question index is 0
@@ -271,18 +271,45 @@ function Correct() {
                   Error loading bonus question: {bonusError}
                 </div>
               )}
-              
               {!bonusLoading && !bonusError && bonusQuestion && (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ 
-                    fontSize: '18px', 
-                    lineHeight: '1.6', 
-                    color: 'white',
-                    marginBottom: '20px',
-                    whiteSpace: 'pre-line'
-                  }}>
-                    {bonusQuestion.question_text}
-                  </p>
+                  {quizId == "16" ? (
+                    <p
+                      style={{
+                        fontSize: '18px',
+                        lineHeight: '1.6',
+                        color: 'white',
+                        marginBottom: '20px',
+                        whiteSpace: 'pre-line'
+                      }}
+                    >
+                      The Robot’s core is made of J energy crystals
+                      (
+                      <span className="text-danger fw-bold">red</span>,{' '}
+                      <span className="text-primary fw-bold">blue</span>,{' '}
+                      <span className="text-success fw-bold">green</span>
+                      ). <br/>Together they store <strong>1000</strong> units of energy.{' '}
+                      <br/><span className="text-danger fw-bold">Red</span> stores
+                      twice as much as{' '}
+                      <span className="text-primary fw-bold">blue.</span>{' '}
+                      <br/><span className="text-success fw-bold">Green</span> stores
+                      25% less than{' '}
+                      <span className="text-danger fw-bold">red</span>.{' '}
+                      <br/><br/><strong>How much energy does the red crystal store?</strong>
+                    </p>
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: '18px',
+                        lineHeight: '1.6',
+                        color: 'white',
+                        marginBottom: '20px',
+                        whiteSpace: 'pre-line'
+                      }}
+                    >
+                      {bonusQuestion.question_text}
+                    </p>
+                  )}
                 </div>
               )}
               
