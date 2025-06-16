@@ -44,28 +44,27 @@ Final Code for Level 2: y + z = ?`,
   useEffect(() => {
     if (!roomCode) return;
     
-    const checkSpinoffMode = async () => {
-      try {
-        const response = await fetch(`https://drp-belgium.onrender.com/api/get-room-spinoff/${roomCode}/`);
-        const data = await response.json();
-        
-        if (data.spinoff_mode !== undefined) {
-          setSpinoffMode(data.spinoff_mode);
-        }
-      } catch (error) {
-        console.error('Error checking spinoff mode:', error);
+    let cancelled = false;
+    const poll = async () => {
+      if (cancelled) return;
+      
+      const ok = await canMoveToNextQuestion(roomCode, 3); // For the final question
+      console.log("In BUTTON BASED Q can move to next question is:", ok);
+      
+      if (ok) {
+        cancelled = true;
+        navigate('/end', {
+          state: { roomCode, questionNo: 2, groupId, quizId }
+        });
       }
     };
-
-    // Initial check
-    checkSpinoffMode();
-
-    // Set up polling every 2 seconds
-    const pollInterval = setInterval(checkSpinoffMode, 2000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(pollInterval);
-  }, [roomCode]);
+    
+    const intervalId = setInterval(poll, 3000);
+    return () => { 
+      cancelled = true; 
+      clearInterval(intervalId); 
+    };
+  }, [roomCode, groupId]);
 
   // New: read question aloud
   const readQuestion = () => {
