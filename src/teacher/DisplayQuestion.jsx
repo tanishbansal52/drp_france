@@ -200,7 +200,8 @@ Final Code for Level 2: y + z = ?`,
             color: '#00d9ff',
             marginBottom: '0',
             textShadow: '0 0 20px rgba(0, 217, 255, 0.3)',
-            letterSpacing: '2px'
+            letterSpacing: '2px',
+            whiteSpace: 'nowrap'
           }}>
             Mission: {(topic || 'Algebra').replace(/\s*\([^)]*\)/g, '')}
           </h1>
