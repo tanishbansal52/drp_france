@@ -16,36 +16,36 @@ const Report = () => {
   const [expandedGroups, setExpandedGroups] = useState({});
   const location = useLocation();
   const roomId = location.state?.room_id || 1; // Default to 1 if not provided, or get from props/URL params
-  
+
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [reportRes, leaderboardRes] = await Promise.all([
-        axios.get(`https://drp-belgium.onrender.com/api/mission-report/${roomId}/`),
-        axios.get(`https://drp-belgium.onrender.com/api/mission-leaderboard/${roomId}/`)
-      ]);
+    const fetchData = async () => {
+      try {
+        const [reportRes, leaderboardRes] = await Promise.all([
+          axios.get(`https://drp-belgium.onrender.com/api/mission-report/${roomId}/`),
+          axios.get(`https://drp-belgium.onrender.com/api/mission-leaderboard/${roomId}/`)
+        ]);
 
-      if (reportRes.data.success) {
-        setReportData(reportRes.data.report);
-      } else {
-        console.error("Failed to fetch mission report:", reportRes.data.error);
+        if (reportRes.data.success) {
+          setReportData(reportRes.data.report);
+        } else {
+          console.error("Failed to fetch mission report:", reportRes.data.error);
+        }
+
+        if (leaderboardRes.data.success) {
+          setLeaderboardData(leaderboardRes.data);
+        } else {
+          console.error("Failed to fetch leaderboard:", leaderboardRes.data.error);
+        }
+
+      } catch (err) {
+        console.error("Error fetching mission report or leaderboard:", err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (leaderboardRes.data.success) {
-        setLeaderboardData(leaderboardRes.data);
-      } else {
-        console.error("Failed to fetch leaderboard:", leaderboardRes.data.error);
-      }
-
-    } catch (err) {
-      console.error("Error fetching mission report or leaderboard:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchData();
-}, [roomId]);
+    fetchData();
+  }, [roomId]);
 
 
   const toggleGroupExpansion = (groupId) => {
@@ -56,7 +56,7 @@ const Report = () => {
   };
 
   const getDifficultyColor = (rating) => {
-    switch(rating) {
+    switch (rating) {
       case 'Easy': return 'badge bg-success';
       case 'Medium': return 'badge bg-warning text-dark';
       case 'Hard': return 'badge bg-danger';
@@ -74,7 +74,7 @@ const Report = () => {
   const downloadPDF = async () => {
     try {
       setPdfLoading(true);
-      
+
       // Create a temporary container with all content
       const printContainer = document.createElement('div');
       printContainer.style.position = 'absolute';
@@ -82,11 +82,11 @@ const Report = () => {
       printContainer.style.width = '210mm';
       printContainer.style.backgroundColor = 'black';
       printContainer.style.padding = '20px';
-      
+
       // Generate PDF content
       printContainer.innerHTML = generatePDFContent();
       document.body.appendChild(printContainer);
-      
+
       // Convert to canvas
       const canvas = await html2canvas(printContainer, {
         scale: 2,
@@ -94,7 +94,7 @@ const Report = () => {
         allowTaint: true,
         backgroundColor: '#ffffff'
       });
-      
+
       // Create PDF
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -103,24 +103,24 @@ const Report = () => {
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
       let position = 0;
-      
+
       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
-      
+
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-      
+
       // Download the PDF
       pdf.save(`Mission_Report_${reportData?.room_info.room_code}_${new Date().toISOString().split('T')[0]}.pdf`);
-      
+
       // Clean up
       document.body.removeChild(printContainer);
       setPdfLoading(false);
-      
+
     } catch (error) {
       console.error('Error generating PDF:', error);
       setPdfLoading(false);
@@ -279,15 +279,15 @@ const Report = () => {
   const pieData = Object.entries(questionAccuracyData).map(([key, value]) => ({
     name: key,
     value,
-    color: key === '80%+ Accuracy' ? '#198754' : 
-           key === '50-79% Accuracy' ? '#ffc107' : '#dc3545'
+    color: key === '80%+ Accuracy' ? '#198754' :
+      key === '50-79% Accuracy' ? '#ffc107' : '#dc3545'
   }));
 
   return (
     <>
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-      
+
       <div className="min-vh-100 ">
         <div className="container-fluid py-4">
           <div className="d-flex justify-content-end mb-3">
@@ -347,8 +347,8 @@ const Report = () => {
                 {[
                   { id: 'overview', label: 'Overview', icon: 'bi-bullseye' },
                   { id: 'teams', label: 'Team Performance', icon: 'bi-people' },
-                  { id: 'questions', label: 'Question Analysis', icon: 'bi-award' },
-                  { id: 'leaderboard', label: 'Leaderboard', icon: 'bi-trophy' }
+                  { id: 'questions', label: 'Question Analysis', icon: 'bi-award' }
+                  // Removed leaderboard tab here
                 ].map(tab => (
                   <li key={tab.id} className="nav-item" role="presentation">
                     <button
@@ -416,13 +416,13 @@ const Report = () => {
                         <div className="card-body">
                           <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={chartData}>
-                              <CartesianGrid strokeDasharray="3 3"stroke="white"  />
+                              <CartesianGrid strokeDasharray="3 3" stroke="white" />
                               <XAxis dataKey="name" tick={{ fill: 'white' }}
-                                    axisLine={{ stroke: 'white' }}
-                                    tickLine={{ stroke: 'white' }}/>
+                                axisLine={{ stroke: 'white' }}
+                                tickLine={{ stroke: 'white' }} />
                               <YAxis tick={{ fill: 'white' }}
-                                    axisLine={{ stroke: 'white' }}
-                                    tickLine={{ stroke: 'white' }}/>
+                                axisLine={{ stroke: 'white' }}
+                                tickLine={{ stroke: 'white' }} />
                               <Tooltip />
                               <Bar dataKey="score" fill="#00ffff" radius={4} />
                             </BarChart>
@@ -466,7 +466,7 @@ const Report = () => {
                   {reportData?.group_performance.map(group => (
                     <div key={group.group_id} className="card mb-4">
                       <div className="card-body">
-                        <div 
+                        <div
                           className="d-flex align-items-center justify-content-between cursor-pointer"
                           onClick={() => toggleGroupExpansion(group.group_id)}
                           style={{ cursor: 'pointer' }}
@@ -616,68 +616,6 @@ const Report = () => {
                       </div>
                     </div>
                   ))}
-                </div>
-              )}
-
-              {activeTab === 'leaderboard' && (
-                <div>
-                  <div className="card bg-gradient mb-4" style={{ background: 'linear-gradient(135deg, #ffc107 0%, #fd7e14 100%)' }}>
-                    <div className="card-body text-white">
-                      <h2 className="card-title d-flex align-items-center gap-2 mb-2">
-                        <i className="bi bi-trophy fs-2 text-center"></i>
-                        Mission Leaderboard
-                      </h2>
-                      <p className="card-text text-start">Top performing teams in this mission</p>
-                    </div>
-                  </div>
-
-                  <div className="row g-4">
-                    {leaderboardData?.leaderboard.map((team, index) => (
-                      <div key={team.rank} className="col-12">
-                        <div className={`card h-100 ${
-                          index === 0 ? 'border-warning bg-warning bg-opacity-10' :
-                          index === 1 ? 'border-secondary bg-secondary bg-opacity-10' :
-                          index === 2 ? 'border-danger bg-danger bg-opacity-10' :
-                          ''
-                        }`}>
-                          <div className="card-body">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <div className="d-flex align-items-center gap-3">
-                                <div className={`rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 text-white ${
-                                  index === 0 ? 'bg-warning' :
-                                  index === 1 ? 'bg-secondary' :
-                                  index === 2 ? 'bg-danger' :
-                                  'bg-primary'
-                                }`} style={{ width: '50px', height: '50px' }}>
-                                  {team.rank}
-                                </div>
-                                <div>
-                                  <h5 className="mb-1">{team.group_name}</h5>
-                                  <p className="mb-0">{team.student_count} students ({team.student_names.join(', ')})</p>
-                                </div>
-                              </div>
-                              <div className="d-flex align-items-center gap-4">
-                                <div className="text-center">
-                                  <div className="h3 text-primary fw-bold mb-0">{team.score}</div>
-                                  <small className="text-light">Score</small>
-                                </div>
-                                <div className="text-center">
-                                  <div className="h5 mb-0 text-secondary">{team.accuracy}%</div>
-                                  <small className="text-light">Accuracy</small>
-                                </div>
-                                <div className="text-center">
-                                  <div className={`h5 mb-0 ${getRatingColor(team.rating_improvement)}`}>
-                                    +{team.rating_improvement}
-                                  </div>
-                                  <small className="text-light">Improvement</small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               )}
             </div>
