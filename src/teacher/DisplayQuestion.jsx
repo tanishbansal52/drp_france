@@ -166,9 +166,14 @@ Final Code for Level 2: y + z = ?`,
   }
 
   const handleSpinOff = async () => {
-    setShowAnswer(false)
-    toggleSpinoffMode(true)
-  }
+    setShowAnswer(false);
+    toggleSpinoffMode(true);
+    
+    // Call the regenerate function for RobotQuestion1 when in the first question
+    if (isRobotQuestion1 && window.regenerateRobotQ1) {
+      window.regenerateRobotQ1();
+    }
+  };
 
   const handleEndQuiz = () => {
     navigate('/')
@@ -207,7 +212,7 @@ Final Code for Level 2: y + z = ?`,
             letterSpacing: '2px',
             whiteSpace: 'nowrap'
           }}>
-            Teacher Mission: {(topic || 'Error Loading Topic').replace(/\s*\([^)]*\)/g, '')}
+            Mission: {(topic || 'Error Loading Topic').replace(/\s*\([^)]*\)/g, '')}
           </h1>
         </div>
 
