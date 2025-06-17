@@ -174,6 +174,22 @@ function Correct() {
           fontSize: '20px',
           margin: '4px 0 0 0'
         }}>
+
+        {isRobotTheme && isRobotQuestion2 && (
+          <img 
+            src="/Frog 3 no background.png" 
+            alt="Defeated Frog" 
+            style={{
+              position: 'absolute',
+              top: '40px',
+              right: '40px',
+              width: '250px',
+              filter: 'brightness(1.2)',
+              transform: 'rotate(15deg)',
+              zIndex: 10
+            }} 
+          />
+        )}  
           
         {isRobotQuestion1
           ? 'Waiting for teacher to move to next question...'
