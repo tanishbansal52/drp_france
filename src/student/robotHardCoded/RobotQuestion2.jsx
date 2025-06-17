@@ -71,7 +71,7 @@ function RobotQuestion2({ isTeacherMode = false }) {
       <h2>Calculate Attack Energy</h2>
       <ol style={{ fontSize: '1.2rem', lineHeight: '1.6', marginBottom: '-2rem' }}>
         <li>The pie chart below shows the energy available for each function. The total energy from Q1 is 125.</li>
-        <li>Calculate the total energy available for an attack (laser + plasma!)</li>
+        <li>Calculate the total energy available for an attack (laser + plasma)!</li>
       </ol>
       <div style={{ width: '325px', height: '325px', margin: '0.5rem auto 0' }}>
         <Pie data={data} options={{
