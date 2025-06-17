@@ -86,7 +86,7 @@ function RobotQuestion1({ isTeacherMode = false, roomCode, groupId }) {
           textAlign: 'center', 
           marginBottom: '20px' 
         }}>
-          Solve the following individually. Remember to simplify your answer if necessary:
+          Solve the following individually. Remember to simplify your answers if necessary:
         </p>
       <ol style={{ 
         listStyleType: 'lower-roman',
