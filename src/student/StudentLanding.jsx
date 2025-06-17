@@ -85,6 +85,7 @@ function StudentLanding() {
                 <Form.Label>MISSION CODE</Form.Label>
                 <Form.Control
                   type="text"
+                  inputMode="numeric"
                   placeholder="Enter 4-digit code"
                   value={missionCode}
                   onChange={(e) => setMissionCode(e.target.value)}
