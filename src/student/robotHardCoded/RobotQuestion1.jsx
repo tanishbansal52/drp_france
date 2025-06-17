@@ -70,7 +70,7 @@ function RobotQuestion1({ isTeacherMode = false, roomCode, groupId }) {
         <div style={{
           position: 'absolute',
           bottom: -200,
-          left: -150,
+          left: -100,
           zIndex: 0,
         }}>
           <img src="/contrails up.png" alt="Circuit contrails up" style={{ maxHeight: '40vh' }} />
