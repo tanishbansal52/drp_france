@@ -59,8 +59,8 @@ function RobotQuestion2({ isTeacherMode = false }) {
       {!isTeacherMode && (
         <div style={{
           position: 'absolute',
-          bottom: -250,
-          left: -240,
+          bottom: -200,
+          left: -150,
           zIndex: 0,
         }}>
           <img src="/contrails up.png" alt="Circuit contrails up" style={{ maxHeight: '40vh' }} />

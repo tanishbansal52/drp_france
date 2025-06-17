@@ -63,7 +63,7 @@ function StudentLanding() {
       <div className="d-flex justify-content-center align-items-center vh-100">
         <Card className="shadow-lg p-3 text-center" style={{ maxWidth: "450px", width: "100%" }}>    
           <Card.Body className="py-2" style={{ position: 'relative' }}>
-            <Card.Title className="mb-4 display-6 text-light">MISSION LOGIN</Card.Title>
+            <Card.Title className="mb-4 display-6 text-light">JOIN MISSION</Card.Title>
 
             {showError && (
               <div 

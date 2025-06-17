@@ -226,7 +226,7 @@ function ChooseQuiz() {
             fontSize: '15px',
             margin: '4px 0 0 0'
           }}>
-            Select a quiz to preview questions
+            Select a mission to preview questions
           </p>
         </div>
 
