@@ -192,7 +192,7 @@ const handleSubmit = async (e) => {
     let submittedAnswer = answer;
     
     // For robot questions, get the answer from localStorage
-    if (isRobotQuestion1) {
+    if (isRobotQuestion1 || isRobotQuestion2 ) {
       submittedAnswer = localStorage.getItem('robotAnswer') || '';
       console.log("Robot answer submitted:", submittedAnswer);
     }

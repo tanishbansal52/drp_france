@@ -75,7 +75,7 @@ function Correct() {
     if (quizId == "16") {
       setBonusQuestion({
         question_text:
-          "The Robot's core is made of J energy crystals (red, blue, green). Together they store 1000 units of energy. Red stores twice as much as blue, Green stores 25% less than red. How much energy does the red crystal store?"
+          "The Robot's core is made of 3 energy crystals. Together they store 1000 units of energy. Red stores twice as much as blue, Green stores 25% less than red. How much energy does the red crystal store?"
       });
       setBonusLoading(false);
       setBonusError(null);
@@ -283,18 +283,20 @@ function Correct() {
                         whiteSpace: 'pre-line'
                       }}
                     >
-                      The Robot’s core is made of J energy crystals
-                      (
-                      <span className="text-danger fw-bold">red</span>,{' '}
-                      <span className="text-primary fw-bold">blue</span>,{' '}
-                      <span className="text-success fw-bold">green</span>
-                      ). <br/>Together they store <strong>1000</strong> units of energy.{' '}
+                      Your robot’s core is made of 3 energy crystals
+                      <br/>
+                      
+                      <br/>Together they store <strong>1000</strong> units of energy.{' '}
+                      <br/>
+
                       <br/><span className="text-danger fw-bold">Red</span> stores
                       twice as much as{' '}
                       <span className="text-primary fw-bold">blue.</span>{' '}
                       <br/><span className="text-success fw-bold">Green</span> stores
                       25% less than{' '}
                       <span className="text-danger fw-bold">red</span>.{' '}
+                      <br/>
+                      
                       <br/><br/><strong>How much energy does the red crystal store?</strong>
                     </p>
                   ) : (
