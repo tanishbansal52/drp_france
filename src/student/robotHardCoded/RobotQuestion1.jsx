@@ -153,6 +153,7 @@ function RobotQuestion1({ isTeacherMode = false, roomCode, groupId }) {
             <input
               key={index}
               type="text"
+              inputMode="numeric"
               value={answer[index]}
               onChange={(e) => handleChange(index, e.target.value)}
               className="number-input"
