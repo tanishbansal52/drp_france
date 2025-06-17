@@ -194,6 +194,12 @@ const handleSubmit = async (e) => {
     // For robot questions, get the answer from localStorage
     if (isRobotQuestion1 || isRobotQuestion2 ) {
       submittedAnswer = localStorage.getItem('robotAnswer') || '';
+      if (isRobotQuestion1 && submittedAnswer !== "125" || isRobotQuestion2 && submittedAnswer !== "75") {
+        setAlertMessage('That was not correct, try again!')
+        setShowAlert(true)
+        setAnswer('')
+        return;
+      }
       console.log("Robot answer submitted:", submittedAnswer);
     }
     
