@@ -5,13 +5,15 @@ function RobotQuestion1({ isTeacherMode = false, roomCode, groupId }) {
   const [answer, setAnswer] = useState(['', '', '']);
 
   const handleChange = (index, value) => {
-    // Remove regex test temporarily to debug
-    const newAnswer = [...answer];
-    newAnswer[index] = value;
-    setAnswer(newAnswer);
-    
-    console.log("Input changed:", index, value, newAnswer);
-    localStorage.setItem('robotAnswer', newAnswer.join(''));
+    // Only allow single digit numbers (0-9)
+    if (value === '' || /^[0-9]$/.test(value)) {
+      const newAnswer = [...answer];
+      newAnswer[index] = value;
+      setAnswer(newAnswer);
+      
+      console.log("Input changed:", index, value, newAnswer);
+      localStorage.setItem('robotAnswer', newAnswer.join(''));
+    }
   };
 
   return (
