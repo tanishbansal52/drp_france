@@ -1,34 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import '../css/ProgressBar.css';
 
 function MissionProgress() {
   const location = useLocation();
   const path = location.pathname;
+  const [currentQNumber, setCurrentQNumber] = useState(localStorage.getItem('qNumber') || '0');
   
-  // Simplified progress calculation
+  // Add an effect to monitor localStorage changes
+  useEffect(() => {
+    const checkForChanges = () => {
+      const newQNumber = localStorage.getItem('qNumber');
+      if (newQNumber !== currentQNumber) {
+        setCurrentQNumber(newQNumber);
+        console.log('qNumber changed:', newQNumber);
+      }
+    };
+    
+    // Check immediately and set up interval
+    checkForChanges();
+    const intervalId = setInterval(checkForChanges, 1000);
+    
+    return () => clearInterval(intervalId);
+  }, [currentQNumber]);
+  
   const getProgress = () => {
+    // Use the state variable instead of reading from localStorage again
+    console.log('Progress debug:', { path, currentQNumber });
+    
     // Start/Waiting: 0%
     if (path.includes('/waiting') || path.includes('/start')) {
       return { percent: 0, name: 'Starting Mission' };
     }
     
-    // Question 1: 50%
-    if (path.includes('/textQs') && (!location.state?.questionNo || location.state?.questionNo === 0)) {
+    // Robot Question 2 check - highest priority
+    if (currentQNumber === '1') {
+      return { percent: 100, name: 'Question 2' };
+    }
+    
+    // If we're in the questions path but not on question 2
+    if (path.includes('/textQs')) {
       return { percent: 50, name: 'Question 1' };
     }
     
     // Any state related to question 1 results
-    if ((path.includes('/correct') || path.includes('/incorrect')) && 
-        location.state?.questionNo === 0) {
+    if (path.includes('/correct') || path.includes('/incorrect')) {
+      if (currentQNumber === '1') {
+        return { percent: 100, name: 'Question 2' };
+      }
       return { percent: 50, name: 'Question 1' };
     }
     
-    // Question 2 or any later stage: 100%
-    if (path.includes('/textQs') || path.includes('/groupquestion') || 
-        path.includes('/end') || path.includes('/debrief') || 
-        path.includes('/teacher/finish') ||
-        (path.includes('/correct') || path.includes('/incorrect'))) {
+    // Final states
+    if (path.includes('/groupquestion') || 
+        path.includes('/end') || 
+        path.includes('/debrief') || 
+        path.includes('/teacher/finish')) {
       return { percent: 100, name: 'Question 2' };
     }
     
