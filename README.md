@@ -1,6 +1,8 @@
 # Division X - Interactive Educational Quiz Platform
 
-A modern, gamified educational platform that transforms traditional quizzes into engaging "missions" for students. Built with React and featuring real-time collaboration, themed content, and comprehensive reporting for educators. This was our 2nd year project for Designing for Reap People (DRP) at Imperial College London. We came in the Top 6 Projects of the year out of 60 teams!
+This was our 2nd year project for Designing for Reap People (DRP) at Imperial College London. We came in the Top 6 Projects of the year out of 60 teams!
+
+DivisionX is a modern, gamified educational platform that transforms traditional quizzes into engaging missions for KS3 students.
 
 ## Features
 
